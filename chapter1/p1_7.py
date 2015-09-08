@@ -17,7 +17,6 @@ def rotate90(matrix, clockwise=True):
     for j in range(0, int(n / 2)):
         for i in range(j, n - 1 - j):
             pt0 = i, j
-            #print(i, j)
             q0 = matrix[pt0[0]][pt0[1]]
             pt1 = nextPoint(pt0, n)
             q1 = matrix[pt1[0]][pt1[1]]
