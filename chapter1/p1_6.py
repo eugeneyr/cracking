@@ -6,6 +6,7 @@
 
 import re
 
+
 def compressString(s):
     if s is None:
         return None
@@ -29,6 +30,7 @@ def compressString(s):
             return s
     return rv
 
+
 def decompressString(s):
     if s is None:
         return None
@@ -50,9 +52,11 @@ def decompressString(s):
         rv += currC * count
     return rv
 
+
 # Driver code
 
 import unittest
+
 
 class TestCompress(unittest.TestCase):
     def test_compress(self):
@@ -60,10 +64,26 @@ class TestCompress(unittest.TestCase):
         print(s)
         self.assertEqual(s, 'a2b1c5a3')
 
+    def test_compressLong(self):
+        s = compressString('aabcccccccccccccccccaaa')
+        print(s)
+        self.assertEqual(s, 'a2b1c17a3')
+
+    def test_compressShort(self):
+        s = compressString('aabc')
+        print(s)
+        self.assertEqual(s, 'aabc')
+
+    def test_decompressLong(self):
+        s = decompressString('a2b1c17a3')
+        print(s)
+        self.assertEqual(s, 'aabcccccccccccccccccaaa')
+
     def test_decompress(self):
         s = decompressString('a2b1c5a3')
         print(s)
         self.assertEqual(s, 'aabcccccaaa')
+
 
 if __name__ == '__main__':
     unittest.main()
