@@ -27,6 +27,12 @@ class ListNode:
                 prev = ListNode(elem, prev)
             return prev
 
+    def toList(self):
+        l = [self.value]
+        if self.next is not None:
+            l.extend(self.next.toList())
+
+
 def printLinkedList(node):
     strList = '['
     while node is not None:
@@ -35,3 +41,9 @@ def printLinkedList(node):
     strList += ' ]'
     print(strList)
 
+def findNode(head, value):
+    curr = head
+    while curr is not None:
+        if curr.value == value:
+            return curr
+        curr = curr.next
