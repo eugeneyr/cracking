@@ -18,6 +18,7 @@ def isPalindrome(node: ListNode):
             if not otherNode.value == node.value:
                 return False
             if otherNode == node or node.next == otherNode:
+                #print('hit the middle:', node.value)
                 return True
             return otherNode.next
         return otherNode
