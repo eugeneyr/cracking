@@ -60,18 +60,17 @@ def partitionBySplitting(head: ListNode, value):
         smallTail.next = bigHead
     else:
         smallHead = bigHead
-
     return smallHead
 
 
 def testPartition(ls, val):
-    l = ListNode.buildFromIterable(ls)
-    printLinkedList(l)
-    partitioned = partitionBySwapping(l, val)
-    printLinkedList(partitioned)
-    l = ListNode.buildFromIterable(ls)
-    partitioned = partitionBySplitting(l, val)
-    printLinkedList(partitioned)
+    for func in (partitionBySwapping, partitionBySplitting):
+        l = ListNode.buildFromIterable(ls)
+        print('before partitioning on {} using {}:'.format(val, func.__name__))
+        printLinkedList(l)
+        partitioned = func(l, val)
+        print('after:')
+        printLinkedList(partitioned)
 
 
 if __name__ == '__main__':
@@ -80,4 +79,3 @@ if __name__ == '__main__':
     testPartition([1], 1)
     testPartition([2, 1], 1)
     testPartition([2, 1], 2)
-
