@@ -21,7 +21,6 @@ Output: 9 -> 1 -> 2. That is, 912
 
 from chapter2.datastructures import *
 
-
 def addNumbersAsLists(head1: ListNode, head2: ListNode):
     if head1 is None or head2 is None:
         return None
@@ -64,6 +63,23 @@ def addNumbersAsLists(head1: ListNode, head2: ListNode):
 
     return res_head
 
+def reverseList(node):
+    def recursiveReverse(node):
+        if node is None:
+            return None, None
+        copy = ListNode(node.value)
+        if node.next is None:
+            return copy, copy
+        newHead, newTail = recursiveReverse(node.next)
+        newTail.next = copy
+        return newHead, copy
+    head, tail = recursiveReverse(node)
+    return head
+
+
+def addNumbersAsListsForward(head1: ListNode, head2: ListNode):
+    return reverseList(addNumbersAsLists(reverseList(head1), reverseList(head2)))
+
 
 if __name__ == '__main__':
     num1 = ListNode.buildFromIterable([1])
@@ -77,6 +93,24 @@ if __name__ == '__main__':
     num1 = ListNode.buildFromIterable([7, 1, 6])
     num2 = ListNode.buildFromIterable([5, 9, 8])
     printLinkedList(addNumbersAsLists(num1, num2))
+
+    num1 = ListNode.buildFromIterable([1])
+    num2 = ListNode.buildFromIterable([9, 9, 9])
+    printLinkedList(addNumbersAsListsForward(num1, num2))
+
+    num1 = ListNode.buildFromIterable([6, 1, 7])
+    num2 = ListNode.buildFromIterable([2, 9, 5])
+    printLinkedList(addNumbersAsListsForward(num1, num2))
+
+    num1 = ListNode.buildFromIterable([6, 1, 7])
+    num2 = ListNode.buildFromIterable([8, 9, 5])
+    printLinkedList(addNumbersAsListsForward(num1, num2))
+
+    # l = ListNode.buildFromIterable([1, 2, 3])
+    # printLinkedList(reverseList(l))
+
+
+
 
 
 
