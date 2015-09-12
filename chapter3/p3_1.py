@@ -82,7 +82,6 @@ class TestTripleStack(unittest.TestCase):
             self.assertEquals(sizeBefore, self.stack.size(i))
             self.assertEquals(val, newVal)
 
-
     def test_peek(self):
         self.stack.clearAll()
 
