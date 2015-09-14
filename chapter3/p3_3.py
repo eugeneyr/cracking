@@ -86,6 +86,8 @@ class TestSetOfStacks(unittest.TestCase):
             for j in range(0, 10):
                 val = sos.popAt(0)
                 self.assertEquals(val, 10 * i + (9 - j))
+                if j == 9:
+                    self.assertEquals(sos.noOfStacks(), 9 - i)
         self.assertEquals(sos.size(), 0)
         self.assertEquals(sos.noOfStacks(), 0)
         self.assertIsNone(sos.peek())
