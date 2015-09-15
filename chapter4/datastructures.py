@@ -7,3 +7,10 @@ class Vertex:
 
     def __str__(self):
         return 'Vertex({})'.format(self.value)
+
+
+class TreeNode:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
