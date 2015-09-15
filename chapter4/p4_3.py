@@ -29,6 +29,26 @@ def buildListOfLevelsBFS(root: TreeNode):
     return [v for k, v in dol.items()]
 
 
+def buildListOfLevelsRecursive(root: TreeNode):
+    def buildLoL(node: TreeNode, dol, lvl):
+        if node is None:
+            return
+        if lvl in dol:
+            l = dol[lvl]
+        else:
+            l = []
+            dol[lvl] = l
+        l.append(node.value)
+        buildLoL(node.left, dol, lvl + 1)
+        buildLoL(node.right, dol, lvl + 1)
+
+    if root is None:
+        return None
+    dol = OrderedDict()
+    buildLoL(root, dol, 0)
+    return [v for k, v in dol.items()]
+
+
 def buildMinBSTFromSortedList(l: list):
     def buildMinTree(l: list, start, end):
         if l is None or len(l) == 0:
@@ -48,9 +68,15 @@ def buildMinBSTFromSortedList(l: list):
 
 
 if __name__ == '__main__':
-    l = list(range(0, 6))
+    l = list(range(0, 31))
     root = buildMinBSTFromSortedList(l)
     print('depth:', getTreeDepth(root))
+    print('BSF:')
     lol = buildListOfLevelsBFS(root)
     for l in lol:
         print(l)
+    print('Recursion:')
+    lol = buildListOfLevelsRecursive(root)
+    for l in lol:
+        print(l)
+
