@@ -14,6 +14,9 @@ class TreeNode:
         self.value = value
         self.left = left
         self.right = right
+    def __str__(self):
+        return 'TreeNode({})'.format(self.value)
+
 
 def getTreeDepth(node: TreeNode):
     if node is None:

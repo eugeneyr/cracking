@@ -16,7 +16,7 @@ def buildMinBSTFromSortedList(l: list):
         middle = int((end + start) / 2)
         if middle < end:
             node = TreeNode(l[middle])
-            node.left = buildMinTree(l, start, middle - 1)
+            node.left = buildMinTree(l, start, middle)
             node.right = buildMinTree(l, middle + 1, end)
             return node
 
@@ -26,7 +26,7 @@ def buildMinBSTFromSortedList(l: list):
 
 
 if __name__ == '__main__':
-    l = list(range(0, 30))
+    l = list(range(0, 3))
     root = buildMinBSTFromSortedList(l)
     print('depth:', getTreeDepth(root))
     print('tree:')
