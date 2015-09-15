@@ -40,7 +40,7 @@ class AnimalShelter:
         if animal is None:
             return
         if not isinstance(animal, Animal):
-            raise TypeError('We can shelter anymals only. Sorry plants, fungi, bacteria and archea')
+            raise TypeError('We can shelter animals only. Sorry plants, fungi, bacteria and archea')
         node = ListNode(animal)
         if self.nextAnimal is None:
             self.nextAnimal = node
