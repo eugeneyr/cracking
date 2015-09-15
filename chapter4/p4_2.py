@@ -7,20 +7,6 @@ to create a binary search tree with minimal height.
 from chapter4.datastructures import *
 
 
-def getTreeDepth(node: TreeNode):
-    if node is None:
-        return 0
-    return 1 + max(getTreeDepth(node.left), getTreeDepth(node.right))
-
-
-def printTree(node: TreeNode, prefix=''):
-    if node is None:
-        return
-    print(prefix, node.value)
-    printTree(node.left, prefix + '    ')
-    printTree(node.right, prefix + '    ')
-
-
 def buildMinBSTFromSortedList(l: list):
     def buildMinTree(l: list, start, end):
         if l is None or len(l) == 0:
