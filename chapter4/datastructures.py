@@ -30,3 +30,30 @@ def printTree(node: TreeNode, prefix=''):
     print(prefix, node.value)
     printTree(node.left, prefix + '    ')
     printTree(node.right, prefix + '    ')
+
+def buildMinBSTFromSortedList(l: list):
+    def buildMinTree(l: list, start, end):
+        if l is None or len(l) == 0:
+            return None
+        if start >= end:
+            return None
+        middle = int((end + start) / 2)
+        if middle < end:
+            node = TreeNode(l[middle])
+            node.left = buildMinTree(l, start, middle)
+            node.right = buildMinTree(l, middle + 1, end)
+            return node
+
+    if l is None or len(l) == 0:
+        return None
+    return buildMinTree(l, 0, len(l))
+
+def findNode(node: TreeNode, value):
+    if node is None:
+        return None
+    if node.value == value:
+        return node
+    rv = findNode(node.left, value)
+    if rv is None:
+        rv = findNode(node.right, value)
+    return rv
