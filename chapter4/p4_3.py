@@ -71,7 +71,7 @@ if __name__ == '__main__':
     l = list(range(0, 31))
     root = buildMinBSTFromSortedList(l)
     print('depth:', getTreeDepth(root))
-    print('BSF:')
+    print('BFS:')
     lol = buildListOfLevelsBFS(root)
     for l in lol:
         print(l)
