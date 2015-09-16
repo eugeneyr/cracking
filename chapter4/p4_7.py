@@ -26,11 +26,30 @@ def findBuildOrder(projects, dependencies):
     """
     if projects is None or dependencies is None:
         return None
-
-    remaining_deps = set(dependencies)
-    removed_deps = set()
-    remaining_projects = set(projects)
+    # I would use the sets for storing projects and dependencies here, by Python does not have anything like
+    # LinkedHashSet in Java that maintains insertion order of the elements
+    remaining_deps = dependencies[:]
+    remaining_projects = projects[:]
     build_order = []
+
+    while len(remaining_projects) > 0:
+        targets = {d[0] for d in remaining_deps}
+        origins = [p for p in remaining_projects if p not in targets]
+        if len(origins) == 0:
+            # there is a cycle in the dependency graph, exiting
+            return
+        remaining_deps = [dep for dep in remaining_deps if dep[1] not in origins]
+        remaining_projects = [p for p in remaining_projects if p not in origins]
+        build_order.extend(origins)
+    return build_order
+
+if __name__ == '__main__':
+    projects = ['a', 'b', 'c', 'd', 'e', 'f']
+    dependencies = [('d', 'a'), ('b', 'f'), ('d', 'b'), ('a', 'f'), ('c', 'd')]
+    print(findBuildOrder(projects, dependencies))
+
+
+
 
 
 
