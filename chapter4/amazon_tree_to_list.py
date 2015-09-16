@@ -12,6 +12,39 @@ struct node {
 Initially, all the nextRight pointers point to garbage values. Your function should set these pointers to point next right for each node. You can use only constant extra space.
 """
 
+from chapter4.datastructures import *
+
+class SkeweredTreeNode(TreeNode):
+    def __init__(self, value, left=None, right=None, nextRight=None):
+        super().__init__(value, left, right)
+        self.nextRight = nextRight
+
+    def __str__(self):
+        return 'SkeweredTreeNode({})'.format(self.value)
+
+
+def buildTreeFromList(l: list):
+    def buildMinTree(l: list, parent, start, end):
+        if l is None or len(l) == 0:
+            return None
+        if start >= end:
+            return None
+        middle = int((end + start) / 2)
+        if middle < end:
+            node = SkeweredTreeNode(l[middle])
+            node.left = buildMinTree(l, node, start, middle)
+            node.right = buildMinTree(l, node, middle + 1, end)
+            return node
+
+    if l is None or len(l) == 0:
+        return None
+    return buildMinTree(l, None, 0, len(l))
+
+def skewerTree(node: SkeweredTreeNode):
+    def skewerWithLevels(node: SkeweredTreeNode, level, prevNodes):
+
+    return skewerWithLevels(node, 0, {})
+
 
 """
 0
