@@ -22,7 +22,6 @@ def countPathsWithSum(node: TreeNode, theSum: int):
             if currSum == theSum:
                 retval += 1
                 print(path[:i + 1])
-
         retval += countPaths(node.left, theSum, path)
         retval += countPaths(node.right, theSum, path)
         path.pop(0)
