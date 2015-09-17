@@ -9,6 +9,7 @@ the root of a leaf, but it must go downwards (traveling only from parent nodes t
 
 from chapter4.datastructures import *
 
+
 def countPathsWithSum(node: TreeNode, theSum: int):
     def countPaths(node, theSum, path: list):
         if node is None:
@@ -29,7 +30,9 @@ def countPathsWithSum(node: TreeNode, theSum: int):
 
     return countPaths(node, theSum, [])
 
+
 import unittest
+
 
 class TestPathCounter(unittest.TestCase):
     def test_countPaths(self):
@@ -41,7 +44,5 @@ class TestPathCounter(unittest.TestCase):
         self.assertEqual(ct, 2)
 
 
-
 if __name__ == '__main__':
     unittest.main()
-
