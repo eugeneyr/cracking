@@ -7,7 +7,7 @@ the root of a leaf, but it must go downwards (traveling only from parent nodes t
 
 """
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 
 def countPathsWithSum(node: TreeNode, theSum: int):

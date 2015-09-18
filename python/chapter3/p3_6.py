@@ -11,7 +11,7 @@ You may use the built-in LinkedList data structure.
 
 """
 
-from chapter2.datastructures import *
+from python.chapter2.datastructures import *
 
 
 class Animal:

@@ -6,7 +6,7 @@ For the purpose of this question, a balanced tree is defined to be a tree such t
 of any node never differ by more than one.
 """
 
-from chapter4.datastructures import TreeNode, printTree, buildMinBSTFromSortedList, findNode
+from python.chapter4.datastructures import TreeNode, printTree, buildMinBSTFromSortedList, findNode
 
 
 def isBalanced(root: TreeNode):

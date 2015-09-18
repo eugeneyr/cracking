@@ -6,7 +6,7 @@ Write an algorithm to find the "next" node (i.e., in-order successor) of a given
 You may assume that each node has a link to its parent.
 """
 
-from chapter4.datastructures import TreeNode
+from python.chapter4.datastructures import TreeNode
 
 
 class TreeNodeWithParent(TreeNode):

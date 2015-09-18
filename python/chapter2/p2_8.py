@@ -13,8 +13,9 @@ Input: A -> B -> C -> D -> E - C [the same C as earlier]
 Output: C
 """
 
-from chapter2.datastructures import *
 import unittest
+
+from python.chapter2.datastructures import *
 
 
 def findLoop(head: ListNode):

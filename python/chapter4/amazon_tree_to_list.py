@@ -14,7 +14,7 @@ Your function should set these pointers to point next right for each node.
 You can use only constant extra space.
 """
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 
 class SkeweredTreeNode(TreeNode):

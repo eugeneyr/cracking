@@ -6,7 +6,7 @@
 # Input: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1 [partition = 5]
 # Output: 3 -> 1-> 2 -> 10 -> 5 -> 5 -> 8
 
-from chapter2.datastructures import *
+from python.chapter2.datastructures import *
 
 
 def swapValues(node1, node2):

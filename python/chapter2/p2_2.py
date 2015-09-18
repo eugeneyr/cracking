@@ -1,7 +1,7 @@
 # Return Kth to Last:
 # Implement an algorithm to find the kth to last element of a singly linked list.
 
-from chapter2.datastructures import *
+from python.chapter2.datastructures import *
 def deleteKthToLast(node: ListNode, k):
     if node is None or node.next is None or k < 0:
         print('Invalid input')

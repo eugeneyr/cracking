@@ -6,9 +6,9 @@ All nodes should be equally likely to be chosen. Design and implement an algorit
 and explain how you would implement the rest of the methods.
 """
 
-from chapter4.datastructures import *
-
 import random
+
+from python.chapter4.datastructures import *
 random.seed()
 
 class BinaryTree:

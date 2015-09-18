@@ -4,7 +4,7 @@ Given a sorted (in increasing order) array with unique integer elements, write a
 to create a binary search tree with minimal height.
 """
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 
 def buildMinBSTFromSortedList(l: list):

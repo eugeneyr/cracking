@@ -4,7 +4,7 @@
 # Input: the node c from the linked list a->b->c->d->e
 # Result: nothing is returned, but the linked list looks like a->b->d->e
 
-from chapter2.datastructures import *
+from python.chapter2.datastructures import *
 
 
 def deleteFromTheMiddle(node: ListNode):

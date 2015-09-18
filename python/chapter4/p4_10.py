@@ -31,7 +31,7 @@ A tree T2 is a subtree of T1 if there exists a node n in T1 such that the subtre
 #  Requires O(N+M) of additional storage space. Its time complexity depends on how the sub-array search is implemented.
 #  Bayer-Moore or Knuth-Morris-Pratt can get O(N+M) by the price of additional storage (O(M)? Verify)
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 
 def areTreesEqual(node1: TreeNode, node2: TreeNode):
@@ -79,8 +79,6 @@ def isSubtree_moreComplex(t1, t2):
 
 import random
 import copy
-import timeit
-
 
 if __name__ == '__main__':
     random.seed()

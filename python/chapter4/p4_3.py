@@ -6,7 +6,7 @@ Given a binary tree, design an algorithm which creates a linked list of all the 
 """
 from collections import OrderedDict
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 
 def buildListOfLevelsBFS(root: TreeNode):

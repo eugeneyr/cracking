@@ -7,8 +7,9 @@ is the exact same node (by reference) as the jth node of the second linked list,
 
 """
 
-from chapter2.datastructures import *
 import unittest
+
+from python.chapter2.datastructures import *
 
 
 def findIntersection(head1: ListNode, head2: ListNode):

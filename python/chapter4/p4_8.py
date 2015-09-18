@@ -9,7 +9,7 @@ This is not necessarily a binary search tree.
 
 """
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 def findFirstCommonAncestor(root, node1, node2):
     def findNode(root, node):

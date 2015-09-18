@@ -3,7 +3,7 @@
 # FOLLOW UP:
 # How would you solve this problem if a temporary buffer is not allowed?
 
-from chapter2.datastructures import ListNode, printLinkedList
+from python.chapter2.datastructures import ListNode, printLinkedList
 
 
 def removeDupsInPlace(node: ListNode):

@@ -4,7 +4,7 @@ Validate BST:
 Implement a function to check if a binary tree is a binary search tree.
 """
 
-from chapter4.datastructures import TreeNode, buildMinBSTFromSortedList, printTree
+from python.chapter4.datastructures import buildMinBSTFromSortedList, printTree
 
 
 def isBST(node):

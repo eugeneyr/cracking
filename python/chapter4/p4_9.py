@@ -11,7 +11,7 @@ Output:
        {2, 1, 3}, {2, 3, 1}
 """
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 def multiplyArrays(arr1, arr2):
     result = []

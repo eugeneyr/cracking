@@ -3,7 +3,7 @@ Route Between Nodes:
 Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
 """
 
-from chapter4.datastructures import *
+from python.chapter4.datastructures import *
 
 
 def findAnyRoute_DFS(start: Vertex, end: Vertex):

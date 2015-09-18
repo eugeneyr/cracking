@@ -19,7 +19,7 @@ Input: (6 -> 1 -> 7) + (2 -> 9 -> 5). That is, 617 + 295
 Output: 9 -> 1 -> 2. That is, 912
 """
 
-from chapter2.datastructures import *
+from python.chapter2.datastructures import *
 
 def addNumbersAsLists(head1: ListNode, head2: ListNode):
     if head1 is None or head2 is None:

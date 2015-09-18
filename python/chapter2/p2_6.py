@@ -3,7 +3,7 @@ Palindrome:
 Implement a function to check if a linked list is a palindrome.
 """
 
-from chapter2.datastructures import *
+from python.chapter2.datastructures import *
 
 
 def isPalindrome(node: ListNode):
