@@ -1,4 +1,4 @@
-                                  INSERT INTO "Complexes" ("ComplexID", "ComplexName") VALUES (1, 'Whispering Oaks');
+INSERT INTO "Complexes" ("ComplexID", "ComplexName") VALUES (1, 'Whispering Oaks');
 INSERT INTO "Complexes" ("ComplexID", "ComplexName") VALUES (2, 'Greenwood');
 INSERT INTO "Complexes" ("ComplexID", "ComplexName") VALUES (3, 'Brookside');
 
@@ -55,3 +55,38 @@ VALUES (4, 'Open', 2, 'Weird smell');
 
 INSERT INTO "Requests" ("RequestID", "Status", "AptID", "Description")
 VALUES (5, 'Closed', 13, 'Damaged walls');
+
+INSERT INTO "Data" VALUES (1), (2), (3),
+  (4), (5), (6),
+  (7), (8), (9),
+  (10), (11), (12),
+  (13),
+  --  (14), (15),
+  (16), (17), (18),
+  --  (19), (20), (21),
+  (22), (23), (24);
+
+INSERT INTO "Parent" (id, name) VALUES (1, 'Confirmed Bachelor');
+INSERT INTO "Parent" (id, name) VALUES (2, 'Papa Bear');
+INSERT INTO "Parent" (id, name) VALUES (3, 'Wabbit the Wabbit');
+INSERT INTO "Parent" (id, name) VALUES (4, 'Rickard Stark');
+INSERT INTO "Parent" (id, name) VALUES (5, 'Young Dad');
+
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (1, 2, 'Lil Bear', 3);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (2, 2, 'Medium Bear', 8);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (3, 3, 'Anny Wabbit', 7);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (4, 3, 'Johnny Wabbit', 9);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (5, 3, 'Tony Wabbit', 11);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (6, 3, 'Bunny Wabbit', 12);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (7, 3, 'Jesse Wabbit', 15);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (8, 4, 'Arya Stark', 8);
+INSERT INTO "Child" (id, "parentId", name, age) VALUES (9, 4, 'Small Tot', 3);
+
+INSERT INTO "Table1" (id, "Column1") VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 2), (6, 5), (7, 3), (8, 3), (9, 3);
+
+
+
+
+
+
+
