@@ -54,4 +54,4 @@ FROM "Parent"
 WHERE "Child".id IS NULL;
 
 -- The list of duplicate Column1 values
-SELECT "Table1"."Column1" FROM "Table1" GROUP BY "Column1" HAVING COUNT("Table1"."Column1") > 1;
+SELECT "Table1"."Column1", COUNT("Table1"."Column1") FROM "Table1" GROUP BY "Column1" HAVING COUNT("Table1"."Column1") > 1;
