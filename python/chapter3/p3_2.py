@@ -31,7 +31,7 @@ class StackWithMin:
         if len(self.data) > 0:
             return self.data[-1]
 
-    def min(self):
+    def getMin(self):
         if len(self.mins) > 0:
             return self.mins[-1]
 
@@ -40,12 +40,53 @@ class StackWithMin:
         self.mins.clear()
 
 
+class StackWithMinArithm:
+    def __init__(self):
+        self.data = []
+        self.min = None
+
+    def size(self):
+        return len(self.data)
+
+    def push(self, elem):
+        if self.min is None:
+            self.min = elem
+        elif self.min > elem:
+            newMin = elem
+            elem = newMin * 2 - self.min
+            self.min = newMin
+        self.data.append(elem)
+
+    def pop(self):
+        if len(self.data) > 0:
+            elem = self.data.pop()
+            if elem < self.min:
+                newMin = 2 * self.min - elem
+                elem = self.min
+                self.min = newMin
+            return elem
+
+    def peek(self):
+        if len(self.data) > 0:
+            elem = self.data[-1]
+            if elem < self.min:
+                elem = self.min
+            return elem
+
+    def getMin(self):
+        return self.min
+
+    def clear(self):
+        self.data.clear()
+        self.min = None
+
+
 import unittest
 
 
 class TestMinStack(unittest.TestCase):
     def setUp(self):
-        self.stack = StackWithMin()
+        self.stack = StackWithMinArithm()
         random.seed()
 
     def test_clear(self):
@@ -91,8 +132,12 @@ class TestMinStack(unittest.TestCase):
         for i, val in enumerate(data):
             self.stack.push(val)
             self.assertEquals(self.stack.peek(), val)
-            self.assertEquals(self.stack.min(), mins[i])
+            self.assertEquals(self.stack.getMin(), mins[i])
 
         while self.stack.size() > 0:
-            self.assertEquals(mins.pop(), self.stack.min())
+            self.assertEquals(mins.pop(), self.stack.getMin())
             self.assertEquals(data.pop(), self.stack.pop())
+
+
+if __name__ == '__main__':
+    unittest.main()
