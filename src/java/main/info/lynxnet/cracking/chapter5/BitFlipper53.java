@@ -3,7 +3,11 @@ package info.lynxnet.cracking.chapter5;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BitFlipper51 {
+/*
+
+*/
+
+public class BitFlipper53 {
     public static int findLongestRunOfOnes(int value) {
         int max = 0;
         int counter = 0;
@@ -25,20 +29,10 @@ public class BitFlipper51 {
         return max;
     }
 
-    public static int findMostSignificantOne(int value) {
-        int counter = 0;
-        while (value != 0) {
-            value = value >>> 1;
-            counter++;
-        }
-        return counter;
-    }
-
     public static int findFlipPosition(int value) {
-        int res = -1;
         int maxRun = findLongestRunOfOnes(value);
         int winner = -1;
-        for (int i = 0; i < Math.min(findMostSignificantOne(value) + 1, 32); i++) {
+        for (int i = 0; i < Math.min(Integer.highestOneBit(value) + 1, 32); i++) {
             if ((1 << i & value) == 0) {
                 int newRun = findLongestRunOfOnes(value | (1 << i));
                 if (newRun > maxRun) {
@@ -51,21 +45,17 @@ public class BitFlipper51 {
     }
 
     public static int findMaxFlippedRun(int value) {
-        int res = -1;
         int maxRun = findLongestRunOfOnes(value);
-        int winner = -1;
-        for (int i = 0; i < Math.min(findMostSignificantOne(value) + 1, 32); i++) {
+        for (int i = 0; i < Math.min(Integer.highestOneBit(value) + 1, 32); i++) {
             if ((1 << i & value) == 0) {
                 int newRun = findLongestRunOfOnes(value | (1 << i));
                 if (newRun > maxRun) {
-                    winner = i;
                     maxRun = newRun;
                 }
             }
         }
         return maxRun;
     }
-
 
     public static void main(String[] args) {
         List<Integer> list = new ArrayList<Integer>() {{
