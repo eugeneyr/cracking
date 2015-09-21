@@ -1,5 +1,5 @@
-# Eliminates all pairs of characters in the string.
-# Does it until there are no dups to remove, so 'abba' turns into an empty string
+# Eliminates all consecutive pairs of characters in the string.
+# Does it until there are no pairs to remove, so 'abba' turns into an empty string
 # 'abcba' => 'abcba'
 # 'aabc' => 'bc'
 
@@ -42,6 +42,7 @@ class TestRemovals(unittest.TestCase):
                                             ('abcba', 'abcba'),
                                             ('aabc', 'bc'),
                                             ('abccba', ''),
+                                            ('aaaaaaa', 'a'),
                                             ('abccbabaab', ''),
                                             ('abccbadbaab', 'd')))
         self.funcs = (remove_dups_recursively, remove_dups_with_stack)
