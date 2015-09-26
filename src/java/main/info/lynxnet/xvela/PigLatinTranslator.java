@@ -14,7 +14,6 @@ public class PigLatinTranslator {
 
     public static final String ENDING = "ay";
 
-
     public static String translateWord(String word) {
         if (word == null) {
             return null;
