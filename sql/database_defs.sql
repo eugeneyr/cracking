@@ -1,3 +1,6 @@
+CREATE DATABASE cracking;
+
+
 CREATE TABLE "Complexes" (
   "ComplexID"   INTEGER PRIMARY KEY,
   "ComplexName" VARCHAR(64) NOT NULL
