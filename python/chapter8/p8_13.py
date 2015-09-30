@@ -52,8 +52,8 @@ def findTallestStack(boxes:list):
 
 
 if __name__ == '__main__':
-    boxes = [Box(1, 1, 1), Box(2, 2, 2), Box(3, 3, 3)]
-
+    # boxes = [Box(1, 1, 1), Box(2, 2, 2), Box(3, 3, 3)]
+    #
     boxes = [Box(1, 1, 1), Box(2, 1, 2), Box(3, 2, 3), Box(3, 3, 3), Box(3, 4, 4)]
     tallest = findTallestStack(boxes)
     print(tallest[0], [str(box) for box in tallest[1]])
