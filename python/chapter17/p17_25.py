@@ -69,6 +69,7 @@ def getCrossWords(words: list):
             rv.append(crossWord)
     return rv
 
+
 def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None, ignoreSmaller=False):
     largestFound = 0
     bigTrie = TrieNode()
@@ -93,6 +94,10 @@ def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None,
             print('==== Found ====', file=output, flush=True)
             for word in words:
                 print(word, file=output, flush=True)
+            if output is not None:
+                print('==== Found ====')
+                for word in words:
+                    print(word)
             return
 
         trie = triesByLength.get(height)
@@ -159,40 +164,8 @@ def loadWordList(fileName, maxWordLength=None):
 import unittest
 
 
-# class TrieNodeTest(unittest.TestCase):
-#     @classmethod
-#     def setUpClass(cls):
-#         cls.trie = loadTrie('../../data/words.txt')
-#         cls.longList = set()
-#         with open('../../data/words_long.txt', 'r') as file:
-#             lines = file.readlines()
-#             for line in lines:
-#                 cls.longList.add(line.strip().lower())
-#         cls.shortList = set()
-#         with open('../../data/words.txt', 'r') as file:
-#             lines = file.readlines()
-#             for line in lines:
-#                 cls.shortList.add(line.strip().lower())
-#
-#     def test_notInList(self):
-#         for line in TrieNodeTest.longList:
-#             inShort = line in TrieNodeTest.shortList
-#             self.assertEqual(inShort, TrieNodeTest.trie.hasWord(line), line)
-#
-#     def test_prefixes(self):
-#         for line in TrieNodeTest.shortList:
-#             prefix = line[:-1]
-#             self.assertTrue(TrieNodeTest.trie.hasPrefix(line), line)
-#             self.assertTrue(TrieNodeTest.trie.hasPrefix(prefix), line)
-#             self.assertFalse(TrieNodeTest.trie.hasPrefix(prefix + '$'), line)
-#
-#
-# class CrossWordTest(unittest.TestCase):
-#     def testCrossWord(self):
-#         cw = getCrossWords(['ac', 'bd'])
-#         self.assertEqual(cw, ['ab', 'cd'])
-
 class FindRectangleTest(unittest.TestCase):
+    @unittest.skip
     def test_smallList(self):
         found = findLargestRectangle(['sator', 'arepo', 'tenet', 'opera', 'rotas'])
         for words in found:
@@ -200,6 +173,7 @@ class FindRectangleTest(unittest.TestCase):
             for word in words:
                 print(word)
 
+    @unittest.skip
     def test_mediumlList(self):
         found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=5), minWidth=4, minHeight=4,
                                      ignoreSmaller=True)
@@ -207,6 +181,18 @@ class FindRectangleTest(unittest.TestCase):
             print('==== Found ====')
             for word in words:
                 print(word)
+
+    def test_mediumlList_save7(self):
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=7), minWidth=6, minHeight=6,
+                                     ignoreSmaller=True, outputFileName='../../data/rect_7x7.txt')
+        self.assertTrue(len(found) > 0)
+
+    @unittest.skip
+    def test_mediumlList_save(self):
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6), minWidth=5, minHeight=5,
+                                     ignoreSmaller=True, outputFileName='../../data/rect_6x6.txt')
+        self.assertTrue(len(found) > 0)
+
     @unittest.skip
     def test_biglList(self):
         found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6), minWidth=5, minHeight=5)
