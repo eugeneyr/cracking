@@ -6,6 +6,9 @@ THe words need not be chosen consecutively from the list but all rows must be th
 must be the same height.
 """
 
+import copy
+import time
+
 
 class TrieNode:
     def __init__(self):
@@ -66,44 +69,88 @@ def getCrossWords(words: list):
             rv.append(crossWord)
     return rv
 
-
-def findLargestRectangle(wordList):
+def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None, ignoreSmaller=False):
+    largestFound = 0
     bigTrie = TrieNode()
     triesByLength = {}
     wordsByLength = {}
     maxWordLength = 0
     found = []
+    output = None
 
-    def searchRectangles(length):
-        pass
+    def searchRectangles(length, height, words):
+        nonlocal largestFound
+        if ignoreSmaller and (height * length < largestFound):
+            return
+        # Stops the recursion: the rectangle cannot be larger than that
+        if len(words) > height:
+            return
+        # If the number of the words == height, it is a valid rectangle. Store it and exit.
+        if len(words) == height:
+            if largestFound < height * length:
+                largestFound = height * length
+            found.append(copy.deepcopy(words))
+            print('==== Found ====', file=output, flush=True)
+            for word in words:
+                print(word, file=output, flush=True)
+            return
 
-    for word in wordList:
-        bigTrie.addWord(word)
-        trie = triesByLength.get(len(word), TrieNode())
-        trie.addWord(word)
-        triesByLength[len(word)] = trie
-        words = wordsByLength.get(len(word), set())
-        words.add(word)
-        wordsByLength[len(word)] = words
-        if len(word) > maxWordLength:
-            maxWordLength = len(word)
-    for i in range(maxWordLength, 0, -1):
-        searchRectangles(i)
+        trie = triesByLength.get(height)
+        if trie is not None:
+            usedWords = set(words)
+            availableWords = wordsByLength.get(length)
+            if availableWords is not None:
+                for word in availableWords:
+                    if word not in usedWords:
+                        # check if cross words of words + word are prefixes of existing words
+                        words.append(word)
+                        crossWords = getCrossWords(words)
+                        allGood = True
+                        for crossWord in crossWords:
+                            if not trie.hasPrefix(crossWord):
+                                allGood = False
+                                break
+                        if allGood:
+                            # go one level deeper
+                            searchRectangles(length, height, words)
+                        words.pop()
+
+    if outputFileName is not None:
+        output = open(outputFileName, 'w')
+
+    try:
+        for word in wordList:
+            bigTrie.addWord(word)
+            trie = triesByLength.get(len(word), TrieNode())
+            trie.addWord(word)
+            triesByLength[len(word)] = trie
+            words = wordsByLength.get(len(word), set())
+            words.add(word)
+            wordsByLength[len(word)] = words
+            if len(word) > maxWordLength:
+                maxWordLength = len(word)
+        for i in range(maxWordLength, minWidth, -1):
+            for j in range(i, minHeight, -1):
+                start = time.time()
+                print('Searching for rectangles {} x {}'.format(i, j))
+                searchRectangles(i, j, [])
+                end = time.time()
+                print('Time spent: {:.3f} s'.format(end - start))
+    finally:
+        if output is not None:
+            output.close()
+
+    return found
 
 
-
-
-
-
-
-def loadWordList(fileName):
+def loadWordList(fileName, maxWordLength=None):
     words = set()
     rv = []
     with open(fileName, 'r') as file:
         lines = file.readlines()
         for line in lines:
             line = line.strip().lower()
-            if line not in words:
+            if line not in words and (maxWordLength is None or maxWordLength >= len(line)):
                 rv.append(line)
                 words.add(line)
     return rv
@@ -112,38 +159,61 @@ def loadWordList(fileName):
 import unittest
 
 
-class TrieNodeTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.trie = loadTrie('../../data/words.txt')
-        cls.longList = set()
-        with open('../../data/words_long.txt', 'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                cls.longList.add(line.strip().lower())
-        cls.shortList = set()
-        with open('../../data/words.txt', 'r') as file:
-            lines = file.readlines()
-            for line in lines:
-                cls.shortList.add(line.strip().lower())
+# class TrieNodeTest(unittest.TestCase):
+#     @classmethod
+#     def setUpClass(cls):
+#         cls.trie = loadTrie('../../data/words.txt')
+#         cls.longList = set()
+#         with open('../../data/words_long.txt', 'r') as file:
+#             lines = file.readlines()
+#             for line in lines:
+#                 cls.longList.add(line.strip().lower())
+#         cls.shortList = set()
+#         with open('../../data/words.txt', 'r') as file:
+#             lines = file.readlines()
+#             for line in lines:
+#                 cls.shortList.add(line.strip().lower())
+#
+#     def test_notInList(self):
+#         for line in TrieNodeTest.longList:
+#             inShort = line in TrieNodeTest.shortList
+#             self.assertEqual(inShort, TrieNodeTest.trie.hasWord(line), line)
+#
+#     def test_prefixes(self):
+#         for line in TrieNodeTest.shortList:
+#             prefix = line[:-1]
+#             self.assertTrue(TrieNodeTest.trie.hasPrefix(line), line)
+#             self.assertTrue(TrieNodeTest.trie.hasPrefix(prefix), line)
+#             self.assertFalse(TrieNodeTest.trie.hasPrefix(prefix + '$'), line)
+#
+#
+# class CrossWordTest(unittest.TestCase):
+#     def testCrossWord(self):
+#         cw = getCrossWords(['ac', 'bd'])
+#         self.assertEqual(cw, ['ab', 'cd'])
 
-    def test_notInList(self):
-        for line in TrieNodeTest.longList:
-            inShort = line in TrieNodeTest.shortList
-            self.assertEqual(inShort, TrieNodeTest.trie.hasWord(line), line)
+class FindRectangleTest(unittest.TestCase):
+    def test_smallList(self):
+        found = findLargestRectangle(['sator', 'arepo', 'tenet', 'opera', 'rotas'])
+        for words in found:
+            print('==== Found ====')
+            for word in words:
+                print(word)
 
-    def test_prefixes(self):
-        for line in TrieNodeTest.shortList:
-            prefix = line[:-1]
-            self.assertTrue(TrieNodeTest.trie.hasPrefix(line), line)
-            self.assertTrue(TrieNodeTest.trie.hasPrefix(prefix), line)
-            self.assertFalse(TrieNodeTest.trie.hasPrefix(prefix + '$'), line)
-
-
-class CrossWordTest(unittest.TestCase):
-    def testCrossWord(self):
-        cw = getCrossWords(['ac', 'bd'])
-        self.assertEqual(cw, ['ab', 'cd'])
+    def test_mediumlList(self):
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=5), minWidth=4, minHeight=4,
+                                     ignoreSmaller=True)
+        for words in found:
+            print('==== Found ====')
+            for word in words:
+                print(word)
+    @unittest.skip
+    def test_biglList(self):
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6), minWidth=5, minHeight=5)
+        for words in found:
+            print('==== Found ====')
+            for word in words:
+                print(word)
 
 
 if __name__ == '__main__':
