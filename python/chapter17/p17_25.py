@@ -54,7 +54,8 @@ def loadTrie(fileName):
             root.addWord(line.strip().lower())
         return root
 
-def getCrossWords(words:list):
+
+def getCrossWords(words: list):
     rv = []
     if len(words) > 0:
         wordLen = len(words[0])
@@ -65,6 +66,47 @@ def getCrossWords(words:list):
             rv.append(crossWord)
     return rv
 
+
+def findLargestRectangle(wordList):
+    bigTrie = TrieNode()
+    triesByLength = {}
+    wordsByLength = {}
+    maxWordLength = 0
+    found = []
+
+    def searchRectangles(length):
+        pass
+
+    for word in wordList:
+        bigTrie.addWord(word)
+        trie = triesByLength.get(len(word), TrieNode())
+        trie.addWord(word)
+        triesByLength[len(word)] = trie
+        words = wordsByLength.get(len(word), set())
+        words.add(word)
+        wordsByLength[len(word)] = words
+        if len(word) > maxWordLength:
+            maxWordLength = len(word)
+    for i in range(maxWordLength, 0, -1):
+        searchRectangles(i)
+
+
+
+
+
+
+
+def loadWordList(fileName):
+    words = set()
+    rv = []
+    with open(fileName, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip().lower()
+            if line not in words:
+                rv.append(line)
+                words.add(line)
+    return rv
 
 
 import unittest
@@ -96,6 +138,7 @@ class TrieNodeTest(unittest.TestCase):
             self.assertTrue(TrieNodeTest.trie.hasPrefix(line), line)
             self.assertTrue(TrieNodeTest.trie.hasPrefix(prefix), line)
             self.assertFalse(TrieNodeTest.trie.hasPrefix(prefix + '$'), line)
+
 
 class CrossWordTest(unittest.TestCase):
     def testCrossWord(self):
