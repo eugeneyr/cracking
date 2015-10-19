@@ -1,7 +1,9 @@
 package info.lynxnet.cracking.chapter17;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class TrieNode {
     boolean stopper = false;
@@ -48,5 +50,20 @@ public class TrieNode {
         return this.letters.containsKey(head) && this.letters.get(head).hasPrefix(tail);
     }
 
+    private TrieNode findNode(String string) {
+        if (string == null || string.isEmpty()) {
+            return this;
+        }
+        char head = string.charAt(0);
+        String tail = string.substring(1);
+        if (this.letters.containsKey(head)) {
+            return this.letters.get(head).findNode(tail);
+        }
+        return null;
+    }
 
+    public Set<Character> getPossibleNextLetters(String prefix) {
+        TrieNode node = findNode(prefix);
+        return node != null ? node.letters.keySet() : Collections.emptySet();
+    }
 }
