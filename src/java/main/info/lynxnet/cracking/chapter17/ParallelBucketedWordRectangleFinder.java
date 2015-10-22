@@ -5,6 +5,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Word Rectangle:
@@ -13,15 +18,15 @@ import java.util.*;
  * The words need not be chosen consecutively from the list but all rows must be the same length and all columns
  * must be the same height.
  */
-public class BucketizedWordRectangleFinder {
+public class ParallelBucketedWordRectangleFinder {
     public static final String WORDS_FILE = "data/words_long.txt";
     public static final int MAX_WORD_LENGTH = 30;
-    private long counter;
+    private AtomicLong counter = new AtomicLong(0);
     private int largestFound;
     private Set<String> wordList;
     private BucketList buckets;
 
-    public BucketizedWordRectangleFinder(Set<String> wordList, BucketList buckets) {
+    public ParallelBucketedWordRectangleFinder(Set<String> wordList, BucketList buckets) {
         this.wordList = wordList;
         this.buckets = buckets;
     }
@@ -102,7 +107,8 @@ public class BucketizedWordRectangleFinder {
 
     void findLargestRectangle(List<List<String>> found,
                               int minWidth, int minHeight,
-                              String fileName, boolean ignoreSmaller) {
+                              String fileName,
+                              boolean ignoreSmaller) {
         Map<Integer, TrieNode> triesByLength = new HashMap<>();
         Map<Integer, List<String>> wordsByLength = new HashMap<>();
         int maxWordLength = 0;
@@ -133,15 +139,48 @@ public class BucketizedWordRectangleFinder {
             }
 
             for (int i = maxWordLength; i > minWidth; i--) {
-                for (int j = i; j > minHeight; j--) {
-                    long start = System.currentTimeMillis();
-                    System.out.println("Searching for rectangles " + i + "x" + j);
-                    List<String> words = new ArrayList<>();
-                    searchRectangles(found, triesByLength, wordsByLength, output, ignoreSmaller,
-                            timestamp, i, j, words);
-                    long end = System.currentTimeMillis();
-                    System.out.println("Time spent: " + ((end - start) / 1000));
+                List<String> horizontalWords = wordsByLength.get(i);
+                if (horizontalWords == null) {
+                    System.out.println("No words with the length " + i);
+                    continue;
                 }
+                ExecutorService svc = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                try {
+
+                    for (int j = i; j > minHeight; j--) {
+                        final int fi = i;
+                        final int fj = j;
+
+                        Callable c = new Callable() {
+                            @Override
+                            public Object call() throws Exception {
+                                long start = System.currentTimeMillis();
+                                System.out.println("Searching for rectangles " + fi + "x" + fj);
+                                List<String> words = new ArrayList<>();
+                                searchRectangles(found,
+                                        triesByLength,
+                                        wordsByLength.get(fi),
+                                        wordsByLength,
+                                        output,
+                                        ignoreSmaller,
+                                        timestamp, fi, fj, words);
+
+                                long end = System.currentTimeMillis();
+                                System.out.println("Time spent: " + ((end - start) / 1000));
+                                return null;
+                            }
+                        };
+
+
+                    }
+                } finally {
+                    try {
+                        svc.shutdown();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,17 +189,18 @@ public class BucketizedWordRectangleFinder {
 
 
     void searchRectangles(List<List<String>> found, Map<Integer, TrieNode> triesByLength,
+                          List<String> initialWords,
                           Map<Integer, List<String>> wordsByLength,
                           PrintWriter output,
                           boolean ignoreSmaller,
                           long timestamp,
                           int length, int height, List<String> words) {
-        counter++;
-        if (counter % 10000 == 1) {
+        long counterVal = counter.incrementAndGet();
+        if (counterVal % 10000 == 1) {
             long now = System.currentTimeMillis();
             long difference = now - timestamp;
-            System.out.println(String.format("Time spent so far: %.3f s", (double)difference / 1000));
-            System.out.println(String.format("Variants checked: %d (%.3f per second)", counter, counter * 1000 / (double)(difference > 0 ? difference : 1)));
+            System.out.println(String.format("Time spent so far: %.3f s", (double) difference / 1000));
+            System.out.println(String.format("Variants checked: %d (%.3f per second)", counterVal, counterVal * 1000 / (double) (difference > 0 ? difference : 1)));
         }
 
         if (ignoreSmaller && (height * length < largestFound)) {
@@ -179,27 +219,28 @@ public class BucketizedWordRectangleFinder {
         }
 
         if (height == words.size()) {
-            if (largestFound < height * length) {
-                largestFound = height * length;
-            }
-            List<String> result = new ArrayList<>(words);
-            found.add(result);
-            System.out.println("==== Found ====");
-            output.println("==== Found ====");
-            for (String word : words) {
-                System.out.println(word);
-                output.println(word);
+            synchronized (found) {
+                if (largestFound < height * length) {
+                    largestFound = height * length;
+                }
+                List<String> result = new ArrayList<>(words);
+                found.add(result);
+                System.out.println("==== Found ====");
+                output.println("==== Found ====");
+                for (String word : words) {
+                    System.out.println(word);
+                    output.println(word);
+                }
             }
             return;
         }
 
         TrieNode trie = triesByLength.get(height);
-        Collection<String> availableWords = null;
+        Collection<String> availableWords;
 
         if (trie != null) {
             if (words.size() == 0) {
-                availableWords = wordsByLength.get(length);
-
+                availableWords = initialWords;//wordsByLength.get(length);
             } else {
                 List<String> crossWords = new ArrayList<>();
                 getCrossWords(words, crossWords);
@@ -242,6 +283,7 @@ public class BucketizedWordRectangleFinder {
 
                         if (allGood) {
                             searchRectangles(found, triesByLength,
+                                    initialWords,
                                     wordsByLength,
                                     output,
                                     ignoreSmaller,
@@ -260,7 +302,7 @@ public class BucketizedWordRectangleFinder {
         Set<String> wordList = new HashSet<>();
         loadWordList(WORDS_FILE, wordList, MAX_WORD_LENGTH);
         BucketList buckets = BucketFiller.loadBucket(WORDS_FILE);
-        BucketizedWordRectangleFinder finder = new BucketizedWordRectangleFinder(wordList, buckets);
+        ParallelBucketedWordRectangleFinder finder = new ParallelBucketedWordRectangleFinder(wordList, buckets);
         finder.findLargestRectangle(found, 7, 7,
                 String.format("rect_result.txt", MAX_WORD_LENGTH, MAX_WORD_LENGTH), true);
         System.out.println(String.format("Total found: %d", found.size()));
