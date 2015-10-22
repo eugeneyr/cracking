@@ -79,6 +79,7 @@ def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None,
     found = []
     output = None
     counter = 0
+    timestamp = time.time()
 
     def searchRectangles(length, height, words):
         nonlocal largestFound
@@ -86,15 +87,18 @@ def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None,
 
         counter += 1
 
-        if counter % 10000 == 1:
-            print('Tries: {}'.format(counter))
+        if counter % 1000 == 1:
+            now = time.time()
+            difference = now - timestamp
+            print('Time spent so far: {:.3f}s'.format(difference))
+            print('Variants checked: {} ({:.3f} per second)'.format(counter, (counter + 1) / difference))
         if ignoreSmaller and (height * length < largestFound):
             return
         # Stops the recursion: the rectangle cannot be larger than that
         if len(words) > height:
             return
 
-        if height - len(words) < 4:
+        if (height > 5) and (height - len(words) < 3):
             print('==== Current, tries = {} ===='.format(counter))
             for word in words:
                 print(word)
