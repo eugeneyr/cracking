@@ -5,10 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -150,28 +147,47 @@ public class ParallelBucketedWordRectangleFinder {
                     for (int j = i; j > minHeight; j--) {
                         final int fi = i;
                         final int fj = j;
+                        long start = System.currentTimeMillis();
+                        System.out.println("Searching for rectangles " + fi + "x" + fj);
 
-                        Callable c = new Callable() {
-                            @Override
-                            public Object call() throws Exception {
-                                long start = System.currentTimeMillis();
-                                System.out.println("Searching for rectangles " + fi + "x" + fj);
-                                List<String> words = new ArrayList<>();
-                                searchRectangles(found,
-                                        triesByLength,
-                                        wordsByLength.get(fi),
-                                        wordsByLength,
-                                        output,
-                                        ignoreSmaller,
-                                        timestamp, fi, fj, words);
+                        int chunkSize = (int) Math.round(Math.ceil((double) wordsByLength.get(fi).size() / (double) Runtime.getRuntime().availableProcessors()));
 
-                                long end = System.currentTimeMillis();
-                                System.out.println("Time spent: " + ((end - start) / 1000));
-                                return null;
+                        List<Callable> callables = new ArrayList<>();
+                        for (int idx = 0; idx < Runtime.getRuntime().availableProcessors(); idx++) {
+                            if (idx * chunkSize > wordsByLength.get(fi).size()) {
+                                break;
                             }
-                        };
+                            final List<String> chunk = new ArrayList<>(wordsByLength.get(fi).subList(
+                                    idx * chunkSize, Math.min(wordsByLength.get(fi).size(), (idx + 1) * chunkSize)));
 
+                            Callable<Void> c = new Callable<Void>() {
+                                @Override
+                                public Void call() throws Exception {
+                                    List<String> words = new ArrayList<>();
+                                    searchRectangles(found,
+                                            triesByLength,
+                                            chunk,
+                                            output,
+                                            ignoreSmaller,
+                                            timestamp, fi, fj, words);
+                                    return null;
+                                }
+                            };
+                            callables.add(c);
+                        }
 
+                        List<Future<Void>> futures = new ArrayList<>();
+                        for (Callable<Void> callable : callables) {
+                            Future<Void> f = svc.submit(callable);
+                            futures.add(f);
+                        }
+
+                        for (Future<Void> f : futures) {
+                            f.get();
+                        }
+
+                        long end = System.currentTimeMillis();
+                        System.out.println("Time spent: " + ((end - start) / 1000));
                     }
                 } finally {
                     try {
@@ -190,7 +206,6 @@ public class ParallelBucketedWordRectangleFinder {
 
     void searchRectangles(List<List<String>> found, Map<Integer, TrieNode> triesByLength,
                           List<String> initialWords,
-                          Map<Integer, List<String>> wordsByLength,
                           PrintWriter output,
                           boolean ignoreSmaller,
                           long timestamp,
@@ -240,7 +255,7 @@ public class ParallelBucketedWordRectangleFinder {
 
         if (trie != null) {
             if (words.size() == 0) {
-                availableWords = initialWords;//wordsByLength.get(length);
+                availableWords = initialWords;
             } else {
                 List<String> crossWords = new ArrayList<>();
                 getCrossWords(words, crossWords);
@@ -284,7 +299,6 @@ public class ParallelBucketedWordRectangleFinder {
                         if (allGood) {
                             searchRectangles(found, triesByLength,
                                     initialWords,
-                                    wordsByLength,
                                     output,
                                     ignoreSmaller,
                                     timestamp,
@@ -303,7 +317,7 @@ public class ParallelBucketedWordRectangleFinder {
         loadWordList(WORDS_FILE, wordList, MAX_WORD_LENGTH);
         BucketList buckets = BucketFiller.loadBucket(WORDS_FILE);
         ParallelBucketedWordRectangleFinder finder = new ParallelBucketedWordRectangleFinder(wordList, buckets);
-        finder.findLargestRectangle(found, 7, 7,
+        finder.findLargestRectangle(found, 7, 2,
                 String.format("rect_result.txt", MAX_WORD_LENGTH, MAX_WORD_LENGTH), true);
         System.out.println(String.format("Total found: %d", found.size()));
     }
