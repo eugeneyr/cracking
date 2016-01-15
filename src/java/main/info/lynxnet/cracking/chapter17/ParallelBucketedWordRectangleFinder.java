@@ -143,8 +143,7 @@ public class ParallelBucketedWordRectangleFinder {
                 }
                 ExecutorService svc = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
                 try {
-
-                    for (int j = i; j > minHeight; j--) {
+                    for (int j = i; j > i - 2; j--) {
                         final int fi = i;
                         final int fj = j;
                         long start = System.currentTimeMillis();
@@ -153,7 +152,9 @@ public class ParallelBucketedWordRectangleFinder {
                         int chunkSize = (int) Math.round(Math.ceil((double) wordsByLength.get(fi).size() / (double) Runtime.getRuntime().availableProcessors()));
 
                         List<Callable> callables = new ArrayList<>();
-                        for (int idx = 0; idx < Runtime.getRuntime().availableProcessors(); idx++) {
+                        final int noOfCPUs = Runtime.getRuntime().availableProcessors();
+                        System.out.println(String.format("Will use %d parallel workers", noOfCPUs));
+                        for (int idx = 0; idx < noOfCPUs; idx++) {
                             if (idx * chunkSize > wordsByLength.get(fi).size()) {
                                 break;
                             }
@@ -227,7 +228,7 @@ public class ParallelBucketedWordRectangleFinder {
         }
 
         if ((height > 5) && (height - words.size() < 3)) {
-            System.out.println("==== Current, tries = " + counter + " ====");
+            System.out.println("==== Current, tries = " + counterVal + " ====");
             for (String word : words) {
                 System.out.println(word);
             }
@@ -312,13 +313,16 @@ public class ParallelBucketedWordRectangleFinder {
     }
 
     public static void main(String[] argv) {
+        final int WORD_LENGTH = 8;
+        final int MIN_WORD_LEN = 7;
+        final int MIN_WORD_HEIGHT = 7;
         List<List<String>> found = new ArrayList<>();
         Set<String> wordList = new HashSet<>();
-        loadWordList(WORDS_FILE, wordList, MAX_WORD_LENGTH);
+        loadWordList(WORDS_FILE, wordList, WORD_LENGTH);
         BucketList buckets = BucketFiller.loadBucket(WORDS_FILE);
         ParallelBucketedWordRectangleFinder finder = new ParallelBucketedWordRectangleFinder(wordList, buckets);
-        finder.findLargestRectangle(found, 7, 2,
-                String.format("rect_result.txt", MAX_WORD_LENGTH, MAX_WORD_LENGTH), true);
+        finder.findLargestRectangle(found, MIN_WORD_LEN, MIN_WORD_HEIGHT,
+                String.format("rect_result.txt-%d-%d", WORD_LENGTH, WORD_LENGTH), true);
         System.out.println(String.format("Total found: %d", found.size()));
     }
 

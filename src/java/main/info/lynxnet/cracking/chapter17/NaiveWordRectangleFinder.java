@@ -220,9 +220,9 @@ public class NaiveWordRectangleFinder {
 //    test_loadTrie();
         List<List<String>> found = new ArrayList<>();
         Set<String> wordList = new HashSet<>();
-        loadWordList("data/words.txt", wordList, 7);
+        loadWordList("data/words_long.txt", wordList, 8);
         NaiveWordRectangleFinder finder = new NaiveWordRectangleFinder();
-        finder.findLargestRectangle(wordList, found, 6, 6, "rect_7x7.txt", true);
+        finder.findLargestRectangle(wordList, found, 7, 7, "rect_7x7.txt", true);
     }
 
 }

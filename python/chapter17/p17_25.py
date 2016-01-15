@@ -1,8 +1,11 @@
 """
 Word Rectangle:
-Given a list of millions of words, design an algorithm to create the largest possible rectangle of letters
-such that every row forms a word (reading from left to right) and every column forms a word (reading top to bottom).
-THe words need not be chosen consecutively from the list but all rows must be the same length and all columns
+Given a list of millions of words, design an algorithm to create the largest possible rectangle
+of letters
+such that every row forms a word (reading from left to right) and every column forms a word (
+reading top to bottom).
+THe words need not be chosen consecutively from the list but all rows must be the same length and
+all columns
 must be the same height.
 """
 
@@ -70,7 +73,8 @@ def getCrossWords(words: list):
     return rv
 
 
-def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None, ignoreSmaller=False):
+def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None,
+                         ignoreSmaller=False):
     largestFound = 0
     bigTrie = TrieNode()
     triesByLength = {}
@@ -91,7 +95,8 @@ def findLargestRectangle(wordList, minWidth=0, minHeight=0, outputFileName=None,
             now = time.time()
             difference = now - timestamp
             print('Time spent so far: {:.3f}s'.format(difference))
-            print('Variants checked: {} ({:.3f} per second)'.format(counter, (counter + 1) / difference))
+            print('Variants checked: {} ({:.3f} per second)'.format(counter,
+                                                                    (counter + 1) / difference))
         if ignoreSmaller and (height * length < largestFound):
             return
         # Stops the recursion: the rectangle cannot be larger than that
@@ -191,27 +196,44 @@ class FindRectangleTest(unittest.TestCase):
 
     @unittest.skip
     def test_mediumlList(self):
-        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=5), minWidth=4, minHeight=4,
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=5),
+                                     minWidth=4, minHeight=4,
                                      ignoreSmaller=True)
         for words in found:
             print('==== Found ====')
             for word in words:
                 print(word)
 
+    @unittest.skip
     def test_mediumlList_save7(self):
-        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=7), minWidth=6, minHeight=6,
-                                     ignoreSmaller=True, outputFileName='../../data/rect_7x7.txt')
+        found = findLargestRectangle(
+            loadWordList('../../data/words.txt', maxWordLength=7),
+            minWidth=6,
+            minHeight=6,
+            ignoreSmaller=True,
+            outputFileName='../../data/rect_7x7.txt')
+        self.assertTrue(len(found) > 0)
+
+    def test_longList_save9(self):
+        found = findLargestRectangle(
+            loadWordList('../../data/words_long.txt', maxWordLength=9),
+            minWidth=8,
+            minHeight=8,
+            ignoreSmaller=True,
+            outputFileName='../../data/rect_9x9.txt')
         self.assertTrue(len(found) > 0)
 
     @unittest.skip
     def test_mediumlList_save(self):
-        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6), minWidth=5, minHeight=5,
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6),
+                                     minWidth=5, minHeight=5,
                                      ignoreSmaller=True, outputFileName='../../data/rect_6x6.txt')
         self.assertTrue(len(found) > 0)
 
     @unittest.skip
     def test_biglList(self):
-        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6), minWidth=5, minHeight=5)
+        found = findLargestRectangle(loadWordList('../../data/words.txt', maxWordLength=6),
+                                     minWidth=5, minHeight=5)
         for words in found:
             print('==== Found ====')
             for word in words:
