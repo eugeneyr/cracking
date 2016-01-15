@@ -322,7 +322,7 @@ public class ParallelBucketedWordRectangleFinder {
         BucketList buckets = BucketFiller.loadBucket(WORDS_FILE);
         ParallelBucketedWordRectangleFinder finder = new ParallelBucketedWordRectangleFinder(wordList, buckets);
         finder.findLargestRectangle(found, MIN_WORD_LEN, MIN_WORD_HEIGHT,
-                String.format("rect_result.txt-%d-%d", WORD_LENGTH, WORD_LENGTH), true);
+                String.format("rect_result.txt-%d-%d.txt", WORD_LENGTH, WORD_LENGTH), true);
         System.out.println(String.format("Total found: %d", found.size()));
     }
 
