@@ -204,7 +204,6 @@ public class ParallelBucketedWordRectangleFinder {
         }
     }
 
-
     void searchRectangles(List<List<String>> found, Map<Integer, TrieNode> triesByLength,
                           List<String> initialWords,
                           PrintWriter output,
@@ -227,7 +226,7 @@ public class ParallelBucketedWordRectangleFinder {
             return;
         }
 
-        if ((height > 5) && (height - words.size() < 3)) {
+        if ((height > 5) && (height - words.size() < 2)) {
             System.out.println("==== Current, tries = " + counterVal + " ====");
             for (String word : words) {
                 System.out.println(word);
@@ -247,6 +246,7 @@ public class ParallelBucketedWordRectangleFinder {
                     System.out.println(word);
                     output.println(word);
                 }
+                output.flush();
             }
             return;
         }
