@@ -1,3 +1,5 @@
+# Abbreviate "middle" parts of a name.
+
 def abbreviate(name:str):
     if name is None:
         return None
