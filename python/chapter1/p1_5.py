@@ -3,6 +3,7 @@
 # There are three types of edits that can be performed on strings:
 # insert a character, remove a character, or replace a character.
 # Given two strings, write a function to check if they are one edit (or zero edits) away.
+import fnmatch
 
 def isOneAwayLong(str1, str2):
     def isOneEditAway(str1, str2):
@@ -40,30 +41,29 @@ def isOneAwayLong(str1, str2):
         return isOneInsertionAway(str1, str2)
 
 def isOneAway(str1, str2):
+    if str1 is None or str2 is None:
+        return False
     len1 = len(str1)
     len2 = len(str2)
-    if abs(len1 - len2) > 1:
+    if len2 < len1:
+        str2, str1 = str1, str2
+        len2, len1 = len1, len2
+    if len2 - len1 > 1:
         return False
+
     pos1 = 0
     pos2 = 0
     diffs = 0
-    while True:
-        while pos1 < len1 and pos2 < len2 and str1[pos1] == str2[pos2]:
-            pos1 += 1
-            pos2 += 1
-        if pos1 == len1 and pos2 == len2:
-            break
-        diffs += 1
+    while pos1 < len1:
+        if str1[pos1] != str2[pos2]:
+            diffs += 1
+            if len1 != len2:
+                pos2 += 1
+        pos1 += 1
+        pos2 += 1
         if diffs > 1:
-            break
-        if len1 - pos1 > len2 - pos2:
-            pos1 += 1
-        elif len1 - pos1 < len2 - pos2:
-            pos2 += 1
-        else:
-            pos1 += 1
-            pos2 += 1
-    return diffs < 2
+            return False
+    return True
 
 
 import unittest
