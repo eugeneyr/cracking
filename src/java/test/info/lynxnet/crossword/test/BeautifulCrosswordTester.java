@@ -25,7 +25,7 @@ public class BeautifulCrosswordTester {
 			System.out.println("N = " + N);
 			// get the list of all dictionary words and choose the ones that
 			// will be used
-			BufferedReader br = new BufferedReader(new FileReader("data/words.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("data/crossword/words.txt"));
 			double prob = rnd.nextDouble() * 0.009 + 0.001; // probability of
 															// each word to be
 															// used
