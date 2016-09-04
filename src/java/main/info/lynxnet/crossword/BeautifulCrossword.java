@@ -148,5 +148,4 @@ public class BeautifulCrossword {
 
         return null;
     }
-
 }
