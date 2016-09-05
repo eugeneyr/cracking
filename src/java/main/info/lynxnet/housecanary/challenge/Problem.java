@@ -23,15 +23,7 @@ public class Problem {
         return windowCols;
     }
 
-    public void setWindowCols(int windowCols) {
-        this.windowCols = windowCols;
-    }
-
     public int getWindowRows() {
         return windowRows;
-    }
-
-    public void setWindowRows(int windowRows) {
-        this.windowRows = windowRows;
     }
 }
