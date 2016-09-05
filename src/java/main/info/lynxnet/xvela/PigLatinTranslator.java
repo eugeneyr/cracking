@@ -4,13 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PigLatinTranslator {
-    public static final Set<Character> VOWELS = new HashSet<Character>() {{
-        add('a');
-        add('e');
-        add('i');
-        add('o');
-        add('u');
-    }};
+    public static final Set<Character> VOWELS = new HashSet<Character>() {
+        {
+            add('a');
+            add('e');
+            add('i');
+            add('o');
+            add('u');
+        }
+    };
 
     public static final String ENDING = "ay";
 
