@@ -145,6 +145,48 @@ N = 87
 */
 public class BeautifulCrossword {
     public String[] generateCrossword(int N, String[] words, int[] weights) {
+        /*
+         The outline of the algorithm to implement:
+
+         1) The main loop in more general unerstanding,
+            or the recursive movement, is along the main diagonal: for (int i = 0; i < N; i++)
+         2) For each position (i, i) on the diagonal we try to allocate words first in the Ith row (the words "across")
+            and then the Ith column (the words "down").
+         3) Processing each row / column is as follows:
+            - Maintain the current cell index J. Initially set J to 0.
+              The "loop":
+              For the current value of J, find the length of the longest word than can be placed in the row (column)
+                starting with the cell (I, J)  (or (J, I)).
+                The length Lij_max is defined by the following constraints:
+                - it does not exceed the length of the longest word in the "current" dictionary D_curr
+                  (ie, the initial dictionary minus the words currently allocated on the board)
+                - it fits in the board (ie, J + L(w) < N)
+                - all cells are empty or filled by a word from the complement direction
+                - if the cell is empty, there are no bordering filled cells to the left or right (or up and down)
+                - there is at least one cell between the current one and cells from other words in this row (column)
+                going in the same direction.
+              If Lij_max = 0 and we are still on the board, do the "increase J or I OR backtrack" routine.
+              Otherwise,
+                - find all words in D_curr that can fit, ie their L(w) <= Lij_max and their letters match
+                  filled cells in the interval ((I,J), (I, J + Lij_mx)
+                - define the list of possible "actions" as each candidate word from D_curr plus an "empty action" equivalent
+                 to placing a word of length 0 on the board, effectively increasing
+                - for each "action" in the list:
+                    - place the word in the action on the board
+                    - check if none of the crossword puzzles we already built contain the current board as a subset
+                    - if it does, skip to the next action
+                    - increase J to J + L(w) + 1
+                    - spawn a new instance of the search algorithm using I, J, N, and the copy of the board data
+          The "increase J or I OR backtrack" routine:
+            - if the current direction == ACROSS, set J to 0 and the direction to DOWN.
+            - if the direction is DOWN, set I to I + 1.
+            - if I == N - 1, add the current board to the global list of crossword puzzles we built and terminate the current search instance.
+
+            Questions:
+            - optimal data structures
+            - an efficient way to filter available words by letters in certain positions (prefill some kind of "word buckets")
+         */
+
 
         return null;
     }
