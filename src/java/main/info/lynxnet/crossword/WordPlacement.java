@@ -28,4 +28,36 @@ public class WordPlacement {
     public Direction getDirection() {
         return direction;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        WordPlacement that = (WordPlacement) o;
+
+        if (x != that.x) {
+            return false;
+        }
+        if (y != that.y) {
+            return false;
+        }
+        if (word != null ? !word.equals(that.word) : that.word != null) {
+            return false;
+        }
+        return direction == that.direction;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = word != null ? word.hashCode() : 0;
+        result = 31 * result + x;
+        result = 31 * result + y;
+        result = 31 * result + (direction != null ? direction.hashCode() : 0);
+        return result;
+    }
 }

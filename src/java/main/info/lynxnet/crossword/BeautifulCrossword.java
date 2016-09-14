@@ -1,4 +1,7 @@
 package info.lynxnet.crossword;
+
+import java.util.Arrays;
+
 /*
 
 Problem Statement
@@ -144,11 +147,41 @@ N = 87
 
 */
 public class BeautifulCrossword {
+    private WordBucket bucket;
+    private int n;
+    private int[] weights;
+    public static final char EMPTY_CELL = '.';
+
+    protected char[][] createEmptyBoard() {
+        char[][] board = new char[n][];
+        for (int i = 0; i < n; i++) {
+            board[i] = new char[n];
+            Arrays.fill(board[i], EMPTY_CELL);
+        }
+        return board;
+    }
+
+    protected char[][] cloneBoard(char[][] board) {
+        char[][] clone = new char[board.length][];
+        for (int i = 0; i < board.length; i++) {
+            clone[i] = new char[board[i].length];
+            System.arraycopy(board[i], 0, clone[i], 0, clone[i].length);
+        }
+        return clone;
+    }
+
+
+
+
     public String[] generateCrossword(int N, String[] words, int[] weights) {
+        bucket = WordBucketFiller.loadBucket(words);
+        n = N;
+        this.weights = weights;
+
         /*
          The outline of the algorithm to implement:
 
-         1) The main loop in more general unerstanding,
+         1) The main loop in more general understanding,
             or the recursive movement, is along the main diagonal: for (int i = 0; i < N; i++)
          2) For each position (i, i) on the diagonal we try to allocate words first in the Ith row (the words "across")
             and then the Ith column (the words "down").
