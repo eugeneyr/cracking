@@ -1,6 +1,8 @@
 package info.lynxnet.crossword;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /*
 
@@ -152,7 +154,9 @@ public class BeautifulCrossword {
     private int[] weights;
     private Set<Board> knownPuzzles = new HashSet<>();
 
-    public void addKnownPuzzle(Board board) {
+    private ExecutorService service = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
+
+    public synchronized void addKnownPuzzle(Board board) {
         if (!isSubsetOfAKnownPuzzle(board)) {
             knownPuzzles.add(board);
             String[] b = board.asStringArray();
@@ -163,7 +167,7 @@ public class BeautifulCrossword {
         }
     }
 
-    public void printBoard(Board board) {
+    public synchronized void printBoard(Board board) {
         String[] b = board.asStringArray();
         System.out.println("SCORE = " + calculateScore(b));
         for (String s : b) {
@@ -171,7 +175,7 @@ public class BeautifulCrossword {
         }
     }
 
-    public boolean isSubsetOfAKnownPuzzle(Board board) {
+    public synchronized boolean isSubsetOfAKnownPuzzle(Board board) {
         for (Board puzzle : knownPuzzles) {
             if (puzzle.isSupersetOf(board)) {
                 return true;
@@ -204,177 +208,56 @@ public class BeautifulCrossword {
         }
     }
 
+    public void executeInParallel(CrosswordBuilder builder) {
+        try {
+            service.submit(builder);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String[] generateCrossword(int N, String[] words, int[] weights) {
         store = new WordStore(words);
-        n = N;
-        this.weights = weights;
-        Board board = new Board(n);
-        execute(new CrosswordBuilder(this, board, n, 0, 0, Direction.ACROSS));
-        return null;
+        return generateCrossword(N, weights);
+    }
+
+    static class WeightComparator implements Comparator<Board> {
+        private BeautifulCrossword context;
+
+        public WeightComparator(BeautifulCrossword context) {
+            this.context = context;
+        }
+
+        @Override
+        public int compare(Board o1, Board o2) {
+            if (o1.equals(o2)) {
+                return 0;
+            }
+            double score1 = context.calculateScore(o1.asStringArray());
+            double score2 = context.calculateScore(o2.asStringArray());
+            return score1 == score2 ? 0: score1 < score2 ? -1 : 1;
+        }
     }
 
     public String[] generateCrossword(int N, String wordFileName, int[] weights) {
         store = new WordStore(wordFileName);
+        return generateCrossword(N, weights);
+    }
+
+    private String[] generateCrossword(int N, int[] weights) {
         n = N;
         this.weights = weights;
         Board board = new Board(n);
         execute(new CrosswordBuilder(this, board, n, 0, 0, Direction.ACROSS));
 
-        return null;
-    }
+        List<Board> puzzles = new ArrayList<>(getKnownPuzzles());
+        Collections.sort(puzzles, new WeightComparator(this));
 
-    void addFatalError(String message) {
-        // System.out.println(message);
+        return puzzles.size() > 0 ? puzzles.get(puzzles.size() - 1).asStringArray() : null;
     }
 
     public double calculateScore(String[] puzzle) {
-        int i = 0;
-        int j = 0;
-
-        char[][] board = new char[n][n];
-        for (i = 0; i < n; i++) {
-            if (puzzle[i] == null || puzzle[i].length() != n) {
-                addFatalError("Element " + i + " of your return contained invalid number of characters.");
-                return 0;
-            }
-            for (j = 0; j < n; j++) {
-                board[i][j] = puzzle[i].charAt(j);
-                if ((board[i][j] < 'A' || board[i][j] > 'Z') && board[i][j] != '.') {
-                    addFatalError("Character [" + i + "][" + j + "] of your return was invalid.");
-                    return 0;
-                }
-            }
-        }
-
-        String[] words = store.getWords().toArray(new String[0]);
-
-        // score the return
-        // 0. validity with respect to uniqueness of words used and words
-        // coverage for all sequences of at least 2 letters in row
-        int totalLetters = 0;
-        boolean[] usedWord = new boolean[words.length];
-        Arrays.fill(usedWord, false);
-        StringBuffer sb = new StringBuffer();
-        for (i = 0; i < n; i++) {
-            sb.append(new String(board[i]));
-            sb.append(".");
-        }
-        for (i = 0; i < n; i++) {
-            for (j = 0; j < n; j++)
-                sb.append(board[j][i]);
-            sb.append(".");
-        }
-        String[] met = sb.toString().split("[\\.]+");
-        for (i = 0; i < met.length; i++) {
-            totalLetters += met[i].length();
-            if (met[i].length() >= 2) { // check only words of length 2 and
-                // more
-                j = Arrays.binarySearch(words, met[i]);
-                // check whether this is a word
-                if (j < 0) {
-                    addFatalError("Your crossword contains word \""
-                            + met[i] + "\" which is not present in dictionary.");
-                    return 0;
-                }
-                // check whether this word was already used
-                if (usedWord[j]) {
-                    addFatalError("Your crossword contains word \"" + met[i] + "\" twice or more.");
-                    return 0;
-                }
-                // mark the word as used
-                usedWord[j] = true;
-            }
-        }
-        totalLetters /= 2; // each letter was counted twice
-
-        // 0. validity with respect to "each letter must be part of a word"
-        // = each letter cell must have a letter cell neighbor
-        for (i = 0; i < n; i++)
-            for (j = 0; j < n; j++)
-                if (board[i][j] != '.'
-                        && (i == 0 || board[i - 1][j] == '.')
-                        && (i == n - 1 || board[i + 1][j] == '.')
-                        && (j == 0 || board[i][j - 1] == '.')
-                        && (j == n - 1 || board[i][j + 1] == '.')) {
-                    // all neighbors are . or outside of the board
-                    addFatalError("Your crossword contains a letter which is not part of any word (at "
-                            + i + ", " + j + ").");
-                    return 0;
-                }
-
-        // 1. board filling score = no of letters / no of cells
-        double boardFillingScore = totalLetters * 1.0 / (n * n);
-        addFatalError("Board filling score = " + boardFillingScore);
-
-        // 2. rows/cols filling score - no of cols with at least 1 char * no
-        // of rows with at least 1 char / n*n
-        int filledCols = 0, filledRows = 0;
-        boolean emptyCol, emptyRow;
-        for (i = 0; i < n; i++) {
-            emptyCol = emptyRow = true;
-            for (j = 0; j < n; j++) {
-                if (board[i][j] != '.')
-                    emptyRow = false;
-                if (board[j][i] != '.')
-                    emptyCol = false;
-            }
-            if (!emptyCol)
-                filledCols++;
-            if (!emptyRow)
-                filledRows++;
-        }
-        double rcFillingScore = filledCols * filledRows * 1.0 / (n * n);
-        addFatalError("Rows/columns filling score = " + rcFillingScore);
-
-        // 3. symmetry score
-        double symmetryScore = 0.0, nc = 0, cellScore;
-        int nEqual;
-        for (i = 0; i < (n + 1) / 2; i++)
-            for (j = 0; j <= i; j++) {
-                nEqual = (board[i][j] == '.' ? 1 : 0)
-                        + (board[i][n - j - 1] == '.' ? 1 : 0)
-                        + (board[n - i - 1][j] == '.' ? 1 : 0)
-                        + (board[n - i - 1][n - j - 1] == '.' ? 1 : 0)
-                        + (board[j][i] == '.' ? 1 : 0)
-                        + (board[j][n - i - 1] == '.' ? 1 : 0)
-                        + (board[n - j - 1][i] == '.' ? 1 : 0)
-                        + (board[n - j - 1][n - i - 1] == '.' ? 1 : 0);
-                nEqual = Math.max(nEqual, 8 - nEqual);
-                cellScore = 0;
-                if (nEqual == 8)
-                    cellScore = 1;
-                if (nEqual == 7)
-                    cellScore = 0.5;
-                if (nEqual == 6)
-                    cellScore = 0.1;
-                symmetryScore += cellScore;
-                nc++;
-                // System.out.println(i+" "+j+" "+nEqual+": "+board[i][j]+board[i][n-j-1]+board[n-i-1][j]+board[n-i-1][n-j-1]+board[j][i]+board[j][n-i-1]+board[n-j-1][i]+board[n-j-1][n-i-1]+" -> "+cellScore);
-            }
-        symmetryScore /= nc;
-        addFatalError("Symmetry score = " + symmetryScore);
-
-        // 4. words crossings score - no of letters which are parts of 2
-        // words, divided by no of letters overall
-        // for each letter, check whether it's part of a vertical word, and
-        // part of horizontal word
-        double crossingsScore = 0;
-        for (i = 0; i < n; i++)
-            for (j = 0; j < n; j++)
-                if (board[i][j] != '.'
-                        && (i > 0 && board[i - 1][j] != '.' || i < n - 1
-                        && board[i + 1][j] != '.')
-                        && (j > 0 && board[i][j - 1] != '.' || j < n - 1
-                        && board[i][j + 1] != '.'))
-                    crossingsScore++;
-        if (totalLetters > 0)
-            crossingsScore /= totalLetters;
-        addFatalError("Crossings score = " + crossingsScore);
-
-        return (boardFillingScore * weights[0] + rcFillingScore
-                * weights[1] + symmetryScore * weights[2] + crossingsScore
-                * weights[3])
-                / (weights[0] + weights[1] + weights[2] + weights[3]);
+        return Metrics.calculateScore(puzzle, n, weights, store.getWords().toArray(new String[0]));
     }
 
     public static void main(String[] args) {
@@ -382,17 +265,7 @@ public class BeautifulCrossword {
         BeautifulCrossword bc = new BeautifulCrossword();
         bc.generateCrossword(5, fileName, new int[]{1, 1, 1, 1});
         List<Board> puzzles = new ArrayList<>(bc.getKnownPuzzles());
-        Collections.sort(puzzles, new Comparator<Board>() {
-            @Override
-            public int compare(Board o1, Board o2) {
-                if (o1.equals(o2)) {
-                    return 0;
-                }
-                double score1 = bc.calculateScore(o1.asStringArray());
-                double score2 = bc.calculateScore(o2.asStringArray());
-                return score1 == score2 ? 0: score1 < score2 ? -1 : 1;
-            }
-        });
+        Collections.sort(puzzles, new WeightComparator(bc));
 
         if (puzzles.size() > 0) {
             Board worst = puzzles.get(0);
@@ -419,7 +292,5 @@ public class BeautifulCrossword {
             System.out.println("Most words: " + best.getWords().size());
             bc.printBoard(best);
         }
-
     }
-
 }

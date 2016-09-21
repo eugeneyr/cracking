@@ -109,52 +109,59 @@ public class CrosswordBuilder implements Callable {
         if (j >= n) {
             /*
             We reached the end of the "line" (row/column).
+            Starting another round only if it comes from the "down" stream.
             */
-            CrosswordBuilder newBuilder = new CrosswordBuilder(context, board, n, i + 1, 0,
-                    direction == Direction.ACROSS ? Direction.DOWN : Direction.ACROSS);
-            context.execute(newBuilder);
+
+            if (direction == Direction.DOWN) {
+                CrosswordBuilder newBuilder = new CrosswordBuilder(context, board, n, i + 1, 0, Direction.ACROSS);
+                context.execute(newBuilder);
+            }
             return null;
         }
         /*
            For the current value of J, find the set of the patterns that can be replaced with words
            in the row (column) starting with the cell (I, J) (or (J, I)).
          */
-        Collection<String> patterns = board.getAvailablePatterns(i, j, direction);
-        Set<String> candidates = new HashSet<>();
-        for (String pattern : patterns) {
-            candidates.addAll(context.getStore().getWordsByPattern(pattern));
-        }
-        candidates.removeAll(board.getWords());
-        /*
-            - for each "action" in the list:
-            - place the word w in the action on the board
-            - check if none of the crossword puzzles we already built contain the current board as a subset
-            - if it does, skip to the next action
-            - increase J to J + L(w) + 1
-            - spawn a new instance of the search algorithm using I, J, N, and the copy of the board data
-        */
-        for (String candidate: candidates) {
-            Board newBoard = board.clone();
-            WordPlacement newPlacement = new WordPlacement(candidate, i, j, direction);
-            newBoard.addWordPlacement(newPlacement);
-            if (!context.isSubsetOfAKnownPuzzle(newBoard)) {
-                CrosswordBuilder newBuilder = new CrosswordBuilder(context, newBoard, n, i, j + candidate.length() + 1, direction);
-                context.execute(newBuilder);
+        for (; j < n; j++) {
+            Collection<String> patterns = board.getAvailablePatterns(i, j, direction);
+            Set<String> candidates = new HashSet<>();
+            for (String pattern : patterns) {
+                candidates.addAll(context.getStore().getWordsByPattern(pattern));
+            }
+            candidates.removeAll(board.getWords());
+            if (candidates.size() == 0) {
+                continue;
+            }
 
-                if (direction == Direction.ACROSS) {
-                    CrosswordBuilder downBuilder = new CrosswordBuilder(context, newBoard, n, i, 0, Direction.DOWN);
-                    context.execute(downBuilder);
+            for (String candidate : candidates) {
+                Board newBoard = board.clone();
+                WordPlacement newPlacement = new WordPlacement(candidate, i, j, direction);
+                newBoard.addWordPlacement(newPlacement);
+                if (!context.isSubsetOfAKnownPuzzle(newBoard)) {
+                    CrosswordBuilder newBuilder = new CrosswordBuilder(context, newBoard, n, i, j + candidate.length() + 1, direction);
+                    context.execute(newBuilder);
+
+                    if (direction == Direction.ACROSS) {
+                        CrosswordBuilder downBuilder = new CrosswordBuilder(context, newBoard, n, i, 0, Direction.DOWN);
+                        context.execute(downBuilder);
+                    }
                 }
             }
+            break;
         }
-        // the "empty placement" / shift by one
-        CrosswordBuilder newBuilder = new CrosswordBuilder(context, board, n, i, j + 1, direction);
-        context.execute(newBuilder);
+        if (j >= n) {
+            /*
+            We reached the end of the "line" (row/column).
+            Starting another round only if it comes from the "down" stream.
+            */
 
-        if (direction == Direction.ACROSS) {
-            CrosswordBuilder downBuilder = new CrosswordBuilder(context, board, n, i, 0, Direction.DOWN);
-            context.execute(downBuilder);
+            if (direction == Direction.DOWN) {
+                CrosswordBuilder newBuilder = new CrosswordBuilder(context, board, n, i + 1, 0, Direction.ACROSS);
+                context.execute(newBuilder);
+            }
+            return null;
         }
+
 
         return null;
     }
