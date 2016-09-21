@@ -1,6 +1,6 @@
 package info.lynxnet.crossword;
 
-public class PlacementException extends Exception {
+public class PlacementException extends RuntimeException {
     public PlacementException() {
         super();
     }

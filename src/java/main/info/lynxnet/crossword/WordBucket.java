@@ -3,14 +3,14 @@ package info.lynxnet.crossword;
 import java.util.*;
 
 public class WordBucket {
-    private TreeSet<String> words = new TreeSet<String>();
-    private TreeMap<Character, Map<Integer, Set<String>>> charsToPositions =
-            new TreeMap<Character, Map<Integer, Set<String>>>();
+    private Set<String> words = new HashSet<String>();
+    private Map<Character, Map<Integer, Set<String>>> charsToPositions =
+            new HashMap<Character, Map<Integer, Set<String>>>();
 
     public WordBucket() {
     }
 
-    public TreeMap<Character, Map<Integer, Set<String>>> getCharsToPositions() {
+    public Map<Character, Map<Integer, Set<String>>> getCharsToPositions() {
         return charsToPositions;
     }
 
@@ -40,6 +40,9 @@ public class WordBucket {
     }
 
     public Set<String> getWords(char c, int i) {
+        if (c == Constants.EMPTY_CELL_FILLER) {
+            return Collections.unmodifiableSet(words);
+        }
         Map<Integer, Set<String>> positionMap = charsToPositions.get(c);
         if (positionMap != null) {
             Set<String> strings = positionMap.get(i);
@@ -65,21 +68,15 @@ public class WordBucket {
         return Collections.unmodifiableSet(words);
     }
 
-    public Set<String> getWordsByMask(String mask) {
-        int length = mask.length();
-        Set<String> result = new HashSet<String>();
-        boolean firstSet = true;
+    public Set<String> getWordsByPattern(String pattern) {
+        int length = pattern.length();
+        Set<String> result = new HashSet<>(words);
         for (int i = 0; i < length; i++) {
-            if (!Character.isAlphabetic(mask.charAt(i))) {
+            if (!Character.isAlphabetic(pattern.charAt(i))) {
                 continue;
             }
-            Set<String> words = getWords(mask.charAt(i), i);
-            if (firstSet) {
-                result.addAll(words);
-                firstSet = false;
-            } else {
-                result.retainAll(words);
-            }
+            Set<String> words = getWords(pattern.charAt(i), i);
+            result.retainAll(words);
         }
         return result;
     }

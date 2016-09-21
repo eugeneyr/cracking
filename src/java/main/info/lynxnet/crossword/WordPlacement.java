@@ -1,6 +1,6 @@
 package info.lynxnet.crossword;
 
-public class WordPlacement {
+public class WordPlacement implements Cloneable {
     private String word;
     private int x;
     private int y;
@@ -59,5 +59,16 @@ public class WordPlacement {
         result = 31 * result + y;
         result = 31 * result + (direction != null ? direction.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("WordPlacement{");
+        sb.append("word='").append(word).append('\'');
+        sb.append(", x=").append(x);
+        sb.append(", y=").append(y);
+        sb.append(", direction=").append(direction);
+        sb.append('}');
+        return sb.toString();
     }
 }

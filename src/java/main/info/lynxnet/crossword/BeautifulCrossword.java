@@ -1,6 +1,6 @@
 package info.lynxnet.crossword;
 
-import java.util.Arrays;
+import java.util.*;
 
 /*
 
@@ -147,80 +147,279 @@ N = 87
 
 */
 public class BeautifulCrossword {
-    private WordBucket bucket;
+    private WordStore store;
     private int n;
     private int[] weights;
-    public static final char EMPTY_CELL = '.';
+    private Set<Board> knownPuzzles = new HashSet<>();
 
-    protected char[][] createEmptyBoard() {
-        char[][] board = new char[n][];
-        for (int i = 0; i < n; i++) {
-            board[i] = new char[n];
-            Arrays.fill(board[i], EMPTY_CELL);
+    public void addKnownPuzzle(Board board) {
+        if (!isSubsetOfAKnownPuzzle(board)) {
+            knownPuzzles.add(board);
+            String[] b = board.asStringArray();
+            System.out.println("*** FOUND *** SCORE = " + calculateScore(b));
+            for (String s : b) {
+                System.out.println(s);
+            }
         }
-        return board;
     }
 
-    protected char[][] cloneBoard(char[][] board) {
-        char[][] clone = new char[board.length][];
-        for (int i = 0; i < board.length; i++) {
-            clone[i] = new char[board[i].length];
-            System.arraycopy(board[i], 0, clone[i], 0, clone[i].length);
+    public void printBoard(Board board) {
+        String[] b = board.asStringArray();
+        System.out.println("SCORE = " + calculateScore(b));
+        for (String s : b) {
+            System.out.println(s);
         }
-        return clone;
     }
 
+    public boolean isSubsetOfAKnownPuzzle(Board board) {
+        for (Board puzzle : knownPuzzles) {
+            if (puzzle.isSupersetOf(board)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public WordStore getStore() {
+        return store;
+    }
 
+    public int getN() {
+        return n;
+    }
+
+    public int[] getWeights() {
+        return weights;
+    }
+
+    public Set<Board> getKnownPuzzles() {
+        return knownPuzzles;
+    }
+
+    public void execute(CrosswordBuilder builder) {
+        try {
+            builder.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public String[] generateCrossword(int N, String[] words, int[] weights) {
-        bucket = WordBucketFiller.loadBucket(words);
+        store = new WordStore(words);
         n = N;
         this.weights = weights;
+        Board board = new Board(n);
+        execute(new CrosswordBuilder(this, board, n, 0, 0, Direction.ACROSS));
+        return null;
+    }
 
-        /*
-         The outline of the algorithm to implement:
-
-         1) The main loop in more general understanding,
-            or the recursive movement, is along the main diagonal: for (int i = 0; i < N; i++)
-         2) For each position (i, i) on the diagonal we try to allocate words first in the Ith row (the words "across")
-            and then the Ith column (the words "down").
-         3) Processing each row / column is as follows:
-            - Maintain the current cell index J. Initially set J to 0.
-              The "loop":
-              For the current value of J, find the length of the longest word than can be placed in the row (column)
-                starting with the cell (I, J)  (or (J, I)).
-                The length Lij_max is defined by the following constraints:
-                - it does not exceed the length of the longest word in the "current" dictionary D_curr
-                  (ie, the initial dictionary minus the words currently allocated on the board)
-                - it fits in the board (ie, J + L(w) < N)
-                - all cells are empty or filled by a word from the complement direction
-                - if the cell is empty, there are no bordering filled cells to the left or right (or up and down)
-                - there is at least one cell between the current one and cells from other words in this row (column)
-                going in the same direction.
-              If Lij_max = 0 and we are still on the board, do the "increase J or I OR backtrack" routine.
-              Otherwise,
-                - find all words in D_curr that can fit, ie their L(w) <= Lij_max and their letters match
-                  filled cells in the interval ((I,J), (I, J + Lij_mx)
-                - define the list of possible "actions" as each candidate word from D_curr plus an "empty action" equivalent
-                 to placing a word of length 0 on the board, effectively increasing
-                - for each "action" in the list:
-                    - place the word in the action on the board
-                    - check if none of the crossword puzzles we already built contain the current board as a subset
-                    - if it does, skip to the next action
-                    - increase J to J + L(w) + 1
-                    - spawn a new instance of the search algorithm using I, J, N, and the copy of the board data
-          The "increase J or I OR backtrack" routine:
-            - if the current direction == ACROSS, set J to 0 and the direction to DOWN.
-            - if the direction is DOWN, set I to I + 1.
-            - if I == N - 1, add the current board to the global list of crossword puzzles we built and terminate the current search instance.
-
-            Questions:
-            - optimal data structures
-            - an efficient way to filter available words by letters in certain positions (prefill some kind of "word buckets")
-         */
-
+    public String[] generateCrossword(int N, String wordFileName, int[] weights) {
+        store = new WordStore(wordFileName);
+        n = N;
+        this.weights = weights;
+        Board board = new Board(n);
+        execute(new CrosswordBuilder(this, board, n, 0, 0, Direction.ACROSS));
 
         return null;
     }
+
+    void addFatalError(String message) {
+        // System.out.println(message);
+    }
+
+    public double calculateScore(String[] puzzle) {
+        int i = 0;
+        int j = 0;
+
+        char[][] board = new char[n][n];
+        for (i = 0; i < n; i++) {
+            if (puzzle[i] == null || puzzle[i].length() != n) {
+                addFatalError("Element " + i + " of your return contained invalid number of characters.");
+                return 0;
+            }
+            for (j = 0; j < n; j++) {
+                board[i][j] = puzzle[i].charAt(j);
+                if ((board[i][j] < 'A' || board[i][j] > 'Z') && board[i][j] != '.') {
+                    addFatalError("Character [" + i + "][" + j + "] of your return was invalid.");
+                    return 0;
+                }
+            }
+        }
+
+        String[] words = store.getWords().toArray(new String[0]);
+
+        // score the return
+        // 0. validity with respect to uniqueness of words used and words
+        // coverage for all sequences of at least 2 letters in row
+        int totalLetters = 0;
+        boolean[] usedWord = new boolean[words.length];
+        Arrays.fill(usedWord, false);
+        StringBuffer sb = new StringBuffer();
+        for (i = 0; i < n; i++) {
+            sb.append(new String(board[i]));
+            sb.append(".");
+        }
+        for (i = 0; i < n; i++) {
+            for (j = 0; j < n; j++)
+                sb.append(board[j][i]);
+            sb.append(".");
+        }
+        String[] met = sb.toString().split("[\\.]+");
+        for (i = 0; i < met.length; i++) {
+            totalLetters += met[i].length();
+            if (met[i].length() >= 2) { // check only words of length 2 and
+                // more
+                j = Arrays.binarySearch(words, met[i]);
+                // check whether this is a word
+                if (j < 0) {
+                    addFatalError("Your crossword contains word \""
+                            + met[i] + "\" which is not present in dictionary.");
+                    return 0;
+                }
+                // check whether this word was already used
+                if (usedWord[j]) {
+                    addFatalError("Your crossword contains word \"" + met[i] + "\" twice or more.");
+                    return 0;
+                }
+                // mark the word as used
+                usedWord[j] = true;
+            }
+        }
+        totalLetters /= 2; // each letter was counted twice
+
+        // 0. validity with respect to "each letter must be part of a word"
+        // = each letter cell must have a letter cell neighbor
+        for (i = 0; i < n; i++)
+            for (j = 0; j < n; j++)
+                if (board[i][j] != '.'
+                        && (i == 0 || board[i - 1][j] == '.')
+                        && (i == n - 1 || board[i + 1][j] == '.')
+                        && (j == 0 || board[i][j - 1] == '.')
+                        && (j == n - 1 || board[i][j + 1] == '.')) {
+                    // all neighbors are . or outside of the board
+                    addFatalError("Your crossword contains a letter which is not part of any word (at "
+                            + i + ", " + j + ").");
+                    return 0;
+                }
+
+        // 1. board filling score = no of letters / no of cells
+        double boardFillingScore = totalLetters * 1.0 / (n * n);
+        addFatalError("Board filling score = " + boardFillingScore);
+
+        // 2. rows/cols filling score - no of cols with at least 1 char * no
+        // of rows with at least 1 char / n*n
+        int filledCols = 0, filledRows = 0;
+        boolean emptyCol, emptyRow;
+        for (i = 0; i < n; i++) {
+            emptyCol = emptyRow = true;
+            for (j = 0; j < n; j++) {
+                if (board[i][j] != '.')
+                    emptyRow = false;
+                if (board[j][i] != '.')
+                    emptyCol = false;
+            }
+            if (!emptyCol)
+                filledCols++;
+            if (!emptyRow)
+                filledRows++;
+        }
+        double rcFillingScore = filledCols * filledRows * 1.0 / (n * n);
+        addFatalError("Rows/columns filling score = " + rcFillingScore);
+
+        // 3. symmetry score
+        double symmetryScore = 0.0, nc = 0, cellScore;
+        int nEqual;
+        for (i = 0; i < (n + 1) / 2; i++)
+            for (j = 0; j <= i; j++) {
+                nEqual = (board[i][j] == '.' ? 1 : 0)
+                        + (board[i][n - j - 1] == '.' ? 1 : 0)
+                        + (board[n - i - 1][j] == '.' ? 1 : 0)
+                        + (board[n - i - 1][n - j - 1] == '.' ? 1 : 0)
+                        + (board[j][i] == '.' ? 1 : 0)
+                        + (board[j][n - i - 1] == '.' ? 1 : 0)
+                        + (board[n - j - 1][i] == '.' ? 1 : 0)
+                        + (board[n - j - 1][n - i - 1] == '.' ? 1 : 0);
+                nEqual = Math.max(nEqual, 8 - nEqual);
+                cellScore = 0;
+                if (nEqual == 8)
+                    cellScore = 1;
+                if (nEqual == 7)
+                    cellScore = 0.5;
+                if (nEqual == 6)
+                    cellScore = 0.1;
+                symmetryScore += cellScore;
+                nc++;
+                // System.out.println(i+" "+j+" "+nEqual+": "+board[i][j]+board[i][n-j-1]+board[n-i-1][j]+board[n-i-1][n-j-1]+board[j][i]+board[j][n-i-1]+board[n-j-1][i]+board[n-j-1][n-i-1]+" -> "+cellScore);
+            }
+        symmetryScore /= nc;
+        addFatalError("Symmetry score = " + symmetryScore);
+
+        // 4. words crossings score - no of letters which are parts of 2
+        // words, divided by no of letters overall
+        // for each letter, check whether it's part of a vertical word, and
+        // part of horizontal word
+        double crossingsScore = 0;
+        for (i = 0; i < n; i++)
+            for (j = 0; j < n; j++)
+                if (board[i][j] != '.'
+                        && (i > 0 && board[i - 1][j] != '.' || i < n - 1
+                        && board[i + 1][j] != '.')
+                        && (j > 0 && board[i][j - 1] != '.' || j < n - 1
+                        && board[i][j + 1] != '.'))
+                    crossingsScore++;
+        if (totalLetters > 0)
+            crossingsScore /= totalLetters;
+        addFatalError("Crossings score = " + crossingsScore);
+
+        return (boardFillingScore * weights[0] + rcFillingScore
+                * weights[1] + symmetryScore * weights[2] + crossingsScore
+                * weights[3])
+                / (weights[0] + weights[1] + weights[2] + weights[3]);
+    }
+
+    public static void main(String[] args) {
+        String fileName = args[0];
+        BeautifulCrossword bc = new BeautifulCrossword();
+        bc.generateCrossword(5, fileName, new int[]{1, 1, 1, 1});
+        List<Board> puzzles = new ArrayList<>(bc.getKnownPuzzles());
+        Collections.sort(puzzles, new Comparator<Board>() {
+            @Override
+            public int compare(Board o1, Board o2) {
+                if (o1.equals(o2)) {
+                    return 0;
+                }
+                double score1 = bc.calculateScore(o1.asStringArray());
+                double score2 = bc.calculateScore(o2.asStringArray());
+                return score1 == score2 ? 0: score1 < score2 ? -1 : 1;
+            }
+        });
+
+        if (puzzles.size() > 0) {
+            Board worst = puzzles.get(0);
+            Board best = puzzles.get(puzzles.size() - 1);
+            System.out.println("Best:");
+            bc.printBoard(best);
+        }
+        // By the number of words
+        Collections.sort(puzzles, new Comparator<Board>() {
+            @Override
+            public int compare(Board o1, Board o2) {
+                if (o1.equals(o2)) {
+                    return 0;
+                }
+                double l1 = o1.getWords().size();
+                double l2 = o2.getWords().size();
+                return l1 == l2 ? 0 : l1 < l2 ? -1 : 1;
+            }
+        });
+
+        if (puzzles.size() > 0) {
+            Board worst = puzzles.get(0);
+            Board best = puzzles.get(puzzles.size() - 1);
+            System.out.println("Most words: " + best.getWords().size());
+            bc.printBoard(best);
+        }
+
+    }
+
 }
