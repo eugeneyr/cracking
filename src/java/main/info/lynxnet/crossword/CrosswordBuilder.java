@@ -73,6 +73,21 @@ public class CrosswordBuilder implements Callable<Void> {
 
     @Override
     public Void call() throws Exception {
+        long myNo = Metrics.builderInstances.incrementAndGet();
+        if (myNo % 10000 == 0) {
+            System.out.println(String.format("Instantiated builders = %d *** Known puzzles = %d",
+                    myNo,
+                    context.getKnownPuzzles().size()));
+        }
+        // Prevent repeatedly going down same search trees.
+//        if (context.isSubsetOfAKnownPuzzle(board)) {
+//            long reps = Metrics.preventedRepeats.incrementAndGet();
+//            if (reps % 1000 == 0) {
+//                System.out.println(String.format("Prevented repeats = %d *** I = %d *** DIR = %s", reps, i, direction.toString()));
+//            }
+//            return null;
+//        }
+
         // - if I = N, add B0 to the list of results.
         if (i >= n) {
             context.addKnownPuzzle(board);
@@ -84,7 +99,15 @@ public class CrosswordBuilder implements Callable<Void> {
         for (Collection<WordPlacement> perm : permutations) {
             Board newBoard = board.clone();
             for (WordPlacement wp : perm) {
-                newBoard.addWordPlacement(wp);
+                try {
+                    newBoard.addWordPlacement(wp);
+                } catch (IllegalArgumentException e) {
+                    System.out.println("WRONGER:");
+                    context.printBoard(board);
+                    System.out.println("BAD APPLE: " + wp.toString());
+                    e.printStackTrace(System.out);
+                    System.exit(-1);
+                }
             }
             CrosswordBuilder newBuilder = null;
             switch (direction) {
@@ -151,5 +174,21 @@ public class CrosswordBuilder implements Callable<Void> {
             }
         }
         return candidates;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CrosswordBuilder that = (CrosswordBuilder) o;
+        return n == that.n &&
+                i == that.i &&
+                Objects.equals(board, that.board) &&
+                direction == that.direction;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(n, i, board, direction);
     }
 }

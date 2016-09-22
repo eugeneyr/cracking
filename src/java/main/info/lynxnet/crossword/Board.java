@@ -258,6 +258,22 @@ public class Board implements Cloneable {
                     if (cell.getWord(dir) != null) {
                         break;
                     }
+                    // if the cell is empty, are there letters in its immediate neighbors in the orthogonal direction?
+                    if (cell.isEmpty()) {
+                        if (y > 0) {
+                            Cell adjacent = grid[y - 1][currX];
+                            if (!adjacent.isEmpty()) {
+                                break;
+                            }
+                        }
+                        if (y < n - 1) {
+                            Cell adjacent = grid[y + 1][currX];
+                            if (!adjacent.isEmpty()) {
+                                break;
+                            }
+                        }
+                    }
+
                     if (currX < n - 1) {
                         // is there a word in the same direction that begins in the cell immediately following this one?
                         Cell nextCell = grid[y][currX + 1];
@@ -272,21 +288,6 @@ public class Board implements Cloneable {
                             if (currPattern.length() > 0) {
                                 currPattern.append(cell.getLetter());
                                 continue;
-                            }
-                        }
-                    }
-                    // if the cell is empty, are there letters in its immediate neighbors in the orthogonal direction?
-                    if (cell.isEmpty()) {
-                        if (y > 0) {
-                            Cell adjacent = grid[y - 1][currX];
-                            if (!adjacent.isEmpty()) {
-                                break;
-                            }
-                        }
-                        if (y < n - 1) {
-                            Cell adjacent = grid[y + 1][currX];
-                            if (!adjacent.isEmpty()) {
-                                break;
                             }
                         }
                     }
@@ -313,6 +314,22 @@ public class Board implements Cloneable {
                     if (cell.getWord(dir) != null) {
                         break;
                     }
+                    // if the cell is empty, are there letters in its immediate neighbors in the orthogonal direction?
+                    if (cell.isEmpty()) {
+                        if (x > 0) {
+                            Cell adjacent = grid[currY][x - 1];
+                            if (!adjacent.isEmpty()) {
+                                break;
+                            }
+                        }
+                        if (x < n - 1) {
+                            Cell adjacent = grid[currY][x + 1];
+                            if (!adjacent.isEmpty()) {
+                                break;
+                            }
+                        }
+                    }
+
                     if (currY < n - 1) {
                         // is there a word in the same direction that begins in the cell immediately following this one?
                         Cell nextCell = grid[currY + 1][x];
@@ -327,21 +344,6 @@ public class Board implements Cloneable {
                             if (currPattern.length() > 0) {
                                 currPattern.append(cell.getLetter());
                                 continue;
-                            }
-                        }
-                    }
-                    // if the cell is empty, are there letters in its immediate neighbors in the orthogonal direction?
-                    if (cell.isEmpty()) {
-                        if (x > 0) {
-                            Cell adjacent = grid[currY][x - 1];
-                            if (!adjacent.isEmpty()) {
-                                break;
-                            }
-                        }
-                        if (x < n - 1) {
-                            Cell adjacent = grid[currY][x + 1];
-                            if (!adjacent.isEmpty()) {
-                                break;
                             }
                         }
                     }

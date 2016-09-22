@@ -152,22 +152,45 @@ public class BeautifulCrossword {
     private WordStore store;
     private int n;
     private int[] weights;
+    private Set<Board> bestPuzzles = new HashSet<>();
     private Set<Board> knownPuzzles = new HashSet<>();
+    private Set<CrosswordBuilder> knownBuilders = new HashSet<>();
+    private double topScore = 0.0;
 
     private ExecutorService service = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
 
-    public synchronized void addKnownPuzzle(Board board) {
+    public void addKnownPuzzle(Board board) {
         if (!isSubsetOfAKnownPuzzle(board)) {
             knownPuzzles.add(board);
             String[] b = board.asStringArray();
-            System.out.println("*** FOUND *** SCORE = " + calculateScore(b));
-            for (String s : b) {
-                System.out.println(s);
+            double score = calculateScore(b);
+            if (score > topScore) {
+                bestPuzzles.clear();
+                bestPuzzles.add(board);
+                topScore = score;
+                System.out.println(
+                        String.format("*** FOUND *** KNOWN PUZZLES = %d *** WORDS = %d/%d *** SCORE = %f ",
+                                knownPuzzles.size(),
+                                board.getWords().size(), store.getWords().size(),
+                                score));
+                for (String s : b) {
+                    System.out.println(s);
+                }
+            } else if (score == topScore) {
+                bestPuzzles.add(board);
+                System.out.println(
+                        String.format("*** FOUND ANOTHER *** KNOWN PUZZLES = %d *** WORDS = %d/%d *** SCORE = %f ",
+                                knownPuzzles.size(),
+                                board.getWords().size(), store.getWords().size(),
+                                score));
+                for (String s : b) {
+                    System.out.println(s);
+                }
             }
         }
     }
 
-    public synchronized void printBoard(Board board) {
+    public void printBoard(Board board) {
         String[] b = board.asStringArray();
         System.out.println("SCORE = " + calculateScore(b));
         for (String s : b) {
@@ -193,6 +216,10 @@ public class BeautifulCrossword {
     public BeautifulCrossword() {
     }
 
+    public Set<Board> getKnownPuzzles() {
+        return knownPuzzles;
+    }
+
     public WordStore getStore() {
         return store;
     }
@@ -205,11 +232,16 @@ public class BeautifulCrossword {
         return weights;
     }
 
-    public Set<Board> getKnownPuzzles() {
-        return knownPuzzles;
+    public Set<Board> getBestPuzzles() {
+        return bestPuzzles;
     }
 
     public void execute(CrosswordBuilder builder) {
+        if (knownBuilders.contains(builder)) {
+            System.out.println("*** *** *** *** DUPLICATE *** *** *** ***");
+            return;
+        }
+        knownBuilders.add(builder);
         try {
             builder.call();
         } catch (Exception e) {
@@ -244,7 +276,7 @@ public class BeautifulCrossword {
             }
             double score1 = context.calculateScore(o1.asStringArray());
             double score2 = context.calculateScore(o2.asStringArray());
-            return score1 == score2 ? 0: score1 < score2 ? -1 : 1;
+            return score1 == score2 ? 0 : score1 < score2 ? -1 : 1;
         }
     }
 
@@ -259,7 +291,7 @@ public class BeautifulCrossword {
         Board board = new Board(n);
         execute(new CrosswordBuilder(this, board, n, 0, Direction.ACROSS));
 
-        List<Board> puzzles = new ArrayList<>(getKnownPuzzles());
+        List<Board> puzzles = new ArrayList<>(getBestPuzzles());
         Collections.sort(puzzles, new WeightComparator(this));
 
         return puzzles.size() > 0 ? puzzles.get(puzzles.size() - 1).asStringArray() : null;
@@ -273,7 +305,7 @@ public class BeautifulCrossword {
         String fileName = args[0];
         BeautifulCrossword bc = new BeautifulCrossword();
         bc.generateCrossword(11, fileName, new int[]{6, 8, 7, 10});
-        List<Board> puzzles = new ArrayList<>(bc.getKnownPuzzles());
+        List<Board> puzzles = new ArrayList<>(bc.getBestPuzzles());
         Collections.sort(puzzles, new WeightComparator(bc));
 
         if (puzzles.size() > 0) {

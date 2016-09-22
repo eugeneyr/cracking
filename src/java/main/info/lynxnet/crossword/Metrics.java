@@ -1,10 +1,19 @@
 package info.lynxnet.crossword;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Metrics {
+    public static final long startTime = System.currentTimeMillis();
+    public static AtomicLong preventedRepeats = new AtomicLong(0);
+    public static AtomicLong builderInstances = new AtomicLong(0);
+
     static void addFatalError(String message) {
-        // System.out.println(message);
+        System.out.println(message);
+    }
+
+    static void log(String message) {
+        //System.out.println(message);
     }
 
     public static double calculateScore(String[] puzzle, int n, int[] weights, String[] words) {
@@ -82,7 +91,7 @@ public class Metrics {
 
         // 1. board filling score = no of letters / no of cells
         double boardFillingScore = totalLetters * 1.0 / (n * n);
-        addFatalError("Board filling score = " + boardFillingScore);
+        log("Board filling score = " + boardFillingScore);
 
         // 2. rows/cols filling score - no of cols with at least 1 char * no
         // of rows with at least 1 char / n*n
@@ -102,7 +111,7 @@ public class Metrics {
                 filledRows++;
         }
         double rcFillingScore = filledCols * filledRows * 1.0 / (n * n);
-        addFatalError("Rows/columns filling score = " + rcFillingScore);
+        log("Rows/columns filling score = " + rcFillingScore);
 
         // 3. symmetry score
         double symmetryScore = 0.0, nc = 0, cellScore;
@@ -130,7 +139,7 @@ public class Metrics {
                 // System.out.println(i+" "+j+" "+nEqual+": "+board[i][j]+board[i][n-j-1]+board[n-i-1][j]+board[n-i-1][n-j-1]+board[j][i]+board[j][n-i-1]+board[n-j-1][i]+board[n-j-1][n-i-1]+" -> "+cellScore);
             }
         symmetryScore /= nc;
-        addFatalError("Symmetry score = " + symmetryScore);
+        log("Symmetry score = " + symmetryScore);
 
         // 4. words crossings score - no of letters which are parts of 2
         // words, divided by no of letters overall
@@ -147,7 +156,7 @@ public class Metrics {
                     crossingsScore++;
         if (totalLetters > 0)
             crossingsScore /= totalLetters;
-        addFatalError("Crossings score = " + crossingsScore);
+        log("Crossings score = " + crossingsScore);
 
         return (boardFillingScore * weights[0] + rcFillingScore
                 * weights[1] + symmetryScore * weights[2] + crossingsScore
