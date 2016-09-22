@@ -97,72 +97,69 @@ public class CrosswordBuilder implements Callable {
 
     @Override
     public Object call() throws Exception {
+        System.out.println(String.format("I = %d\t\tJ = %d\t\tDIR = %s", i, j, direction.toString()));
+
         context.printBoard(board);
         if (i >= n) {
             /*
             - if I == N - 1, add the current board to the global list of crossword puzzles we built
-              and terminate the current search instance.
+              and exit
             */
             context.addKnownPuzzle(board);
-            return null;
-        }
-        if (j >= n) {
-            /*
-            We reached the end of the "line" (row/column).
-            Starting another round only if it comes from the "down" stream.
-            */
-
-            if (direction == Direction.DOWN) {
-                CrosswordBuilder newBuilder = new CrosswordBuilder(context, board, n, i + 1, 0, Direction.ACROSS);
-                context.execute(newBuilder);
-            }
             return null;
         }
         /*
            For the current value of J, find the set of the patterns that can be replaced with words
            in the row (column) starting with the cell (I, J) (or (J, I)).
          */
-        for (; j < n; j++) {
-            Collection<String> patterns = board.getAvailablePatterns(i, j, direction);
-            Set<String> candidates = new HashSet<>();
-            for (String pattern : patterns) {
-                candidates.addAll(context.getStore().getWordsByPattern(pattern));
-            }
-            candidates.removeAll(board.getWords());
-            if (candidates.size() == 0) {
-                continue;
-            }
 
+        int newJ = j;
+
+        Set<String> candidates = new HashSet<>();
+
+        do {
+            candidates = getWordPlacementCandidates(board, i, newJ, direction);
+            newJ++;
+        } while (candidates.isEmpty() && newJ < n);
+
+        if (!candidates.isEmpty()) {
             for (String candidate : candidates) {
                 Board newBoard = board.clone();
-                WordPlacement newPlacement = new WordPlacement(candidate, i, j, direction);
+                WordPlacement newPlacement = new WordPlacement(candidate, i, newJ, direction);
                 newBoard.addWordPlacement(newPlacement);
                 if (!context.isSubsetOfAKnownPuzzle(newBoard)) {
-                    CrosswordBuilder newBuilder = new CrosswordBuilder(context, newBoard, n, i, j + candidate.length() + 1, direction);
-                    context.execute(newBuilder);
+                    CrosswordBuilder nextBuilder = new CrosswordBuilder(
+                            context, newBoard, n, i, newJ + candidate.length() + 1,
+                            direction);
+                    context.execute(nextBuilder);
 
-                    if (direction == Direction.ACROSS) {
-                        CrosswordBuilder downBuilder = new CrosswordBuilder(context, newBoard, n, i, 0, Direction.DOWN);
-                        context.execute(downBuilder);
-                    }
+                    CrosswordBuilder crossBuilder = new CrosswordBuilder(
+                            context, newBoard, n, i, 0,
+                            direction == Direction.DOWN ? Direction.ACROSS : Direction.DOWN);
+                    context.execute(crossBuilder);
+
+                    CrosswordBuilder insetBuilder = new CrosswordBuilder(
+                            context, newBoard, n, i + 1, 0,
+                            Direction.ACROSS);
+                    context.execute(insetBuilder);
                 }
             }
-            break;
+        } else {
+            CrosswordBuilder crossBuilder = new CrosswordBuilder(
+                    context, board, n, i, 0,
+                    direction == Direction.DOWN ? Direction.ACROSS : Direction.DOWN);
+            context.execute(crossBuilder);
         }
-        if (j >= n) {
-            /*
-            We reached the end of the "line" (row/column).
-            Starting another round only if it comes from the "down" stream.
-            */
-
-            if (direction == Direction.DOWN) {
-                CrosswordBuilder newBuilder = new CrosswordBuilder(context, board, n, i + 1, 0, Direction.ACROSS);
-                context.execute(newBuilder);
-            }
-            return null;
-        }
-
-
         return null;
+    }
+
+    private Set<String> getWordPlacementCandidates(Board board, int i, int j, Direction direction) {
+        Collection<String> patterns = board.getAvailablePatterns(i, j, direction);
+        Set<String> candidates = new HashSet<>();
+        for (String pattern : patterns) {
+            candidates.addAll(context.getStore().getWordsByPattern(pattern));
+        }
+        candidates.removeAll(board.getWords());
+        return candidates;
     }
 }
