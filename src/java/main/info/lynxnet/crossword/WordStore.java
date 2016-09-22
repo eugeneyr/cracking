@@ -66,6 +66,17 @@ public class WordStore {
             return Collections.EMPTY_SET;
         }
         return getBucket(pattern.length()).getWordsByPattern(pattern);
-
     }
+
+    public Set<String> getWordsByPattern(String pattern, Collection<String> blacklist) {
+        if (pattern == null || !bucketsByWordLength.containsKey(pattern.length())) {
+            return Collections.EMPTY_SET;
+        }
+        Set<String> result = getBucket(pattern.length()).getWordsByPattern(pattern);
+        if (blacklist != null) {
+            result.removeAll(blacklist);
+        }
+        return result;
+    }
+
 }

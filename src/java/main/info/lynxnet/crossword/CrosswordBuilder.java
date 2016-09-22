@@ -1,30 +1,21 @@
 package info.lynxnet.crossword;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
-public class CrosswordBuilder implements Callable {
+public class CrosswordBuilder implements Callable<Void> {
     private int n;
     private BeautifulCrossword context;
     private int i;
-    private int j;
-    private Direction direction;
-    private CrosswordBuilder parent;
     private Board board;
+    private Direction direction;
 
-    public CrosswordBuilder(BeautifulCrossword context, Board board, int n, int i, int j, Direction direction) {
+    public CrosswordBuilder(BeautifulCrossword context, Board board, int n, int i, Direction direction) {
         this.n = n;
         this.context = context;
         this.i = i;
-        this.j = j;
-        this.direction = direction;
         this.board = board;
-    }
-
-    public void setParent(CrosswordBuilder parent) {
-        this.parent = parent;
+        this.direction = direction;
     }
 
     public int getN() {
@@ -39,16 +30,8 @@ public class CrosswordBuilder implements Callable {
         return i;
     }
 
-    public int getJ() {
-        return j;
-    }
-
     public Direction getDirection() {
         return direction;
-    }
-
-    public CrosswordBuilder getParent() {
-        return parent;
     }
 
     public Board getBoard() {
@@ -58,108 +41,115 @@ public class CrosswordBuilder implements Callable {
     /*
          The outline of the algorithm to implement:
 
-         1) The main loop in more general understanding,
-            or the recursive movement, is along the main diagonal: for (int i = 0; i < N; i++)
-         2) For each position (i, i) on the diagonal we try to allocate words first in the Ith row (the words "across")
-            and then the Ith column (the words "down").
-         3) Processing each row / column is as follows:
-            - Maintain the current cell index J. Initially set J to 0.
-              The "loop":
-              Initially, set the "current" position J to 0 - the first cell in the Ith row or Ith column,
-              depending in the direction.
+         * The direction is along he main diagonal, from (0, 0) to (N - 1, N - 1)
 
-              For the current value of J, find the set of the patterns that can be replaced with words
-                in the row (column) starting with the cell (I, J)  (or (J, I)).
+         * The prerequisites for each step:
+           - the "current" board B0
+           - the value of I
 
-              If the set is empty:
-                  and we are still on the board, do the "increase J or I OR backtrack" routine.
+         * The "action":
+           - if I = N, add B0 to the list of results.
 
-              Otherwise,
-                - find all words in D_curr that match the patterns in the set.
-                - define the list of possible "actions" as each candidate word from D_curr plus an "empty action" equivalent
-                 to placing a word of length 0 on the board, effectively increasing J by 1
-                - for each "action" in the list:
-                    - place the word w in the action on the board
-                    - check if none of the crossword puzzles we already built contain the current board as a subset
-                    - if it does, skip to the next action
-                    - increase J to J + L(w) + 1
-                    - spawn a new instance of the search algorithm using I, J, N, and the copy of the board data
+           - generate all possible ways to place words not used in B1 on the Ith row of B0.
+             The outcome is a collection (list) WPaccr of WordPlacement lists.
+             (One of the elements will be an empty list)
 
-          The "increase J or I OR backtrack" routine:
-            - if the current direction == ACROSS, set J to 0 and the direction to DOWN.
-            - if the direction is DOWN, set I to I + 1.
-            - if I == N - 1, add the current board to the global list of crossword puzzles we built and terminate the current search instance.
+           - For each element (WordPlacement list) WPj in WPaccr:
+             - create a new board B1 by placing WPj on B0
+             - generate all possible ways to place words not used in B1 on the Ith column of B1.
+               The outcome is a collection (list) WPdown of WordPlacement lists.
+               (One of the elements will be an empty list)
 
-            Questions:
-            - optimal data structures
-            - an efficient way to filter available words by letters in certain positions (prefill some kind of "word buckets")
+               - For each element WPk in WPdown:
+                 - create a new board B2 by placing WPk on B1 and launch a new instance of the builder with B2, I + 1
+
+         * Postprocessing:
+             - range the result list by the score.
+             - pick the top score one.
+             + Variation: store only the result with the highest score.
+
+         For first few rows the number of elements in WPaccr and WPdown
          */
 
     @Override
-    public Object call() throws Exception {
-        System.out.println(String.format("I = %d\t\tJ = %d\t\tDIR = %s", i, j, direction.toString()));
-
-        context.printBoard(board);
+    public Void call() throws Exception {
+        // - if I = N, add B0 to the list of results.
         if (i >= n) {
-            /*
-            - if I == N - 1, add the current board to the global list of crossword puzzles we built
-              and exit
-            */
             context.addKnownPuzzle(board);
             return null;
         }
-        /*
-           For the current value of J, find the set of the patterns that can be replaced with words
-           in the row (column) starting with the cell (I, J) (or (J, I)).
-         */
 
-        int newJ = j;
+        Collection<Collection<WordPlacement>> permutations = getAllPermutations(board, i, direction);
 
-        Set<String> candidates = new HashSet<>();
-
-        do {
-            candidates = getWordPlacementCandidates(board, i, newJ, direction);
-            newJ++;
-        } while (candidates.isEmpty() && newJ < n);
-
-        if (!candidates.isEmpty()) {
-            for (String candidate : candidates) {
-                Board newBoard = board.clone();
-                WordPlacement newPlacement = new WordPlacement(candidate, i, newJ, direction);
-                newBoard.addWordPlacement(newPlacement);
-                if (!context.isSubsetOfAKnownPuzzle(newBoard)) {
-                    CrosswordBuilder nextBuilder = new CrosswordBuilder(
-                            context, newBoard, n, i, newJ + candidate.length() + 1,
-                            direction);
-                    context.execute(nextBuilder);
-
-                    CrosswordBuilder crossBuilder = new CrosswordBuilder(
-                            context, newBoard, n, i, 0,
-                            direction == Direction.DOWN ? Direction.ACROSS : Direction.DOWN);
-                    context.execute(crossBuilder);
-
-                    CrosswordBuilder insetBuilder = new CrosswordBuilder(
-                            context, newBoard, n, i + 1, 0,
-                            Direction.ACROSS);
-                    context.execute(insetBuilder);
-                }
+        for (Collection<WordPlacement> perm : permutations) {
+            Board newBoard = board.clone();
+            for (WordPlacement wp : perm) {
+                newBoard.addWordPlacement(wp);
             }
-        } else {
-            CrosswordBuilder crossBuilder = new CrosswordBuilder(
-                    context, board, n, i, 0,
-                    direction == Direction.DOWN ? Direction.ACROSS : Direction.DOWN);
-            context.execute(crossBuilder);
+            CrosswordBuilder newBuilder = null;
+            switch (direction) {
+                case ACROSS:
+                    newBuilder = new CrosswordBuilder(context, newBoard, n, i, Direction.DOWN);
+                    break;
+                case DOWN:
+                    newBuilder = new CrosswordBuilder(context, newBoard, n, i + 1, Direction.ACROSS);
+                    break;
+            }
+            context.execute(newBuilder);
         }
         return null;
     }
 
-    private Set<String> getWordPlacementCandidates(Board board, int i, int j, Direction direction) {
-        Collection<String> patterns = board.getAvailablePatterns(i, j, direction);
-        Set<String> candidates = new HashSet<>();
-        for (String pattern : patterns) {
-            candidates.addAll(context.getStore().getWordsByPattern(pattern));
+    public Collection<Collection<WordPlacement>> getAllPermutations(Board board, int i, Direction direction) {
+        Set<Collection<WordPlacement>> result = new LinkedHashSet<>();
+        int x = direction == Direction.ACROSS ? 0 : i;
+        int y = direction == Direction.ACROSS ? i : 0;
+
+        generatePermutations(board, x, y, direction, Collections.EMPTY_SET, result, board.getWords());
+        return result;
+    }
+
+    private void generatePermutations(
+            Board board, int x, int y, Direction direction, Collection<WordPlacement> perm,
+            Collection<Collection<WordPlacement>> result,
+            Collection<String> blacklist) {
+        if (x >= n || y >= n) {
+            result.add(perm);
+            return;
         }
-        candidates.removeAll(board.getWords());
+        Map<String, Collection<String>> candidates = getWordPlacementCandidates(board, x, y, direction, blacklist);
+        for (Map.Entry<String, Collection<String>> entry : candidates.entrySet()) {
+            Collection<String> words = entry.getValue();
+            for (String word : words) {
+                WordPlacement newPlacement = new WordPlacement(word, x, y, direction);
+                Set<WordPlacement> newPerm = new HashSet<>(perm);
+                newPerm.add(newPlacement);
+                Set<String> newBlackList = new HashSet<>(blacklist);
+                newBlackList.add(word);
+                int newX = direction == Direction.ACROSS ? x + word.length() + 1 : x;
+                int newY = direction == Direction.DOWN ? y + word.length() + 1 : y;
+                generatePermutations(board, newX, newY, direction, newPerm, result, newBlackList);
+            }
+        }
+        // handle the empty string/set case
+        int newX = direction == Direction.ACROSS ? x + 1 : x;
+        int newY = direction == Direction.DOWN ? y + 1 : y;
+        generatePermutations(board, newX, newY, direction, perm, result, blacklist);
+    }
+
+    private Map<String, Collection<String>> getWordPlacementCandidates(
+            Board board, int i, int j, Direction direction, Collection<String> blacklist) {
+        Collection<String> patterns = board.getAvailablePatterns(i, j, direction);
+        Map<String, Collection<String>> candidates = new HashMap<>();
+        if (blacklist == null) {
+            blacklist = board.getWords();
+        }
+        for (String pattern : patterns) {
+            Set<String> words = context.getStore().getWordsByPattern(pattern, blacklist);
+            if (!words.isEmpty()) {
+                candidates.put(pattern, context.getStore().getWordsByPattern(pattern, blacklist));
+            }
+        }
         return candidates;
     }
 }

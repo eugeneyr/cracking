@@ -184,6 +184,15 @@ public class BeautifulCrossword {
         return false;
     }
 
+    public BeautifulCrossword(String[] words, int n, int[] weights) {
+        this.n = n;
+        this.weights = weights;
+        this.store = new WordStore(words);
+    }
+
+    public BeautifulCrossword() {
+    }
+
     public WordStore getStore() {
         return store;
     }
@@ -248,7 +257,7 @@ public class BeautifulCrossword {
         n = N;
         this.weights = weights;
         Board board = new Board(n);
-        execute(new CrosswordBuilder(this, board, n, 0, 0, Direction.ACROSS));
+        execute(new CrosswordBuilder(this, board, n, 0, Direction.ACROSS));
 
         List<Board> puzzles = new ArrayList<>(getKnownPuzzles());
         Collections.sort(puzzles, new WeightComparator(this));
@@ -263,7 +272,7 @@ public class BeautifulCrossword {
     public static void main(String[] args) {
         String fileName = args[0];
         BeautifulCrossword bc = new BeautifulCrossword();
-        bc.generateCrossword(5, fileName, new int[]{1, 1, 1, 1});
+        bc.generateCrossword(11, fileName, new int[]{6, 8, 7, 10});
         List<Board> puzzles = new ArrayList<>(bc.getKnownPuzzles());
         Collections.sort(puzzles, new WeightComparator(bc));
 
