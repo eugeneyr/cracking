@@ -149,15 +149,15 @@ N = 87
 
 */
 public class BeautifulCrossword {
-    private WordStore store;
-    private int n;
-    private int[] weights;
-    private Set<Board> bestPuzzles = new HashSet<>();
-    private Set<Board> knownPuzzles = new HashSet<>();
-    private Set<CrosswordBuilder> knownBuilders = new HashSet<>();
-    private double topScore = 0.0;
+    protected WordStore store;
+    protected int n;
+    protected int[] weights;
+    protected Set<Board> bestPuzzles = new HashSet<>();
+    protected Set<Board> knownPuzzles = new LinkedHashSet<>();
+    protected Set<CrosswordBuilder> knownBuilders = new HashSet<>();
+    protected double topScore = 0.0;
 
-    private ExecutorService service = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
+    protected ExecutorService service = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
 
     public void addKnownPuzzle(Board board) {
         if (!isSubsetOfAKnownPuzzle(board)) {
@@ -198,7 +198,7 @@ public class BeautifulCrossword {
         }
     }
 
-    public synchronized boolean isSubsetOfAKnownPuzzle(Board board) {
+    public boolean isSubsetOfAKnownPuzzle(Board board) {
         for (Board puzzle : knownPuzzles) {
             if (puzzle.isSupersetOf(board)) {
                 return true;
@@ -239,6 +239,7 @@ public class BeautifulCrossword {
     public void execute(CrosswordBuilder builder) {
         if (knownBuilders.contains(builder)) {
             System.out.println("*** *** *** *** DUPLICATE *** *** *** ***");
+            System.out.println(builder.toString());
             return;
         }
         knownBuilders.add(builder);
@@ -263,7 +264,7 @@ public class BeautifulCrossword {
     }
 
     static class WeightComparator implements Comparator<Board> {
-        private BeautifulCrossword context;
+        protected BeautifulCrossword context;
 
         public WeightComparator(BeautifulCrossword context) {
             this.context = context;
@@ -285,7 +286,7 @@ public class BeautifulCrossword {
         return generateCrossword(N, weights);
     }
 
-    private String[] generateCrossword(int N, int[] weights) {
+    protected String[] generateCrossword(int N, int[] weights) {
         n = N;
         this.weights = weights;
         Board board = new Board(n);
@@ -309,12 +310,13 @@ public class BeautifulCrossword {
         Collections.sort(puzzles, new WeightComparator(bc));
 
         if (puzzles.size() > 0) {
-            Board worst = puzzles.get(0);
             Board best = puzzles.get(puzzles.size() - 1);
             System.out.println("Best:");
             bc.printBoard(best);
         }
+
         // By the number of words
+        puzzles = new ArrayList<>(bc.getKnownPuzzles());
         Collections.sort(puzzles, new Comparator<Board>() {
             @Override
             public int compare(Board o1, Board o2) {
@@ -328,7 +330,6 @@ public class BeautifulCrossword {
         });
 
         if (puzzles.size() > 0) {
-            Board worst = puzzles.get(0);
             Board best = puzzles.get(puzzles.size() - 1);
             System.out.println("Most words: " + best.getWords().size());
             bc.printBoard(best);

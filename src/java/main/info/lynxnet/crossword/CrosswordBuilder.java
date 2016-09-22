@@ -75,13 +75,15 @@ public class CrosswordBuilder implements Callable<Void> {
     public Void call() throws Exception {
         long myNo = Metrics.builderInstances.incrementAndGet();
         if (myNo % 10000 == 0) {
-            System.out.println(String.format("Instantiated builders = %d *** Known puzzles = %d",
+            System.out.printf("Instantiated builders = %d *** Known puzzles = %d *** Identical boards = %d\nCurrent Board:\n",
                     myNo,
-                    context.getKnownPuzzles().size()));
+                    context.getKnownPuzzles().size(),
+                    Metrics.identicalBoards.get());
+            context.printBoard(board);
         }
         // Prevent repeatedly going down same search trees.
 //        if (context.isSubsetOfAKnownPuzzle(board)) {
-//            long reps = Metrics.preventedRepeats.incrementAndGet();
+//            long reps = Metrics.identicalBoards.incrementAndGet();
 //            if (reps % 1000 == 0) {
 //                System.out.println(String.format("Prevented repeats = %d *** I = %d *** DIR = %s", reps, i, direction.toString()));
 //            }
@@ -180,7 +182,18 @@ public class CrosswordBuilder implements Callable<Void> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+//        System.out.println("************************************ CrosswordBuilder.equals: *****************************************");
+//        System.out.println(this.toString());
+//        System.out.println(o.toString());
+//        new Exception().printStackTrace(System.out);
+//        System.out.println("*******************************************************************************************************");
         CrosswordBuilder that = (CrosswordBuilder) o;
+//        if (Objects.equals(board, that.board)) {
+//            Metrics.identicalBoards.incrementAndGet();
+//            System.out.printf(
+//                    "Identical boards, this.i = %d that.i = %d this.dir = %s that.dir = %s\n",
+//                    i, that.i, direction, that.direction);
+//        }
         return n == that.n &&
                 i == that.i &&
                 Objects.equals(board, that.board) &&
@@ -190,5 +203,16 @@ public class CrosswordBuilder implements Callable<Void> {
     @Override
     public int hashCode() {
         return Objects.hash(n, i, board, direction);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("CrosswordBuilder{");
+        sb.append("n=").append(n);
+        sb.append(", i=").append(i);
+        sb.append(", direction=").append(direction);
+        sb.append(", board=\n").append(String.join("\n", board.asStringArray()));
+        sb.append("\n}");
+        return sb.toString();
     }
 }

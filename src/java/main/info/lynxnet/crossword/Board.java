@@ -421,6 +421,8 @@ public class Board implements Cloneable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(n, wordPlacements, words, wordsByDirection, grid);
+        String[] strs = this.asStringArray();
+        String singleString = String.join("", strs);
+        return Objects.hash(n, singleString);
     }
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Metrics {
     public static final long startTime = System.currentTimeMillis();
-    public static AtomicLong preventedRepeats = new AtomicLong(0);
+    public static AtomicLong identicalBoards = new AtomicLong(0);
     public static AtomicLong builderInstances = new AtomicLong(0);
 
     static void addFatalError(String message) {
