@@ -64,11 +64,12 @@ public class ParallelBeautifulCrossword extends BeautifulCrossword {
         this.weights = weights;
         Board board = new Board(n);
         execute(new CrosswordBuilder(this, board, n, 0, Direction.ACROSS));
-        // @TODO somehow wait until the executor is done
-        try {
-            service.awaitTermination(10, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            //
+        while (!queue.isEmpty()) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         List<Board> puzzles = new ArrayList<>(getBestPuzzles());
         return puzzles.size() > 0 ? puzzles.get(puzzles.size() - 1).asStringArray() : null;
