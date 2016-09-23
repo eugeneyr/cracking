@@ -22,10 +22,6 @@ public class CrosswordBuilder implements Callable<Void> {
         return n;
     }
 
-    public BeautifulCrossword getContext() {
-        return context;
-    }
-
     public int getI() {
         return i;
     }

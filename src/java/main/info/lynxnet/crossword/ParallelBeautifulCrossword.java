@@ -9,10 +9,6 @@ public class ParallelBeautifulCrossword extends BeautifulCrossword {
             2, Runtime.getRuntime().availableProcessors(),
             10, TimeUnit.SECONDS, queue, new ThreadPoolExecutor.CallerRunsPolicy());
 
-    public ExecutorService getService() {
-        return service;
-    }
-
     public long getActiveCount() {
         return ((ThreadPoolExecutor) service).getActiveCount();
     }
@@ -37,17 +33,8 @@ public class ParallelBeautifulCrossword extends BeautifulCrossword {
         super.printBoard(board);
     }
 
-    @Override
-    public synchronized boolean isSubsetOfAKnownPuzzle(Board board) {
-        return super.isSubsetOfAKnownPuzzle(board);
-    }
 
     public ParallelBeautifulCrossword() {
-    }
-
-    @Override
-    protected synchronized boolean checkAndAddBuilder(CrosswordBuilder builder) {
-        return super.checkAndAddBuilder(builder);
     }
 
     public void execute(CrosswordBuilder builder) {
