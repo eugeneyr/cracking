@@ -124,12 +124,33 @@ public class CrosswordBuilder implements Callable<Void> {
         return null;
     }
 
+    static class PermutationComparator implements Comparator<Collection<WordPlacement>> {
+        private Board board;
+        private int n;
+        private int i;
+        private Direction direction;
+
+        public PermutationComparator(Board board, int n, int i, Direction direction) {
+            this.board = board;
+            this.n = n;
+            this.i = i;
+            this.direction = direction;
+        }
+
+        @Override
+        public int compare(Collection<WordPlacement> o1, Collection<WordPlacement> o2) {
+            // @TODO Build a comparator that picks the best permutations for the current row / column.
+            // Further @TODO: Figure the way to use weights in it.
+            return 0;
+        }
+    }
     public Collection<Collection<WordPlacement>> getAllPermutations(Board board, int i, Direction direction) {
-        Set<Collection<WordPlacement>> result = new LinkedHashSet<>();
+        Set<Collection<WordPlacement>> result = new TreeSet<>(new PermutationComparator(board, n, i, direction));
         int x = direction == Direction.ACROSS ? 0 : i;
         int y = direction == Direction.ACROSS ? i : 0;
 
         generatePermutations(board, x, y, direction, Collections.EMPTY_SET, result, board.getWords());
+
         return result;
     }
 

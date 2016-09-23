@@ -303,38 +303,4 @@ public class BeautifulCrossword {
     public double calculateScore(String[] puzzle) {
         return Metrics.calculateScore(puzzle, n, weights, store.getWords().toArray(new String[0]));
     }
-
-    public static void main(String[] args) {
-        String fileName = args[0];
-        BeautifulCrossword bc = new BeautifulCrossword();
-        bc.generateCrossword(11, fileName, new int[]{6, 8, 7, 10});
-        List<Board> puzzles = new ArrayList<>(bc.getBestPuzzles());
-        Collections.sort(puzzles, new WeightComparator(bc));
-
-        if (puzzles.size() > 0) {
-            Board best = puzzles.get(puzzles.size() - 1);
-            System.out.println("Best:");
-            bc.printBoard(best);
-        }
-
-        // By the number of words
-        puzzles = new ArrayList<>(bc.getKnownPuzzles());
-        Collections.sort(puzzles, new Comparator<Board>() {
-            @Override
-            public int compare(Board o1, Board o2) {
-                if (o1.equals(o2)) {
-                    return 0;
-                }
-                double l1 = o1.getWords().size();
-                double l2 = o2.getWords().size();
-                return l1 == l2 ? 0 : l1 < l2 ? -1 : 1;
-            }
-        });
-
-        if (puzzles.size() > 0) {
-            Board best = puzzles.get(puzzles.size() - 1);
-            System.out.println("Most words: " + best.getWords().size());
-            bc.printBoard(best);
-        }
-    }
 }
