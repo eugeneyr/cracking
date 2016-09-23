@@ -293,7 +293,7 @@ public class BeautifulCrossword {
 
     public String getState() {
         long tasks = Metrics.builderInstances.get();
-        double seconds = ((double)(System.currentTimeMillis() - Metrics.startTime)) / 1000;
+        double seconds = ((double)(System.currentTimeMillis() - Metrics.START_TIME)) / 1000;
         double speed = tasks / seconds;
         return String.format(
                 " *** known puzzles = %d *** time spent = %.3fs speed = %.2f tasks/s",

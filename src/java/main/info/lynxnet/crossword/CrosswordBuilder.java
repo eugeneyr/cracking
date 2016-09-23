@@ -80,15 +80,6 @@ public class CrosswordBuilder implements Callable<Void> {
                     context.getState());
             context.printBoard(board);
         }
-        // Prevent repeatedly going down same search trees.
-//        if (context.isSubsetOfAKnownPuzzle(board)) {
-//            long reps = Metrics.identicalBoards.incrementAndGet();
-//            if (reps % 1000 == 0) {
-//                System.out.println(String.format("Prevented repeats = %d *** I = %d *** DIR = %s", reps, i, direction.toString()));
-//            }
-//            return null;
-//        }
-
         // - if I = N, add B0 to the list of results.
         if (i >= n) {
             context.addKnownPuzzle(board);
@@ -202,18 +193,7 @@ public class CrosswordBuilder implements Callable<Void> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-//        System.out.println("************************************ CrosswordBuilder.equals: *****************************************");
-//        System.out.println(this.toString());
-//        System.out.println(o.toString());
-//        new Exception().printStackTrace(System.out);
-//        System.out.println("*******************************************************************************************************");
         CrosswordBuilder that = (CrosswordBuilder) o;
-//        if (Objects.equals(board, that.board)) {
-//            Metrics.identicalBoards.incrementAndGet();
-//            System.out.printf(
-//                    "Identical boards, this.i = %d that.i = %d this.dir = %s that.dir = %s\n",
-//                    i, that.i, direction, that.direction);
-//        }
         return n == that.n &&
                 i == that.i &&
                 Objects.equals(board, that.board) &&

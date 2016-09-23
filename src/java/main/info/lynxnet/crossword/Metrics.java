@@ -1,25 +1,28 @@
 package info.lynxnet.crossword;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Metrics {
-    public static final long startTime = System.currentTimeMillis();
-    public static AtomicLong identicalBoards = new AtomicLong(0);
+    public static final long START_TIME = System.currentTimeMillis();
     public static AtomicLong builderInstances = new AtomicLong(0);
     public static AtomicLong knownPuzzles = new AtomicLong(0);
+    public static final AtomicBoolean LOG_ON = new AtomicBoolean(false);
 
     static void addFatalError(String message) {
         System.out.println(message);
     }
 
     static void log(String message) {
-        //System.out.println(message);
+        if (LOG_ON.get()) {
+            System.out.println(message);
+        }
     }
 
     public static double calculateScore(String[] puzzle, int n, int[] weights, String[] words) {
-        int i = 0;
-        int j = 0;
+        int i;
+        int j;
 
         char[][] board = new char[n][n];
         for (i = 0; i < n; i++) {
