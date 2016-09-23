@@ -74,11 +74,10 @@ public class CrosswordBuilder implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         long myNo = Metrics.builderInstances.incrementAndGet();
-        if (myNo % 10000 == 0) {
-            System.out.printf("Instantiated builders = %d *** Known puzzles = %d *** Identical boards = %d\nCurrent Board:\n",
+        if (myNo % 1000000 == 0) {
+            System.out.printf("Instantiated builders = %d %s\nCurrent Board:\n",
                     myNo,
-                    context.getKnownPuzzles().size(),
-                    Metrics.identicalBoards.get());
+                    context.getState());
             context.printBoard(board);
         }
         // Prevent repeatedly going down same search trees.

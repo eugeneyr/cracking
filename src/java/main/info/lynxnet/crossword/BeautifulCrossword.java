@@ -1,8 +1,6 @@
 package info.lynxnet.crossword;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /*
 
@@ -157,11 +155,11 @@ public class BeautifulCrossword {
     protected Set<CrosswordBuilder> knownBuilders = new HashSet<>();
     protected double topScore = 0.0;
 
-    protected ExecutorService service = Executors.newWorkStealingPool(Runtime.getRuntime().availableProcessors());
-
     public void addKnownPuzzle(Board board) {
-        if (!isSubsetOfAKnownPuzzle(board)) {
-            knownPuzzles.add(board);
+        //if (!isSubsetOfAKnownPuzzle(board)) {
+            //knownPuzzles.add(board);
+            // long noOfKnownPuzzles = knownPuzzles.size();
+            long noOfKnownPuzzles = Metrics.knownPuzzles.incrementAndGet();
             String[] b = board.asStringArray();
             double score = calculateScore(b);
             if (score > topScore) {
@@ -170,7 +168,7 @@ public class BeautifulCrossword {
                 topScore = score;
                 System.out.println(
                         String.format("*** FOUND *** KNOWN PUZZLES = %d *** WORDS = %d/%d *** SCORE = %f ",
-                                knownPuzzles.size(),
+                                noOfKnownPuzzles,
                                 board.getWords().size(), store.getWords().size(),
                                 score));
                 for (String s : b) {
@@ -180,14 +178,14 @@ public class BeautifulCrossword {
                 bestPuzzles.add(board);
                 System.out.println(
                         String.format("*** FOUND ANOTHER *** KNOWN PUZZLES = %d *** WORDS = %d/%d *** SCORE = %f ",
-                                knownPuzzles.size(),
+                                noOfKnownPuzzles,
                                 board.getWords().size(), store.getWords().size(),
                                 score));
                 for (String s : b) {
                     System.out.println(s);
                 }
             }
-        }
+        //}
     }
 
     public void printBoard(Board board) {
@@ -237,12 +235,6 @@ public class BeautifulCrossword {
     }
 
     public void execute(CrosswordBuilder builder) {
-        if (knownBuilders.contains(builder)) {
-            System.out.println("*** *** *** *** DUPLICATE *** *** *** ***");
-            System.out.println(builder.toString());
-            return;
-        }
-        knownBuilders.add(builder);
         try {
             builder.call();
         } catch (Exception e) {
@@ -250,12 +242,14 @@ public class BeautifulCrossword {
         }
     }
 
-    public void executeInParallel(CrosswordBuilder builder) {
-        try {
-            service.submit(builder);
-        } catch (Exception e) {
-            e.printStackTrace();
+    protected boolean checkAndAddBuilder(CrosswordBuilder builder) {
+        if (knownBuilders.contains(builder)) {
+            System.out.println("*** *** *** *** DUPLICATE *** *** *** ***");
+            System.out.println(builder.toString());
+            return true;
         }
+        knownBuilders.add(builder);
+        return false;
     }
 
     public String[] generateCrossword(int N, String[] words, int[] weights) {
@@ -293,9 +287,17 @@ public class BeautifulCrossword {
         execute(new CrosswordBuilder(this, board, n, 0, Direction.ACROSS));
 
         List<Board> puzzles = new ArrayList<>(getBestPuzzles());
-        Collections.sort(puzzles, new WeightComparator(this));
 
         return puzzles.size() > 0 ? puzzles.get(puzzles.size() - 1).asStringArray() : null;
+    }
+
+    public String getState() {
+        long tasks = Metrics.builderInstances.get();
+        double seconds = ((double)(System.currentTimeMillis() - Metrics.startTime)) / 1000;
+        double speed = tasks / seconds;
+        return String.format(
+                " *** known puzzles = %d *** time spent = %.3fs speed = %.2f tasks/s",
+                Metrics.knownPuzzles.get(), seconds, speed);
     }
 
     public double calculateScore(String[] puzzle) {
