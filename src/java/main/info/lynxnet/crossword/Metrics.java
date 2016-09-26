@@ -9,6 +9,8 @@ public class Metrics {
     public static AtomicLong builderInstances = new AtomicLong(0);
     public static AtomicLong knownPuzzles = new AtomicLong(0);
     public static final AtomicBoolean LOG_ON = new AtomicBoolean(false);
+    public static final AtomicLong permGenCount = new AtomicLong(0);
+    public static final AtomicLong permCount = new AtomicLong(0);
 
     static void addFatalError(String message) {
         System.out.println(message);

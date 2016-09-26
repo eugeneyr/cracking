@@ -407,6 +407,18 @@ public class Board implements Cloneable {
         return true;
     }
 
+    public char[] getLine(int idx, Direction dir) {
+        if (idx >= n || idx < 0 || dir == null) {
+            throw new IllegalArgumentException("Garbage in, exception out");
+        }
+        char[] rv = new char[n];
+        for (int i = 0; i < n; i++) {
+            Cell cell = grid[dir == Direction.ACROSS ? idx : i][dir == Direction.ACROSS ? i : idx];
+            rv[i] = cell.getLetter();
+        }
+        return rv;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

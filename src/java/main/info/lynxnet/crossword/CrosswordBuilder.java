@@ -71,9 +71,18 @@ public class CrosswordBuilder implements Callable<Void> {
     public Void call() throws Exception {
         long myNo = Metrics.builderInstances.incrementAndGet();
         if (myNo % 1000000 == 0) {
-            System.out.printf("Instantiated builders = %d %s\nCurrent Board:\n",
+            double avgPermLength = 0.0;
+            long perms = Metrics.permCount.get();
+            long permGens = Metrics.permGenCount.get();
+            if (permGens > 0) {
+                avgPermLength = (double) perms / permGens;
+            }
+            System.out.printf("Instantiated builders = %d %s\nCurrent Best Score = %.3f\n" +
+                            "Avg Perm Length = %.3f\nCurrent Board:\n",
                     myNo,
-                    context.getState());
+                    context.getState(),
+                    context.getTopScore(),
+                    avgPermLength);
             context.printBoard(board);
         }
         // - if I = N, add B0 to the list of results.
@@ -111,32 +120,17 @@ public class CrosswordBuilder implements Callable<Void> {
         return null;
     }
 
-    static class PermutationComparator implements Comparator<Collection<WordPlacement>> {
-        private Board board;
-        private int n;
-        private int i;
-        private Direction direction;
-
-        public PermutationComparator(Board board, int n, int i, Direction direction) {
-            this.board = board;
-            this.n = n;
-            this.i = i;
-            this.direction = direction;
-        }
-
-        @Override
-        public int compare(Collection<WordPlacement> o1, Collection<WordPlacement> o2) {
-            // @TODO Build a comparator that picks the best permutations for the current row / column.
-            // Further @TODO: Figure the way to use weights in it.
-            return 0;
-        }
-    }
     public Collection<Collection<WordPlacement>> getAllPermutations(Board board, int i, Direction direction) {
-        Set<Collection<WordPlacement>> result = new TreeSet<>(new PermutationComparator(board, n, i, direction));
+        List<Collection<WordPlacement>> result = new ArrayList<>();
+
         int x = direction == Direction.ACROSS ? 0 : i;
         int y = direction == Direction.ACROSS ? i : 0;
 
         generatePermutations(board, x, y, direction, Collections.EMPTY_SET, result, board.getWords());
+        Metrics.permGenCount.incrementAndGet();
+        Metrics.permCount.addAndGet(result.size());
+
+        result.sort(new PermutationComparator(board, n, i, direction, context.getWeights()));
 
         return result;
     }

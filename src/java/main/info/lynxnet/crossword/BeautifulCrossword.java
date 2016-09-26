@@ -215,6 +215,10 @@ public class BeautifulCrossword {
         return bestPuzzles;
     }
 
+    public double getTopScore() {
+        return topScore;
+    }
+
     public void execute(CrosswordBuilder builder) {
         try {
             builder.call();
