@@ -10,6 +10,9 @@ public class CrosswordBuilder implements Callable<Void> {
     private Board board;
     private Direction direction;
 
+    public static final int MAX_PERM_SET_SIZE = 6;
+    public static final boolean RANK_BY_SCORES = true;
+
     public CrosswordBuilder(BeautifulCrossword context, Board board, int n, int i, Direction direction) {
         this.n = n;
         this.context = context;
@@ -78,11 +81,12 @@ public class CrosswordBuilder implements Callable<Void> {
                 avgPermLength = (double) perms / permGens;
             }
             System.out.printf("Instantiated builders = %d %s\nCurrent Best Score = %.3f\n" +
-                            "Avg Perm Length = %.3f\nCurrent Board:\n",
+                            "Avg Perm Length = %.3f\nMax Seen Perm Size Length=%d\nCurrent Board:\n",
                     myNo,
                     context.getState(),
                     context.getTopScore(),
-                    avgPermLength);
+                    avgPermLength,
+                    Metrics.maxPermSetSize.get());
             context.printBoard(board);
         }
         // - if I = N, add B0 to the list of results.
@@ -96,15 +100,7 @@ public class CrosswordBuilder implements Callable<Void> {
         for (Collection<WordPlacement> perm : permutations) {
             Board newBoard = board.clone();
             for (WordPlacement wp : perm) {
-                try {
-                    newBoard.addWordPlacement(wp);
-                } catch (IllegalArgumentException e) {
-                    System.out.println("WRONGER:");
-                    context.printBoard(board);
-                    System.out.println("BAD APPLE: " + wp.toString());
-                    e.printStackTrace(System.out);
-                    System.exit(-1);
-                }
+                newBoard.addWordPlacement(wp);
             }
             CrosswordBuilder newBuilder = null;
             switch (direction) {
@@ -129,8 +125,19 @@ public class CrosswordBuilder implements Callable<Void> {
         generatePermutations(board, x, y, direction, Collections.EMPTY_SET, result, board.getWords());
         Metrics.permGenCount.incrementAndGet();
         Metrics.permCount.addAndGet(result.size());
+        long maxSize = Metrics.maxPermSetSize.get();
 
-        result.sort(new PermutationComparator(board, n, i, direction, context.getWeights()));
+        if (maxSize < result.size()) {
+            Metrics.maxPermSetSize.compareAndSet(maxSize, result.size());
+        }
+
+        if (RANK_BY_SCORES) {
+            result.sort(new PermutationComparator(board, n, i, direction, context.getWeights()));
+        }
+
+        if (result.size() > MAX_PERM_SET_SIZE) {
+            result = result.subList(0, MAX_PERM_SET_SIZE);
+        }
 
         return result;
     }
@@ -157,7 +164,6 @@ public class CrosswordBuilder implements Callable<Void> {
                 generatePermutations(board, newX, newY, direction, newPerm, result, newBlackList);
             }
         }
-        // handle the empty string/set case
         int newX = direction == Direction.ACROSS ? x + 1 : x;
         int newY = direction == Direction.DOWN ? y + 1 : y;
         generatePermutations(board, newX, newY, direction, perm, result, blacklist);

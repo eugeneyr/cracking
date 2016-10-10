@@ -8,16 +8,17 @@ public class Metrics {
     public static final long START_TIME = System.currentTimeMillis();
     public static AtomicLong builderInstances = new AtomicLong(0);
     public static AtomicLong knownPuzzles = new AtomicLong(0);
-    public static final AtomicBoolean LOG_ON = new AtomicBoolean(false);
+    public static final AtomicBoolean LOGGING_ON = new AtomicBoolean(false);
     public static final AtomicLong permGenCount = new AtomicLong(0);
     public static final AtomicLong permCount = new AtomicLong(0);
+    public static final AtomicLong maxPermSetSize = new AtomicLong(0);
 
     static void addFatalError(String message) {
         System.out.println(message);
     }
 
     static void log(String message) {
-        if (LOG_ON.get()) {
+        if (LOGGING_ON.get()) {
             System.out.println(message);
         }
     }

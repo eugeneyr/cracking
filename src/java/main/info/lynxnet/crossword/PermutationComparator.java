@@ -43,13 +43,22 @@ class PermutationComparator implements Comparator<Collection<WordPlacement>> {
         double newWordsFillScore = (double) totalLength / n;
 
         double symmetryScore = 0.0;
+
         for (int j = 0; j < n / 2; j++) {
             if (permLine[j] != Constants.EMPTY_CELL_FILLER && permLine[n - 1 - j] != Constants.EMPTY_CELL_FILLER) {
-                symmetryScore += n / 2 - j;
+                symmetryScore += (n / 2 - j) / n;
             }
         }
 
         symmetryScore /= n * n;
+
+//        for (int j = 0; j < n / 2; j++) {
+//            if (permLine[j] != Constants.EMPTY_CELL_FILLER && permLine[n - 1 - j] != Constants.EMPTY_CELL_FILLER) {
+//                symmetryScore += 1;
+//            }
+//        }
+//
+//        symmetryScore /= n;
 
         int crossings = 0;
 
