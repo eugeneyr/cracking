@@ -1,4 +1,4 @@
-package info.lynxnet.testdome;
+package info.lynxnet.traversexml;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
