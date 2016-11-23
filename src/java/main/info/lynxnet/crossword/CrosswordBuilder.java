@@ -40,7 +40,7 @@ public class CrosswordBuilder implements Callable<Void> {
     /*
          The outline of the algorithm to implement:
 
-         * The direction is along he main diagonal, from (0, 0) to (N - 1, N - 1)
+         * The direction is along the main diagonal, from (0, 0) to (N - 1, N - 1)
 
          * The prerequisites for each step:
            - the "current" board B0
