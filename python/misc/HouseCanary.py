@@ -17,6 +17,7 @@ def remove_dups_recursively(s):
             return res[1:]
     return head + res
 
+
 def remove_dups_with_stack(s):
     stack = [c for c in s]
     rv = []
@@ -30,8 +31,10 @@ def remove_dups_with_stack(s):
         rv.insert(0, c_before)
     return ''.join(rv)
 
+
 import unittest
 import collections
+
 
 class TestRemovals(unittest.TestCase):
     def setUp(self):
