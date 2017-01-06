@@ -63,7 +63,7 @@ class PermutationComparator implements Comparator<Collection<WordPlacement>> {
         int crossings = 0;
 
         long filling = new String(newLine).chars().filter(c -> c != Constants.EMPTY_CELL_FILLER).count();
-        double fillingScore = filling / n;
+        double fillingScore = filling / n / n;
 
         for (int j = 0; j < n; j++) {
             crossings += permLine[j] != Constants.EMPTY_CELL_FILLER && existingLine[j] != Constants.EMPTY_CELL_FILLER
