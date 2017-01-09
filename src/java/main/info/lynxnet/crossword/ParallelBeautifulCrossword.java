@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 public class ParallelBeautifulCrossword extends BeautifulCrossword {
     protected BlockingQueue<Runnable> queue = new LinkedBlockingDeque<Runnable>(100000);
     protected ExecutorService service = new ThreadPoolExecutor(
-            2, Runtime.getRuntime().availableProcessors(),
+            2, Runtime.getRuntime().availableProcessors() / 2,
             10, TimeUnit.SECONDS, queue, new ThreadPoolExecutor.CallerRunsPolicy());
 
     public long getActiveCount() {
@@ -22,17 +22,6 @@ public class ParallelBeautifulCrossword extends BeautifulCrossword {
         return String.format("%s active tasks = %d queued submissions = %d ***",
                 super.getState(), getActiveCount(), getQueuedSubmissionCount());
     }
-
-    @Override
-    public synchronized void addKnownPuzzle(Board board) {
-        super.addKnownPuzzle(board);
-    }
-
-    @Override
-    public synchronized void printBoard(Board board) {
-        super.printBoard(board);
-    }
-
 
     public ParallelBeautifulCrossword() {
     }
@@ -66,5 +55,12 @@ public class ParallelBeautifulCrossword extends BeautifulCrossword {
         }
         List<Board> puzzles = new ArrayList<>(getBestPuzzles());
         return puzzles.size() > 0 ? puzzles.get(puzzles.size() - 1).asStringArray() : null;
+    }
+
+    @Override
+    public void shutdown() {
+        super.shutdown();
+        System.out.println(String.format("Current queue length: %d", queue.size()));
+        service.shutdown();
     }
 }

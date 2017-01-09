@@ -260,4 +260,8 @@ public class BeautifulCrossword {
     public double calculateScore(String[] puzzle) {
         return Metrics.calculateScore(puzzle, n, weights, store.getWords().toArray(new String[0]));
     }
+
+    public void shutdown() {
+        // noop
+    }
 }

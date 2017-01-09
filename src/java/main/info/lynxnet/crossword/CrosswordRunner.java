@@ -32,6 +32,7 @@ public class CrosswordRunner {
         } else {
             System.out.println("Not found");
         }
+        bc.shutdown();
     }
 
 }
