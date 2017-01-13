@@ -29,7 +29,23 @@ E.L.COCCOID
 R..........
 .TRAY.SINUS
 
+Best:
+SCORE = 0.5433230503611735
+BORER.BOTAS
+R..........
+A.FUSEL.U.C
+S...I...M.O
+H.SINEW.P.C
+..T.U...S.C
+A.A.SIMA..O
+H.C.......I
+E.K.INDEX.D
+D.E........
+.TRAY.OVER.
 
+
+the reference one:
+score = 0.583071181018395
 BORER.BOTAS
 R......V..I
 A....C.E..N
@@ -41,3 +57,5 @@ S.L..I..Y.U
 I..INDEX..M
 M.........P
 AHED..SINUS
+
+

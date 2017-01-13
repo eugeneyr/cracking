@@ -10,7 +10,7 @@ public class CrosswordBuilder implements Callable<Void> {
     private Board board;
     private Direction direction;
 
-    public static final int MAX_PERM_SET_SIZE = 6;
+    public static final int MAX_PERM_SET_SIZE = 9;
     public static final boolean RANK_BY_SCORES = true;
 
     public CrosswordBuilder(BeautifulCrossword context, Board board, int n, int i, Direction direction) {
