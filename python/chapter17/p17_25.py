@@ -61,7 +61,7 @@ def loadTrie(fileName):
         return root
 
 
-def getCrossWords(words: list):
+def getCrossWords(words):
     rv = []
     if len(words) > 0:
         wordLen = len(words[0])
