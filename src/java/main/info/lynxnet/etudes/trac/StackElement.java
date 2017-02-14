@@ -7,6 +7,7 @@ import java.util.List;
 public class StackElement {
     private boolean active;
     private List<Lexem> arguments = new ArrayList<>();
+    private int offset;
 
     public List<Lexem> getArguments() {
         return arguments;
@@ -16,8 +17,13 @@ public class StackElement {
         return active;
     }
 
-    public StackElement(boolean active, Lexem... arguments) {
+    public int getOffset() {
+        return offset;
+    }
+
+    public StackElement(boolean active, int offset, Lexem... arguments) {
         this.active = active;
+        this.offset = offset;
         this.arguments.addAll(Arrays.asList(arguments));
     }
 }
