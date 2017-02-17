@@ -3,6 +3,7 @@ package info.lynxnet.etudes.trac;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StackElement {
     private boolean active;
@@ -25,5 +26,14 @@ public class StackElement {
         this.active = active;
         this.offset = offset;
         this.arguments.addAll(Arrays.asList(arguments));
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(active ? "#(" : "##(");
+        sb.append(String.join(",", arguments.stream().map(Lexem::getValue).collect(Collectors.toList())));
+        sb.append(") [offset=");
+        sb.append(offset).append(']');
+        return sb.toString();
     }
 }

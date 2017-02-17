@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public class State4 extends StateBase {
-    public State4(StateMachine stateMachine) {
+public class InterpreterState4 extends InterpreterStateBase {
+    public InterpreterState4(StateMachine stateMachine) {
         super(stateMachine);
     }
 
@@ -11,7 +11,7 @@ public class State4 extends StateBase {
     }
 
     @Override
-    public Class<? extends State> actionAndTransition() {
+    public Class<? extends InterpreterState> actionAndTransition() {
         char ch = this.stateMachine.getActiveString().charAt(0);
         if (ch == ',') {
             // end of a function argument and the beginning of the next one
@@ -33,9 +33,9 @@ public class State4 extends StateBase {
             }
             current.getArguments().add(new Lexem(this.stateMachine.getNeutralString().length()));
             this.stateMachine.getActiveString().deleteCharAt(0);
-            return State1.class;
+            return InterpreterState1.class;
         } else {
-            return State5.class;
+            return InterpreterState5.class;
         }
     }
 }

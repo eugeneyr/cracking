@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public class State7 extends StateBase {
-    public State7(StateMachine stateMachine) {
+public class InterpreterState7 extends InterpreterStateBase {
+    public InterpreterState7(StateMachine stateMachine) {
         super(stateMachine);
     }
 
@@ -14,14 +14,14 @@ public class State7 extends StateBase {
     }
 
     @Override
-    public Class<? extends State> actionAndTransition() {
+    public Class<? extends InterpreterState> actionAndTransition() {
         if (precondition()) {
             // a # that does not start a function
             this.stateMachine.getActiveString().deleteCharAt(0);
             this.stateMachine.getNeutralString().append('#');
-            return State1.class;
+            return InterpreterState1.class;
         } else {
-            return State8.class;
+            return InterpreterState8.class;
         }
     }
 }

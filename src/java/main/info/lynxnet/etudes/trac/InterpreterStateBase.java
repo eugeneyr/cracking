@@ -1,9 +1,9 @@
 package info.lynxnet.etudes.trac;
 
-public abstract class StateBase implements State {
+public abstract class InterpreterStateBase implements InterpreterState {
     protected StateMachine stateMachine;
 
-    public StateBase(StateMachine stateMachine) {
+    public InterpreterStateBase(StateMachine stateMachine) {
         this.stateMachine = stateMachine;
     }
 
@@ -13,5 +13,10 @@ public abstract class StateBase implements State {
 
     public void setStateMachine(StateMachine stateMachine) {
         this.stateMachine = stateMachine;
+    }
+
+    @Override
+    public boolean isInitial() {
+        return false;
     }
 }

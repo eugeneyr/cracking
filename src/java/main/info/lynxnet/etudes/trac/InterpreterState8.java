@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public class State8 extends StateBase {
-    public State8(StateMachine stateMachine) {
+public class InterpreterState8 extends InterpreterStateBase {
+    public InterpreterState8(StateMachine stateMachine) {
         super(stateMachine);
     }
 
@@ -12,11 +12,11 @@ public class State8 extends StateBase {
     }
 
     @Override
-    public Class<? extends State> actionAndTransition() {
+    public Class<? extends InterpreterState> actionAndTransition() {
         if (precondition()) {
             // a closing parenthesis
             if (this.stateMachine.getCallStack().empty()) {
-                return State0.class;
+                return InterpreterState0.class;
             }
             this.stateMachine.getActiveString().deleteCharAt(0);
             StackElement current = this.stateMachine.getCallStack().pop();
@@ -29,12 +29,9 @@ public class State8 extends StateBase {
                 this.stateMachine.getNeutralString().append(result);
             }
 
-
-
-
-            return State1.class;
+            return InterpreterState1.class;
         } else {
-            return State9.class;
+            return InterpreterState9.class;
         }
     }
 }

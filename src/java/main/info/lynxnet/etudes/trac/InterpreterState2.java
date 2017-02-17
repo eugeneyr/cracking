@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public class State2 extends StateBase {
-    public State2(StateMachine stateMachine) {
+public class InterpreterState2 extends InterpreterStateBase {
+    public InterpreterState2(StateMachine stateMachine) {
         super(stateMachine);
     }
 
@@ -13,12 +13,12 @@ public class State2 extends StateBase {
     }
 
     @Override
-    public Class<? extends State> actionAndTransition() {
+    public Class<? extends InterpreterState> actionAndTransition() {
         char ch = this.stateMachine.getActiveString().charAt(0);
         if (Character.isSpaceChar(ch) && ch != ' ') {
             this.stateMachine.getActiveString().deleteCharAt(0);
-            return State1.class;
+            return InterpreterState1.class;
         }
-        return State3.class;
+        return InterpreterState3.class;
     }
 }

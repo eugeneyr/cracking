@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public class State5 extends StateBase {
-    public State5(StateMachine stateMachine) {
+public class InterpreterState5 extends InterpreterStateBase {
+    public InterpreterState5(StateMachine stateMachine) {
         super(stateMachine);
     }
 
@@ -11,16 +11,16 @@ public class State5 extends StateBase {
     }
 
     @Override
-    public Class<? extends State> actionAndTransition() {
+    public Class<? extends InterpreterState> actionAndTransition() {
         if (this.stateMachine.getActiveString().indexOf(Constants.ACTIVE_FUNCTION_MARKER) == 0) {
             // beginning of an active function
             StackElement current = new StackElement(true, this.stateMachine.getNeutralString().length());
             this.stateMachine.setCurrentStackElement(current);
             this.stateMachine.getCallStack().push(current);
             this.stateMachine.getActiveString().delete(0, Constants.ACTIVE_FUNCTION_MARKER.length());
-            return State1.class;
+            return InterpreterState1.class;
         } else {
-            return State6.class;
+            return InterpreterState6.class;
         }
     }
 }

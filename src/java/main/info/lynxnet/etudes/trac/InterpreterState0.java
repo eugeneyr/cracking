@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public class State0 extends StateBase {
-    public State0(StateMachine stateMachine) {
+public class InterpreterState0 extends InterpreterStateBase {
+    public InterpreterState0(StateMachine stateMachine) {
         super(stateMachine);
     }
 
@@ -11,11 +11,16 @@ public class State0 extends StateBase {
     }
 
     @Override
-    public Class<? extends State> actionAndTransition() {
+    public boolean isInitial() {
+        return true;
+    }
+
+    @Override
+    public Class<? extends InterpreterState> actionAndTransition() {
         this.stateMachine.getNeutralString().setLength(0);
         this.stateMachine.getActiveString().setLength(0);
         this.stateMachine.setScanPointer(0);
         this.stateMachine.getActiveString().append(Constants.INITIAL_ACTIVE_STRING);
-        return State1.class;
+        return InterpreterState1.class;
     }
 }

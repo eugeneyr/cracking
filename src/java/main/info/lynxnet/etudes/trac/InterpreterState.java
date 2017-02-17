@@ -1,4 +1,7 @@
 package info.lynxnet.etudes.trac;
 
-public interface InterpreterState {
+interface InterpreterState {
+    boolean precondition();
+    boolean isInitial();
+    Class<? extends InterpreterState> actionAndTransition();
 }
