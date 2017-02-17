@@ -25,7 +25,21 @@ public class StackElement {
     public StackElement(boolean active, int offset, Lexem... arguments) {
         this.active = active;
         this.offset = offset;
-        this.arguments.addAll(Arrays.asList(arguments));
+        if (arguments == null || arguments.length == 0) {
+            this.arguments.add(new Lexem(offset, null, false));
+        } else {
+            this.arguments.addAll(Arrays.asList(arguments));
+        }
+    }
+
+    public Lexem completeArgument(StateMachine stateMachine) {
+        if (arguments.size() == 0) {
+            throw new IllegalStateException("The stack element has no arguments");
+        }
+        Lexem arg = arguments.get(arguments.size() - 1);
+        arg.setValue(stateMachine.getNeutralString().substring(arg.getOffset()));
+        arg.setCompleted(true);
+        return arg;
     }
 
     @Override

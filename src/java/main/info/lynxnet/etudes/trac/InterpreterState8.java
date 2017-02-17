@@ -20,6 +20,7 @@ public class InterpreterState8 extends InterpreterStateBase {
             }
             this.stateMachine.getActiveString().deleteCharAt(0);
             StackElement current = this.stateMachine.getCallStack().pop();
+            current.completeArgument(stateMachine);
             this.stateMachine.getNeutralString().delete(
                     current.getOffset(), this.stateMachine.getNeutralString().length());
             String result = FunctionEvaluator.evaluate(current);

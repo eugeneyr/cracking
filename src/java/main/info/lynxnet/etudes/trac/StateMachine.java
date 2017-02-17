@@ -72,14 +72,20 @@ public class StateMachine {
             System.err.println("Invalid state machine configuration: missing initial state");
             return -1;
         }
+        String oldNeutral = "";
+        String oldActive = "";
         InterpreterState state = this.initialState;
         long cycle = 0L;
         while (true) {
             Class<? extends InterpreterState> nextStateClass = state.actionAndTransition();
-            System.out.println(String.format(
-                    "[%d] %s: %s <---> %s", cycle,
-                    state.getClass().getName(),
-                    this.neutralString.toString(), this.activeString.toString()));
+            if (!oldNeutral.equals(neutralString.toString()) || !oldActive.equals(activeString.toString())) {
+                System.out.println(String.format(
+                        "[%d] %s: %s <---> %s", cycle,
+                        state.getClass().getName(),
+                        neutralString.toString(), activeString.toString()));
+            }
+            oldNeutral = neutralString.toString();
+            oldActive = activeString.toString();
             if (nextStateClass == null) {
                 System.err.println(String.format("State %s transitioned to a null", state.getClass().getName()));
                 return -1;
@@ -92,7 +98,7 @@ public class StateMachine {
             state = nextState;
             cycle++;
             // temp!
-            if (cycle > 64) {
+            if (cycle > 128) {
                 return 0;
             }
         }

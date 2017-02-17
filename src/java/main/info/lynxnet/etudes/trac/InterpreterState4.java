@@ -19,7 +19,7 @@ public class InterpreterState4 extends InterpreterStateBase {
                     ? new StackElement(true, this.stateMachine.getNeutralString().length())
                     : this.stateMachine.getCurrentStackElement();
             if (current.getArguments().isEmpty()) {
-                current.getArguments().add(new Lexem(0, ""));
+                current.getArguments().add(new Lexem(current.getOffset(), ""));
             }
             if (this.stateMachine.getCurrentStackElement() == null) {
                 this.stateMachine.setCurrentStackElement(current);
@@ -31,6 +31,7 @@ public class InterpreterState4 extends InterpreterStateBase {
                     prevLexem.setCompleted(true);
                 }
             }
+            current.completeArgument(stateMachine);
             current.getArguments().add(new Lexem(this.stateMachine.getNeutralString().length()));
             this.stateMachine.getActiveString().deleteCharAt(0);
             return InterpreterState1.class;
