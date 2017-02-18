@@ -1,5 +1,6 @@
 package info.lynxnet.etudes.trac.functions;
 
+import info.lynxnet.etudes.trac.Configuration;
 import info.lynxnet.etudes.trac.Constants;
 import info.lynxnet.etudes.trac.Form;
 import info.lynxnet.etudes.trac.StackElement;
@@ -26,8 +27,8 @@ public class ReadString implements BuiltInFunction {
                 // System.out.print("TRACK>");
                 line = reader.readLine();
                 if (line != null) {
-                    if (line.contains(Constants.METACHARACTER)) {
-                        result.append(line.substring(0, line.indexOf(Constants.METACHARACTER)));
+                    if (line.indexOf(Configuration.getInstance().getMetacharacter()) >= 0) {
+                        result.append(line.substring(0, line.indexOf(Configuration.getInstance().getMetacharacter())));
                         break;
                     }
                     result.append(line);

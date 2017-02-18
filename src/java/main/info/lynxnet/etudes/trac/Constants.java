@@ -5,7 +5,7 @@ public interface Constants {
     String NEUTRAL_FUNCTION_MARKER = "##(";
     char OPENING_BRACKET = '(';
     char CLOSING_BRACKET = ')';
-    String METACHARACTER = "'";
+    char METACHARACTER = '\'';
     String LINE_BREAK = "CR-LF";
     String INITIAL_ACTIVE_STRING = "#(ps,(CR-LF))#(ps,#(rs))";
 }
