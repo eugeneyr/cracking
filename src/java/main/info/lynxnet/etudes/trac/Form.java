@@ -9,7 +9,7 @@ public class Form {
     private String name;
     private StringBuilder body = new StringBuilder();
     private int pointer = 0;
-    private List<FormElement> elements = new ArrayList<>();
+    private List<FormMarker> markers = new ArrayList<>();
 
     public Form(String name, StringBuilder body) {
         this.name = name;
@@ -32,29 +32,60 @@ public class Form {
         this.pointer = pointer;
     }
 
-    public List<FormElement> getElements() {
-        return elements;
+    public List<FormMarker> getMarkers() {
+        return markers;
     }
 
     public boolean hasMarkers(int offset, int length) {
-        return elements.stream().filter(elem ->
-            elem instanceof FormMarker && elem.getOffset() >= offset && elem.getOffset() < offset + length
+        return markers.stream().filter(elem ->
+            elem.getOffset() >= offset && elem.getOffset() < offset + length
         ).count() > 0;
     }
 
     public void adjustOffsets(int start, int shift) {
-        List<FormElement> afters = elements.stream().filter(elem ->
-                elem instanceof FormMarker && elem.getOffset() >= start
+        List<FormMarker> afters = markers.stream().filter(elem -> elem.getOffset() >= start
         ).collect(Collectors.toList());
         afters.stream().forEach(elem -> elem.setOffset(elem.getOffset() + shift));
     }
 
     public int getLastMarkerOffsetInRange(int offset, int length) {
-        Optional<FormElement> marker = elements.stream().filter(elem ->
-                elem instanceof FormMarker && elem.getOffset() >= offset && elem.getOffset() < offset + length
+        Optional<FormMarker> marker = markers.stream().filter(
+                elem -> elem.getOffset() >= offset && elem.getOffset() < offset + length
         ).max((a, b) -> a.getOffset() - b.getOffset());
         return  marker.isPresent() ? marker.get().getOffset() : offset + length;
     }
+
+    public int getClosestMarkerOffset(int offset) {
+        Optional<FormMarker> marker = markers.stream().filter(
+                elem -> elem.getOffset() > offset
+        ).min((a, b) -> a.getOffset() - b.getOffset());
+        return  marker.isPresent() ? marker.get().getOffset() : body.length();
+    }
+
+    public List<FormElement> segment() {
+        List<FormElement> result = new ArrayList<>();
+        List<FormMarker> sorted = markers.stream().sorted(
+                (a, b) -> a.getOffset() - b.getOffset()).collect(Collectors.toList());
+        for (int i = 0; i < sorted.size(); i++) {
+            int current = sorted.get(i).getOffset();
+            int prev = (i > 0) ? sorted.get(i - 1).getOffset() : 0;
+            if (prev != current) {
+                FormSegment segment = new FormSegment(body.substring(prev, current), prev);
+                result.add(segment);
+            }
+            result.add(sorted.get(i));
+        }
+        if (sorted.size() > 0) {
+            FormMarker last = sorted.get(sorted.size() - 1);
+            if (last.getOffset() < sorted.size()) {
+                FormSegment segment = new FormSegment(body.substring(last.getOffset()), last.getOffset());
+                result.add(segment);
+            }
+        }
+
+        return result;
+    }
+
 
     @Override
     public String toString() {
@@ -62,7 +93,7 @@ public class Form {
         sb.append("name='").append(name).append('\'');
         sb.append(", body=").append(body);
         sb.append(", pointer=").append(pointer);
-        sb.append(", elements=").append(elements);
+        sb.append(", markers=").append(markers);
         sb.append('}');
         return sb.toString();
     }

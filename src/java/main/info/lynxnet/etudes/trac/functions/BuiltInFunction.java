@@ -7,5 +7,5 @@ import java.util.Map;
 
 public interface BuiltInFunction {
     String getName();
-    String execute(StackElement stackElement, Map<String, Form> formStorage);
+    ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage);
 }

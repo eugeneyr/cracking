@@ -15,13 +15,13 @@ public class DefineString implements BuiltInFunction {
     }
 
     @Override
-    public String execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
         if (stackElement.getArguments().size() > 2) {
             Lexem nameArg = stackElement.getArguments().get(1);
             Lexem bodyArg = stackElement.getArguments().get(2);
             Form form = new Form(nameArg.getValue(), new StringBuilder(bodyArg.getValue()));
             formStorage.put(form.getName(), form);
         }
-        return "";
+        return new ExecutionResult(stackElement.isActive(), "");
     }
 }

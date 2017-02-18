@@ -9,7 +9,6 @@ public class FormSegment implements FormElement {
         this.offset = offset;
     }
 
-    @Override
     public String getValue() {
         return value;
     }

@@ -1,6 +1,7 @@
 package info.lynxnet.etudes.trac;
 
 import info.lynxnet.etudes.trac.functions.BuiltInFunction;
+import info.lynxnet.etudes.trac.functions.ExecutionResult;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class FunctionEvaluator {
         }
     }
 
-    public static String evaluate(StackElement stackElement) {
+    public static ExecutionResult evaluate(StackElement stackElement) {
         BuiltInFunction function = BUILTINS.get(stackElement.getArguments().get(0).getValue());
         // System.out.println(String.format("Executing: %s", stackElement.toString()));
         if (function != null) {
@@ -34,6 +35,6 @@ public class FunctionEvaluator {
         } else {
             System.err.println(String.format("Function not found: %s", stackElement.getArguments().get(0).getValue()));
         }
-        return "";
+        return new ExecutionResult(stackElement.isActive(), "");
     }
 }

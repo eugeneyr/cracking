@@ -3,6 +3,7 @@ package info.lynxnet.etudes.trac.states;
 import info.lynxnet.etudes.trac.FunctionEvaluator;
 import info.lynxnet.etudes.trac.StackElement;
 import info.lynxnet.etudes.trac.StateMachine;
+import info.lynxnet.etudes.trac.functions.ExecutionResult;
 
 public class InterpreterState8 extends InterpreterStateBase {
     public InterpreterState8(StateMachine stateMachine) {
@@ -27,11 +28,11 @@ public class InterpreterState8 extends InterpreterStateBase {
             current.completeArgument(stateMachine);
             this.stateMachine.getNeutralString().delete(
                     current.getOffset(), this.stateMachine.getNeutralString().length());
-            String result = FunctionEvaluator.evaluate(current);
-            if (current.isActive()) {
-                this.stateMachine.getActiveString().insert(0, result);
+            ExecutionResult result = FunctionEvaluator.evaluate(current);
+            if (result.isActive()) {
+                this.stateMachine.getActiveString().insert(0, result.getValue());
             } else {
-                this.stateMachine.getNeutralString().append(result);
+                this.stateMachine.getNeutralString().append(result.getValue());
             }
 
             return InterpreterState1.class;

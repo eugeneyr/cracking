@@ -16,7 +16,7 @@ public class SegmentString implements BuiltInFunction {
     }
 
     @Override
-    public String execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
         if (stackElement.getArguments().size() > 2) {
             Lexem nameArg = stackElement.getArguments().get(1);
 
@@ -32,7 +32,7 @@ public class SegmentString implements BuiltInFunction {
                             if (!form.hasMarkers(pos, val.length())) {
                                 form.adjustOffsets(pos + val.length(), -val.length());
                                 FormMarker marker = new FormMarker(ordinal, pos);
-                                form.getElements().add(marker);
+                                form.getMarkers().add(marker);
                                 form.getBody().delete(pos, pos + val.length());
                                 form.setPointer(form.getPointer() + pos);
                             } else {
@@ -43,8 +43,9 @@ public class SegmentString implements BuiltInFunction {
                     }
                     ordinal++;
                 }
+                form.setPointer(0);
             }
         }
-        return "";
+        return new ExecutionResult(stackElement.isActive(), "");
     }
 }

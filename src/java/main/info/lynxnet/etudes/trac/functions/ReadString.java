@@ -18,13 +18,13 @@ public class ReadString implements BuiltInFunction {
     }
 
     @Override
-    public String execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder result = new StringBuilder();
         String line = null;
         do {
             try {
-                // System.out.print("TRACK>");
+                System.out.print("\n>>> ");
                 line = reader.readLine();
                 if (line != null) {
                     if (line.indexOf(Configuration.getInstance().getMetacharacter()) >= 0) {
@@ -39,6 +39,6 @@ public class ReadString implements BuiltInFunction {
             }
         } while (line != null);
 
-        return result.toString();
+        return new ExecutionResult(stackElement.isActive(), result.toString());
     }
 }

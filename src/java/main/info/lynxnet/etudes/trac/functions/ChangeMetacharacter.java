@@ -12,13 +12,13 @@ public class ChangeMetacharacter implements BuiltInFunction {
     }
 
     @Override
-    public String execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
         if (stackElement.getArguments().size() > 1) {
             Lexem arg = stackElement.getArguments().get(1);
             if (arg.getValue() != null && arg.getValue().length() > 0) {
                 Configuration.getInstance().setMetacharacter(arg.getValue().charAt(0));
             }
         }
-        return "";
+        return new ExecutionResult(stackElement.isActive(), "");
     }
 }

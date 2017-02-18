@@ -50,4 +50,21 @@ public class StackElement {
         sb.append(offset).append(']');
         return sb.toString();
     }
+
+    public String getArgumentValue(int idx) {
+        if (idx >= 0 && idx < arguments.size()) {
+            return arguments.get(idx).getValue();
+        }
+        return "";
+    }
+
+    public int getArgumentIntValue(int idx) {
+        String strVal = getArgumentValue(idx);
+        try {
+            return Integer.parseInt(strVal);
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
 }

@@ -19,9 +19,10 @@ public class ReadCharacter implements BuiltInFunction {
     }
 
     @Override
-    public String execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder result = new StringBuilder();
+        System.out.print("\n>> ");
         try {
             int character = reader.read();
             if (character >= -1) {
@@ -30,6 +31,6 @@ public class ReadCharacter implements BuiltInFunction {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result.toString();
+        return new ExecutionResult(stackElement.isActive(), result.toString());
     }
 }

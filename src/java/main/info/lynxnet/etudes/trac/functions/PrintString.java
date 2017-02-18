@@ -14,7 +14,7 @@ public class PrintString implements BuiltInFunction {
     }
 
     @Override
-    public String execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
         for (Lexem lexem : stackElement.getArguments().subList(1, stackElement.getArguments().size())) {
             if (Constants.LINE_BREAK.equals(lexem.getValue())) {
                 System.out.println();
@@ -22,6 +22,6 @@ public class PrintString implements BuiltInFunction {
                 System.out.print(lexem.getValue());
             }
         }
-        return "";
+        return new ExecutionResult(stackElement.isActive(), "");
     }
 }

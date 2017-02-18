@@ -1,17 +1,16 @@
 package info.lynxnet.etudes.trac;
 
 public class FormMarker implements FormElement {
-    private int value;
+    private int ordinal;
     private int offset;
 
-    public FormMarker(int value, int offset) {
-        this.value = value;
+    public FormMarker(int ordinal, int offset) {
+        this.ordinal = ordinal;
         this.offset = offset;
     }
 
-    @Override
-    public Object getValue() {
-        return value;
+    public int getOrdinal() {
+        return ordinal;
     }
 
     @Override
@@ -27,7 +26,7 @@ public class FormMarker implements FormElement {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("FormMarker{");
-        sb.append("value=").append(value);
+        sb.append("ordinal=").append(ordinal);
         sb.append(", offset=").append(offset);
         sb.append('}');
         return sb.toString();
