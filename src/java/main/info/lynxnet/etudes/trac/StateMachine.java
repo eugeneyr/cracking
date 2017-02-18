@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
+import info.lynxnet.etudes.trac.states.InterpreterState;
+import info.lynxnet.etudes.trac.states.InterpreterStateBase;
 import org.reflections.*;
 
 public class StateMachine {
@@ -43,7 +45,7 @@ public class StateMachine {
     }
 
     public StateMachine() {
-        Reflections refs = new Reflections("info.lynxnet.etudes.trac");
+        Reflections refs = new Reflections("info.lynxnet.etudes.trac.states");
         Set<Class<? extends InterpreterStateBase>> stateClasses = refs.getSubTypesOf(InterpreterStateBase.class);
         for (Class<? extends InterpreterStateBase> clz : stateClasses) {
             //System.out.println(String.format("Found InterpreterState: %s", clz.getName()));
@@ -78,12 +80,14 @@ public class StateMachine {
         long cycle = 0L;
         while (true) {
             Class<? extends InterpreterState> nextStateClass = state.actionAndTransition();
-            if (!oldNeutral.equals(neutralString.toString()) || !oldActive.equals(activeString.toString())) {
-                System.out.println(String.format(
-                        "[%d] %s: %s <---> %s", cycle,
-                        state.getClass().getName(),
-                        neutralString.toString(), activeString.toString()));
-            }
+
+//            if (!oldNeutral.equals(neutralString.toString()) || !oldActive.equals(activeString.toString())) {
+//                System.out.println(String.format(
+//                        "[%d] %s: %s <---> %s", cycle,
+//                        state.getClass().getName(),
+//                        neutralString.toString(), activeString.toString()));
+//            }
+
             oldNeutral = neutralString.toString();
             oldActive = activeString.toString();
             if (nextStateClass == null) {
@@ -98,9 +102,9 @@ public class StateMachine {
             state = nextState;
             cycle++;
             // temp!
-            if (cycle > 128) {
-                return 0;
-            }
+//            if (cycle > 1024) {
+//                return 0;
+//            }
         }
     }
 

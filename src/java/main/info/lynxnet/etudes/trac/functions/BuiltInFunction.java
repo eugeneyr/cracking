@@ -1,4 +1,7 @@
-package info.lynxnet.etudes.trac;
+package info.lynxnet.etudes.trac.functions;
+
+import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.StackElement;
 
 import java.util.Map;
 

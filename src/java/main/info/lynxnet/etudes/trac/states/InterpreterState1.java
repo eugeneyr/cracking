@@ -1,4 +1,6 @@
-package info.lynxnet.etudes.trac;
+package info.lynxnet.etudes.trac.states;
+
+import info.lynxnet.etudes.trac.StateMachine;
 
 public class InterpreterState1 extends InterpreterStateBase {
     public InterpreterState1(StateMachine stateMachine) {

@@ -45,4 +45,14 @@ public class Lexem {
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Lexem{");
+        sb.append("offset=").append(offset);
+        sb.append(", value='").append(value).append('\'');
+        sb.append(", completed=").append(completed);
+        sb.append('}');
+        return sb.toString();
+    }
 }

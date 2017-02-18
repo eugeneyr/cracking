@@ -1,4 +1,7 @@
-package info.lynxnet.etudes.trac;
+package info.lynxnet.etudes.trac.states;
+
+import info.lynxnet.etudes.trac.Constants;
+import info.lynxnet.etudes.trac.StateMachine;
 
 public class InterpreterState3 extends InterpreterStateBase {
     public InterpreterState3(StateMachine stateMachine) {
@@ -13,17 +16,17 @@ public class InterpreterState3 extends InterpreterStateBase {
     @Override
     public Class<? extends InterpreterState> actionAndTransition() {
         char ch = this.stateMachine.getActiveString().charAt(0);
-        if (ch == '(') {
+        if (ch == Constants.OPENING_BRACKET) {
             // find the closing parenthesis, move what's between them to the neutral string and go back to State1
             int parenCount = 1;
             int pointer = 1;
             while (pointer < this.stateMachine.getActiveString().length()) {
                 ch = this.stateMachine.getActiveString().charAt(pointer);
                 switch (ch) {
-                    case '(':
+                    case Constants.OPENING_BRACKET:
                         parenCount++;
                         break;
-                    case ')':
+                    case Constants.CLOSING_BRACKET:
                         parenCount--;
                         if (parenCount < 0) {
                             // abort - unbalanced parentheses

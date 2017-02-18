@@ -1,4 +1,6 @@
-package info.lynxnet.etudes.trac;
+package info.lynxnet.etudes.trac.states;
+
+import info.lynxnet.etudes.trac.StateMachine;
 
 public abstract class InterpreterStateBase implements InterpreterState {
     protected StateMachine stateMachine;
