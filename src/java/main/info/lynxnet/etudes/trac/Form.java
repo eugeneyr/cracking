@@ -77,10 +77,13 @@ public class Form {
         }
         if (sorted.size() > 0) {
             FormMarker last = sorted.get(sorted.size() - 1);
-            if (last.getOffset() < sorted.size()) {
+            if (last.getOffset() < body.length()) {
                 FormSegment segment = new FormSegment(body.substring(last.getOffset()), last.getOffset());
                 result.add(segment);
             }
+        } else {
+            FormSegment segment = new FormSegment(body.toString(), 0);
+            result.add(segment);
         }
 
         return result;
