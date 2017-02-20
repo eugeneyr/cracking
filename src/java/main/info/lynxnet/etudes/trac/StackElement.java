@@ -59,12 +59,9 @@ public class StackElement {
     }
 
     public int getArgumentIntValue(int idx) {
-        String strVal = getArgumentValue(idx);
-        try {
-            return Integer.parseInt(strVal);
-        } catch (NumberFormatException ex) {
-            return 0;
+        if (idx >= 0 && idx < arguments.size()) {
+            return arguments.get(idx).getIntValue();
         }
+        return 0;
     }
-
 }

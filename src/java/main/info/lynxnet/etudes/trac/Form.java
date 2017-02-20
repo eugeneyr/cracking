@@ -38,7 +38,7 @@ public class Form {
 
     public boolean hasMarkers(int offset, int length) {
         return markers.stream().filter(elem ->
-            elem.getOffset() >= offset && elem.getOffset() < offset + length
+                elem.getOffset() >= offset && elem.getOffset() < offset + length
         ).count() > 0;
     }
 
@@ -52,14 +52,14 @@ public class Form {
         Optional<FormMarker> marker = markers.stream().filter(
                 elem -> elem.getOffset() >= offset && elem.getOffset() < offset + length
         ).max((a, b) -> a.getOffset() - b.getOffset());
-        return  marker.isPresent() ? marker.get().getOffset() : offset + length;
+        return marker.isPresent() ? marker.get().getOffset() : offset + length;
     }
 
     public int getClosestMarkerOffset(int offset) {
         Optional<FormMarker> marker = markers.stream().filter(
                 elem -> elem.getOffset() > offset
         ).min((a, b) -> a.getOffset() - b.getOffset());
-        return  marker.isPresent() ? marker.get().getOffset() : body.length();
+        return marker.isPresent() ? marker.get().getOffset() : body.length();
     }
 
     public List<FormElement> segment() {
@@ -88,7 +88,6 @@ public class Form {
 
         return result;
     }
-
 
     @Override
     public String toString() {
