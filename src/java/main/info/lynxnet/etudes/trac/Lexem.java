@@ -9,8 +9,8 @@ public class Lexem {
     private String value;
     private boolean completed;
 
-    static final Pattern intPattern = Pattern.compile("^(.*)((\\-?)(\\d+))$");
-    static final Pattern decimalPattern = Pattern.compile("^(.*)((\\-?)(\\d*)\\.(\\d+))$");
+    static final Pattern intPattern = Pattern.compile("^(.*?)((\\-?)(\\d+))$");
+    static final Pattern decimalPattern = Pattern.compile("^(.*?)((\\-?)(\\d*)\\.(\\d+))$");
 
     public static class PrefixedNumber {
         private String prefix;
@@ -33,7 +33,7 @@ public class Lexem {
         public String toString() {
             final StringBuilder sb = new StringBuilder();
             if (prefix != null) {
-                sb.append("prefix='");
+                sb.append(prefix);
             }
             if (number != null) {
                 sb.append(number);
