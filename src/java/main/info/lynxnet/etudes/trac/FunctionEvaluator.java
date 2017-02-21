@@ -7,10 +7,11 @@ import org.reflections.Reflections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class FunctionEvaluator {
     private static Map<String, BuiltInFunction> BUILTINS = new HashMap<>();
-    private static Map<String, Form> FORM_STORAGE = new HashMap<>();
+    private static Map<String, Form> FORM_STORAGE = new TreeMap<>();
 
     static {
         Reflections refs = new Reflections("info.lynxnet.etudes.trac.functions");

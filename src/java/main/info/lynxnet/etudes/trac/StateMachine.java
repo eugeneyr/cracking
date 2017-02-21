@@ -10,7 +10,6 @@ import org.reflections.*;
 
 public class StateMachine {
     private Stack<StackElement> callStack = new Stack<>();
-    private StackElement currentStackElement;
 
     private StringBuilder neutralString = new StringBuilder();
     private StringBuilder activeString = new StringBuilder();
@@ -106,14 +105,6 @@ public class StateMachine {
 //                return 0;
 //            }
         }
-    }
-
-    public StackElement getCurrentStackElement() {
-        return currentStackElement;
-    }
-
-    public void setCurrentStackElement(StackElement currentStackElement) {
-        this.currentStackElement = currentStackElement;
     }
 
     public static void main(String[] args) {

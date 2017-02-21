@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Lexem {
-    private int offset;
+    private int offset = 0;
     private String value;
     private boolean completed;
 

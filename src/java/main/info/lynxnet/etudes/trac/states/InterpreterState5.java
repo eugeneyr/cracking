@@ -19,7 +19,6 @@ public class InterpreterState5 extends InterpreterStateBase {
         if (this.stateMachine.getActiveString().indexOf(Constants.ACTIVE_FUNCTION_MARKER) == 0) {
             // beginning of an active function
             StackElement current = new StackElement(true, this.stateMachine.getNeutralString().length());
-            this.stateMachine.setCurrentStackElement(current);
             this.stateMachine.getCallStack().push(current);
             this.stateMachine.getActiveString().delete(0, Constants.ACTIVE_FUNCTION_MARKER.length());
             return InterpreterState1.class;

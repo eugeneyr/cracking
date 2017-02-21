@@ -19,14 +19,13 @@ public class InterpreterState4 extends InterpreterStateBase {
         char ch = this.stateMachine.getActiveString().charAt(0);
         if (ch == ',') {
             // end of a function argument and the beginning of the next one
-            StackElement current = this.stateMachine.getCurrentStackElement() == null
+            StackElement current = this.stateMachine.getCallStack().empty()
                     ? new StackElement(true, this.stateMachine.getNeutralString().length())
-                    : this.stateMachine.getCurrentStackElement();
+                    : this.stateMachine.getCallStack().peek();
             if (current.getArguments().isEmpty()) {
                 current.getArguments().add(new Lexem(current.getOffset(), ""));
             }
-            if (this.stateMachine.getCurrentStackElement() == null) {
-                this.stateMachine.setCurrentStackElement(current);
+            if (this.stateMachine.getCallStack().empty()) {
                 this.stateMachine.getCallStack().push(current);
             } else {
                 Lexem prevLexem = current.getArguments().get(current.getArguments().size() - 1);
