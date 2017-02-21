@@ -22,7 +22,7 @@ public class SegmentString implements BuiltInFunction {
                     String val = arg.getValue();
                     form.setPointer(0);
                     if (val != null && val.length() > 0) {
-                        while (form.getBody().substring(form.getPointer()).contains(val)) {
+                        while (form.getPointer() < form.getBody().length() && form.getBody().substring(form.getPointer()).contains(val)) {
                             int pos = form.getPointer() + form.getBody().substring(form.getPointer()).indexOf(val);
                             if (!form.hasMarkers(pos, val.length())) {
                                 form.adjustOffsets(pos + val.length(), -val.length());
