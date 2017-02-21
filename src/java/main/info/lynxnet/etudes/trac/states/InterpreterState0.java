@@ -1,15 +1,10 @@
 package info.lynxnet.etudes.trac.states;
 
-import info.lynxnet.etudes.trac.Constants;
-import info.lynxnet.etudes.trac.StateMachine;
+import info.lynxnet.etudes.trac.Context;
 
 public class InterpreterState0 extends InterpreterStateBase {
-    public InterpreterState0(StateMachine stateMachine) {
-        super(stateMachine);
-    }
-
     @Override
-    public boolean precondition() {
+    public boolean precondition(Context context) {
         return true;
     }
 
@@ -19,11 +14,10 @@ public class InterpreterState0 extends InterpreterStateBase {
     }
 
     @Override
-    public Class<? extends InterpreterState> actionAndTransition() {
-        this.stateMachine.getNeutralString().setLength(0);
-        this.stateMachine.getActiveString().setLength(0);
-        this.stateMachine.setScanPointer(0);
-        this.stateMachine.getActiveString().append(Constants.INITIAL_ACTIVE_STRING);
+    public Class<? extends InterpreterState> actionAndTransition(Context context) {
+        context.getNeutralString().setLength(0);
+        context.getActiveString().setLength(0);
+        context.getActiveString().append(context.getConfiguration().getInitialActiveString());
         return InterpreterState1.class;
     }
 }

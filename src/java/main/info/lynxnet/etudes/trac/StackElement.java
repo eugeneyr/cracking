@@ -32,12 +32,12 @@ public class StackElement {
         }
     }
 
-    public Lexem completeArgument(StateMachine stateMachine) {
+    public Lexem completeArgument(Context context) {
         if (arguments.size() == 0) {
             throw new IllegalStateException("The stack element has no arguments");
         }
         Lexem arg = arguments.get(arguments.size() - 1);
-        arg.setValue(stateMachine.getNeutralString().substring(arg.getOffset()));
+        arg.setValue(context.getNeutralString().substring(arg.getOffset()));
         arg.setCompleted(true);
         return arg;
     }

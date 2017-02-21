@@ -1,9 +1,7 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
-
-import java.util.Map;
 
 public class ListNames implements BuiltInFunction {
     public static final String FUNCTION_NAME = "ln";
@@ -14,8 +12,8 @@ public class ListNames implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         String separator = stackElement.getArgumentValue(1);
-        return new ExecutionResult(stackElement.isActive(), String.join(separator, formStorage.keySet()));
+        return new ExecutionResult(stackElement.isActive(), String.join(separator, context.getFormStorage().keySet()));
     }
 }

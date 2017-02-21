@@ -2,6 +2,7 @@ package info.lynxnet.etudes.trac;
 
 public class Configuration {
     private char metacharacter = Constants.METACHARACTER;
+    private String initialActiveString = Constants.INITIAL_ACTIVE_STRING;
 
     public char getMetacharacter() {
         return metacharacter;
@@ -11,12 +12,10 @@ public class Configuration {
         this.metacharacter = metacharacter;
     }
 
-    private Configuration() {
+    public Configuration(String[] commandLine) {
     }
 
-    private static Configuration instance = new Configuration();
-
-    public static Configuration getInstance() {
-        return instance;
+    public String getInitialActiveString() {
+        return initialActiveString;
     }
 }

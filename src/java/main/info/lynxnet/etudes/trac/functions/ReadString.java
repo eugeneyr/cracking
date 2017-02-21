@@ -1,14 +1,10 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Configuration;
-import info.lynxnet.etudes.trac.Constants;
-import info.lynxnet.etudes.trac.Form;
-import info.lynxnet.etudes.trac.StackElement;
+import info.lynxnet.etudes.trac.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
 
 public class ReadString implements BuiltInFunction {
     public static final String FUNCTION_NAME = "rs";
@@ -18,7 +14,7 @@ public class ReadString implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder result = new StringBuilder();
         String line = null;
@@ -27,8 +23,8 @@ public class ReadString implements BuiltInFunction {
                 System.out.print("\n>>> ");
                 line = reader.readLine();
                 if (line != null) {
-                    if (line.indexOf(Configuration.getInstance().getMetacharacter()) >= 0) {
-                        result.append(line.substring(0, line.indexOf(Configuration.getInstance().getMetacharacter())));
+                    if (line.indexOf(context.getConfiguration().getMetacharacter()) >= 0) {
+                        result.append(line.substring(0, line.indexOf(context.getConfiguration().getMetacharacter())));
                         break;
                     }
                     result.append(line);

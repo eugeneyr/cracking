@@ -2,9 +2,6 @@ package info.lynxnet.etudes.trac.functions;
 
 import info.lynxnet.etudes.trac.*;
 
-import java.util.List;
-import java.util.Map;
-
 public class CallSegment implements BuiltInFunction {
     public static final String FUNCTION_NAME = "cs";
 
@@ -14,12 +11,12 @@ public class CallSegment implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         StringBuilder result = new StringBuilder();
         if (stackElement.getArguments().size() > 2) {
             Lexem nameArg = stackElement.getArguments().get(1);
 
-            Form form = formStorage.get(nameArg.getValue());
+            Form form = context.getFormStorage().get(nameArg.getValue());
             if (form != null) {
                 if (form.getPointer() == form.getBody().length()) {
                     return new ExecutionResult(true, stackElement.getArgumentValue(2));

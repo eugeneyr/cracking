@@ -3,7 +3,6 @@ package info.lynxnet.etudes.trac.functions;
 import info.lynxnet.etudes.trac.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class InitialMatch implements BuiltInFunction {
@@ -15,11 +14,11 @@ public class InitialMatch implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         StringBuilder result = new StringBuilder();
         if (stackElement.getArguments().size() > 2) {
             Lexem nameArg = stackElement.getArguments().get(1);
-            Form form = formStorage.get(nameArg.getValue());
+            Form form = context.getFormStorage().get(nameArg.getValue());
             if (form != null) {
                 List<FormElement> segmented = form.segment();
                 Lexem valArg = stackElement.getArguments().get(2);

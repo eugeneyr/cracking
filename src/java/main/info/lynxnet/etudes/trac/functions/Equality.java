@@ -1,9 +1,7 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
-
-import java.util.Map;
 
 public class Equality implements BuiltInFunction {
     public static final String FUNCTION_NAME = "eq";
@@ -14,7 +12,7 @@ public class Equality implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         StringBuilder sb = new StringBuilder();
         if (stackElement.getArguments().size() > 1) {
             String a = stackElement.getArgumentValue(1);

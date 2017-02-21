@@ -1,14 +1,11 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Constants;
-import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.stream.Stream;
 
 public class ReadCharacter implements BuiltInFunction {
     public static final String FUNCTION_NAME = "rc";
@@ -19,7 +16,7 @@ public class ReadCharacter implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder result = new StringBuilder();
         System.out.print("\n>> ");

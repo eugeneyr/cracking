@@ -1,10 +1,7 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
-import info.lynxnet.etudes.trac.Lexem;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
-
-import java.util.Map;
 
 public class Halt implements BuiltInFunction {
     public static final String FUNCTION_NAME = "hl";
@@ -14,7 +11,7 @@ public class Halt implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         System.exit(0);
         return new ExecutionResult(stackElement.isActive(), "");
     }

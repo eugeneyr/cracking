@@ -7,11 +7,9 @@ import org.reflections.Reflections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 public class FunctionEvaluator {
     private static Map<String, BuiltInFunction> BUILTINS = new HashMap<>();
-    private static Map<String, Form> FORM_STORAGE = new TreeMap<>();
 
     static {
         Reflections refs = new Reflections("info.lynxnet.etudes.trac.functions");
@@ -28,11 +26,12 @@ public class FunctionEvaluator {
         }
     }
 
-    public static ExecutionResult evaluate(StackElement stackElement) {
+
+    public static ExecutionResult evaluate(StackElement stackElement, Context context) {
         BuiltInFunction function = BUILTINS.get(stackElement.getArguments().get(0).getValue());
         // System.out.println(String.format("Executing: %s", stackElement.toString()));
         if (function != null) {
-            return function.execute(stackElement, FORM_STORAGE);
+            return function.execute(stackElement, context);
         } else {
             System.err.println(String.format("Function not found: %s", stackElement.getArguments().get(0).getValue()));
         }

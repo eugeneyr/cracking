@@ -1,11 +1,10 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.Lexem;
 import info.lynxnet.etudes.trac.StackElement;
 
 import java.math.BigInteger;
-import java.util.Map;
 
 public class Multiply implements BuiltInFunction {
     public static final String FUNCTION_NAME = "ml";
@@ -16,7 +15,7 @@ public class Multiply implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         StringBuilder sb = new StringBuilder();
         if (stackElement.getArguments().size() > 2) {
             Lexem.PrefixedNumber a = stackElement.getArguments().get(1).getValueAsNumber();

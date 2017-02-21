@@ -1,38 +1,34 @@
 package info.lynxnet.etudes.trac.states;
 
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.FunctionEvaluator;
 import info.lynxnet.etudes.trac.StackElement;
-import info.lynxnet.etudes.trac.StateMachine;
 import info.lynxnet.etudes.trac.functions.ExecutionResult;
 
 public class InterpreterState8 extends InterpreterStateBase {
-    public InterpreterState8(StateMachine stateMachine) {
-        super(stateMachine);
+    @Override
+    public boolean precondition(Context context) {
+        return context.getActiveString().length() > 0
+                && context.getActiveString().charAt(0) == ')';
     }
 
     @Override
-    public boolean precondition() {
-        return this.stateMachine.getActiveString().length() > 0
-                && this.stateMachine.getActiveString().charAt(0) == ')';
-    }
-
-    @Override
-    public Class<? extends InterpreterState> actionAndTransition() {
-        if (precondition()) {
+    public Class<? extends InterpreterState> actionAndTransition(Context context) {
+        if (precondition(context)) {
             // a closing parenthesis
-            if (this.stateMachine.getCallStack().empty()) {
+            if (context.getCallStack().empty()) {
                 return InterpreterState0.class;
             }
-            this.stateMachine.getActiveString().deleteCharAt(0);
-            StackElement current = this.stateMachine.getCallStack().pop();
-            current.completeArgument(stateMachine);
-            this.stateMachine.getNeutralString().delete(
-                    current.getOffset(), this.stateMachine.getNeutralString().length());
-            ExecutionResult result = FunctionEvaluator.evaluate(current);
+            context.getActiveString().deleteCharAt(0);
+            StackElement current = context.getCallStack().pop();
+            current.completeArgument(context);
+            context.getNeutralString().delete(
+                    current.getOffset(), context.getNeutralString().length());
+            ExecutionResult result = FunctionEvaluator.evaluate(current, context);
             if (result.isActive()) {
-                this.stateMachine.getActiveString().insert(0, result.getValue());
+                context.getActiveString().insert(0, result.getValue());
             } else {
-                this.stateMachine.getNeutralString().append(result.getValue());
+                context.getNeutralString().append(result.getValue());
             }
 
             return InterpreterState1.class;

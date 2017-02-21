@@ -1,74 +1,48 @@
 package info.lynxnet.etudes.trac;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 import info.lynxnet.etudes.trac.states.InterpreterState;
 import info.lynxnet.etudes.trac.states.InterpreterStateBase;
 import org.reflections.*;
 
-public class StateMachine {
-    private Stack<StackElement> callStack = new Stack<>();
-
-    private StringBuilder neutralString = new StringBuilder();
-    private StringBuilder activeString = new StringBuilder();
-    private int scanPointer = 0;
+public class Interpreter {
     private InterpreterState initialState;
-
     private List<InterpreterState> interpreterStates = new ArrayList<>();
     private Map<Class<? extends InterpreterState>, InterpreterState> stateCache = new HashMap<>();
 
-    public int getScanPointer() {
-        return scanPointer;
-    }
-
-    public void setScanPointer(int scanPointer) {
-        this.scanPointer = scanPointer;
-    }
-
-    public Stack<StackElement> getCallStack() {
-        return callStack;
-    }
-
-    public StringBuilder getNeutralString() {
-        return neutralString;
-    }
-
-    public StringBuilder getActiveString() {
-        return activeString;
-    }
+    private Context context;
 
     public List<InterpreterState> getInterpreterStates() {
         return interpreterStates;
     }
 
-    public StateMachine() {
+    public Interpreter(String[] commandLine) {
+        context = new Context(commandLine);
+        loadStates();
+    }
+
+    private void loadStates() {
         Reflections refs = new Reflections("info.lynxnet.etudes.trac.states");
         Set<Class<? extends InterpreterStateBase>> stateClasses = refs.getSubTypesOf(InterpreterStateBase.class);
         for (Class<? extends InterpreterStateBase> clz : stateClasses) {
             //System.out.println(String.format("Found InterpreterState: %s", clz.getName()));
             try {
-                Constructor ctr = clz.getConstructor(StateMachine.class);
-                InterpreterState state = (InterpreterState) ctr.newInstance(this);
+                InterpreterState state = clz.newInstance();
                 this.interpreterStates.add(state);
                 this.stateCache.put(clz, state);
                 if (state.isInitial()) {
                     this.initialState = state;
                 }
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public int run(String[] args) {
+    public int run() {
         if (this.initialState == null) {
             System.err.println("Invalid state machine configuration: missing initial state");
             return -1;
@@ -78,7 +52,7 @@ public class StateMachine {
         InterpreterState state = this.initialState;
         long cycle = 0L;
         while (true) {
-            Class<? extends InterpreterState> nextStateClass = state.actionAndTransition();
+            Class<? extends InterpreterState> nextStateClass = state.actionAndTransition(context);
 
 //            if (!oldNeutral.equals(neutralString.toString()) || !oldActive.equals(activeString.toString())) {
 //                System.out.println(String.format(
@@ -87,8 +61,8 @@ public class StateMachine {
 //                        neutralString.toString(), activeString.toString()));
 //            }
 
-            oldNeutral = neutralString.toString();
-            oldActive = activeString.toString();
+            oldNeutral = context.neutralString.toString();
+            oldActive = context.activeString.toString();
             if (nextStateClass == null) {
                 System.err.println(String.format("State %s transitioned to a null", state.getClass().getName()));
                 return -1;
@@ -108,8 +82,8 @@ public class StateMachine {
     }
 
     public static void main(String[] args) {
-        StateMachine sm = new StateMachine();
-        int exitStatus = sm.run(args);
+        Interpreter sm = new Interpreter(args);
+        int exitStatus = sm.run();
         System.exit(exitStatus);
     }
 }

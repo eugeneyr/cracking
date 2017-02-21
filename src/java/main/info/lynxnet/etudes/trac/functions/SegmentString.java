@@ -1,11 +1,6 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
-import info.lynxnet.etudes.trac.FormMarker;
-import info.lynxnet.etudes.trac.Lexem;
-import info.lynxnet.etudes.trac.StackElement;
-
-import java.util.Map;
+import info.lynxnet.etudes.trac.*;
 
 public class SegmentString implements BuiltInFunction {
     public static final String FUNCTION_NAME = "ss";
@@ -16,11 +11,11 @@ public class SegmentString implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
+    public ExecutionResult execute(StackElement stackElement, Context context) {
         if (stackElement.getArguments().size() > 2) {
             Lexem nameArg = stackElement.getArguments().get(1);
 
-            Form form = formStorage.get(nameArg.getValue());
+            Form form = context.getFormStorage().get(nameArg.getValue());
             if (form != null) {
                 int ordinal = 1;
                 for (Lexem arg : stackElement.getArguments().subList(2, stackElement.getArguments().size())) {

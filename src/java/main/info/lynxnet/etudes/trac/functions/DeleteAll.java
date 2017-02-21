@@ -1,9 +1,7 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
-
-import java.util.Map;
 
 public class DeleteAll implements BuiltInFunction {
     public static final String FUNCTION_NAME = "da";
@@ -13,8 +11,8 @@ public class DeleteAll implements BuiltInFunction {
     }
 
     @Override
-    public ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage) {
-        formStorage.clear();
+    public ExecutionResult execute(StackElement stackElement, Context context) {
+        context.getFormStorage().clear();
         return new ExecutionResult(stackElement.isActive(), "");
     }
 }

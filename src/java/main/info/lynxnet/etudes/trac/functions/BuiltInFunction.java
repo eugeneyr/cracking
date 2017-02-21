@@ -1,11 +1,9 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Form;
+import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
-
-import java.util.Map;
 
 public interface BuiltInFunction {
     String getName();
-    ExecutionResult execute(StackElement stackElement, Map<String, Form> formStorage);
+    ExecutionResult execute(StackElement stackElement, Context context);
 }
