@@ -1,11 +1,12 @@
 package info.lynxnet.etudes.trac;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Form {
+public class Form implements Serializable {
     private String name;
     private StringBuilder body = new StringBuilder();
     private int pointer = 0;

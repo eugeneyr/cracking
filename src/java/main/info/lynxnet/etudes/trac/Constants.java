@@ -8,4 +8,6 @@ public interface Constants {
     char METACHARACTER = '\'';
     String LINE_BREAK = "CR-LF";
     String INITIAL_ACTIVE_STRING = "#(ps,(CR-LF))#(ps,#(rs))";
+    String DEFAULT_TRAC_DATA_DIR = ".tracdata";
+    String BLOCK_SUBDIR = "blockstorage";
 }

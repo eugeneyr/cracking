@@ -1,6 +1,8 @@
 package info.lynxnet.etudes.trac;
 
-public interface FormElement {
+import java.io.Serializable;
+
+public interface FormElement extends Serializable {
     int getOffset();
 
     void setOffset(int offset);
