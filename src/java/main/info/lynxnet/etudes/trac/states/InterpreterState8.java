@@ -5,6 +5,8 @@ import info.lynxnet.etudes.trac.FunctionEvaluator;
 import info.lynxnet.etudes.trac.StackElement;
 import info.lynxnet.etudes.trac.functions.ExecutionResult;
 
+import java.io.IOException;
+
 public class InterpreterState8 extends InterpreterStateBase {
     @Override
     public boolean precondition(Context context) {
@@ -24,6 +26,17 @@ public class InterpreterState8 extends InterpreterStateBase {
             current.completeArgument(context);
             context.getNeutralString().delete(
                     current.getOffset(), context.getNeutralString().length());
+            if (context.getConfiguration().isTrace()) {
+                System.err.println(current.toString());
+                try {
+                    int character = System.in.read();
+                    if (!Character.isWhitespace(character)) {
+                        return InterpreterState0.class;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             ExecutionResult result = FunctionEvaluator.evaluate(current, context);
             if (result.isActive()) {
                 context.getActiveString().insert(0, result.getValue());
