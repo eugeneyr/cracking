@@ -17,16 +17,18 @@ public class ReadCharacter implements BuiltInFunction {
 
     @Override
     public ExecutionResult execute(StackElement stackElement, Context context) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(context.getInput()));
         StringBuilder result = new StringBuilder();
-        System.out.print("\n>> ");
+        if (context.getInput() == System.in) {
+            System.out.print("\n>> ");
+        }
         try {
             int character = reader.read();
             if (character >= -1) {
                 result.append(Character.toChars(character));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(System.err);
         }
         return new ExecutionResult(stackElement.isActive(), result.toString());
     }

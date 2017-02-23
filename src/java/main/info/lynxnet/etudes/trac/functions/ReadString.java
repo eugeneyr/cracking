@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 
 public class ReadString implements BuiltInFunction {
     public static final String FUNCTION_NAME = "rs";
+
     @Override
     public String getName() {
         return FUNCTION_NAME;
@@ -15,25 +16,33 @@ public class ReadString implements BuiltInFunction {
 
     @Override
     public ExecutionResult execute(StackElement stackElement, Context context) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(context.getInput()));
         StringBuilder result = new StringBuilder();
-        String line = null;
+        if (context.getInput() == System.in) {
+            System.out.print("\n>>> ");
+        }
         do {
             try {
-                System.out.print("\n>>> ");
-                line = reader.readLine();
-                if (line != null) {
-                    if (line.indexOf(context.getConfiguration().getMetacharacter()) >= 0) {
-                        result.append(line.substring(0, line.indexOf(context.getConfiguration().getMetacharacter())));
-                        break;
+                int codePoint = reader.read();
+                if (codePoint >= -1) {
+                    char characters[] = Character.toChars(codePoint);
+                    if (characters.length > 0) {
+                        if (context.getMetacharacter() == characters[0]) {
+                            break;
+                        }
                     }
-                    result.append(line);
+                    result.append(Character.toChars(codePoint));
+                } else {
+                    // end of input stream
+                    context.setInput(System.in);
+                    break;
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
+                context.setInput(System.in);
                 break;
             }
-        } while (line != null);
+        } while (true);
 
         return new ExecutionResult(stackElement.isActive(), result.toString());
     }

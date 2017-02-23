@@ -26,7 +26,7 @@ public class InterpreterState8 extends InterpreterStateBase {
             current.completeArgument(context);
             context.getNeutralString().delete(
                     current.getOffset(), context.getNeutralString().length());
-            if (context.getConfiguration().isTrace()) {
+            if (context.isTrace()) {
                 System.err.println(current.toString());
                 try {
                     int character = System.in.read();

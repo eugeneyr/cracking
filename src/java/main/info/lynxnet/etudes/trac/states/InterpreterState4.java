@@ -28,8 +28,6 @@ public class InterpreterState4 extends InterpreterStateBase {
                 }
                 current.completeArgument(context);
                 current.getArguments().add(new Lexem(context.getNeutralString().length()));
-            } else {
-                context.getNeutralString().append(ch);
             }
             context.getActiveString().deleteCharAt(0);
             return InterpreterState1.class;

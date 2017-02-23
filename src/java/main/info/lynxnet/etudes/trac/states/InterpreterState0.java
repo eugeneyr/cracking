@@ -17,7 +17,7 @@ public class InterpreterState0 extends InterpreterStateBase {
     public Class<? extends InterpreterState> actionAndTransition(Context context) {
         context.getNeutralString().setLength(0);
         context.getActiveString().setLength(0);
-        context.getActiveString().append(context.getConfiguration().getInitialActiveString());
+        context.getActiveString().append(context.getInitialActiveString());
         return InterpreterState1.class;
     }
 }

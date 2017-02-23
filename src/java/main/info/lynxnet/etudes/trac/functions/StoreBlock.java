@@ -24,8 +24,8 @@ public class StoreBlock implements BuiltInFunction {
             List<Form> formsToStore = new ArrayList<>();
             String blockDirPathName = String.format(
                     "%s%s%s",
-                    context.getConfiguration().getDataDir(),
-                    File.separator, context.getConfiguration().getBlockSubdir());
+                    context.getDataDir(),
+                    File.separator, context.getBlockSubdir());
             Path dirPath = FileSystems.getDefault().getPath(blockDirPathName);
             try {
                 dirPath = Files.createDirectories(dirPath);

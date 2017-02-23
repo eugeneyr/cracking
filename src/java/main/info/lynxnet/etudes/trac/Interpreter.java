@@ -61,8 +61,8 @@ public class Interpreter {
 //                        neutralString.toString(), activeString.toString()));
 //            }
 
-            oldNeutral = context.neutralString.toString();
-            oldActive = context.activeString.toString();
+            oldNeutral = context.getNeutralString().toString();
+            oldActive = context.getActiveString().toString();
             if (nextStateClass == null) {
                 System.err.println(String.format("State %s transitioned to a null", state.getClass().getName()));
                 return -1;
@@ -74,10 +74,6 @@ public class Interpreter {
             }
             state = nextState;
             cycle++;
-            // temp!
-//            if (cycle > 1024) {
-//                return 0;
-//            }
         }
     }
 

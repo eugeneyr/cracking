@@ -12,6 +12,8 @@ public class Halt implements BuiltInFunction {
 
     @Override
     public ExecutionResult execute(StackElement stackElement, Context context) {
+        context.setInput(System.in);
+        context.setOutput(System.out);
         System.exit(0);
         return new ExecutionResult(stackElement.isActive(), "");
     }

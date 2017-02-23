@@ -14,7 +14,7 @@ public class ChangeMetacharacter implements BuiltInFunction {
         if (stackElement.getArguments().size() > 1) {
             Lexem arg = stackElement.getArguments().get(1);
             if (arg.getValue() != null && arg.getValue().length() > 0) {
-                context.getConfiguration().setMetacharacter(arg.getValue().charAt(0));
+                context.setMetacharacter(arg.getValue().charAt(0));
             }
         }
         return new ExecutionResult(stackElement.isActive(), "");

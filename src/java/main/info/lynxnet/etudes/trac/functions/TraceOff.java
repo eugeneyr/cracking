@@ -12,7 +12,7 @@ public class TraceOff implements BuiltInFunction {
 
     @Override
     public ExecutionResult execute(StackElement stackElement, Context context) {
-        context.getConfiguration().setTrace(false);
+        context.setTrace(false);
         return new ExecutionResult(stackElement.isActive(), "");
     }
 }
