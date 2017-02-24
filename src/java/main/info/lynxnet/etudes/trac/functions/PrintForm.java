@@ -21,25 +21,25 @@ public class PrintForm implements BuiltInFunction {
             if (form != null) {
                 List<FormElement> segmented = form.segment();
                 if (form.getPointer() == 0) {
-                    System.out.print("<^>");
+                    context.getOutput().print("<^>");
                 }
                 for (FormElement element: segmented) {
                     if (element instanceof FormSegment) {
                         if (form.getPointer() > element.getOffset()
                                 && form.getPointer() <= element.getOffset() + ((FormSegment) element).getValue().length()) {
                             int relPos = form.getPointer() - element.getOffset();
-                            System.out.print(((FormSegment)element).getValue().substring(0, relPos));
-                            System.out.print("<^>");
-                            System.out.print(((FormSegment)element).getValue().substring(relPos));
+                            context.getOutput().print(((FormSegment)element).getValue().substring(0, relPos));
+                            context.getOutput().print("<^>");
+                            context.getOutput().print(((FormSegment)element).getValue().substring(relPos));
                         } else {
-                            System.out.print(((FormSegment) element).getValue());
+                            context.getOutput().print(((FormSegment) element).getValue());
                         }
                     } else if (element instanceof FormMarker) {
-                        System.out.print(String.format("<%d>", ((FormMarker) element).getOrdinal()));
+                        context.getOutput().print(String.format("<%d>", ((FormMarker) element).getOrdinal()));
                     }
                 }
             }
-            System.out.println();
+            context.getOutput().println();
         }
         return new ExecutionResult(stackElement.isActive(), "");
     }

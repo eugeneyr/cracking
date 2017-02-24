@@ -19,9 +19,9 @@ public class FunctionEvaluator {
                 BuiltInFunction func = clz.newInstance();
                 BUILTINS.put(func.getName(), func);
             } catch (InstantiationException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.err);
             }
         }
     }
@@ -29,7 +29,6 @@ public class FunctionEvaluator {
 
     public static ExecutionResult evaluate(StackElement stackElement, Context context) {
         BuiltInFunction function = BUILTINS.get(stackElement.getArguments().get(0).getValue());
-        // System.out.println(String.format("Executing: %s", stackElement.toString()));
         if (function != null) {
             return function.execute(stackElement, context);
         } else {

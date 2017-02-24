@@ -1,6 +1,7 @@
 package info.lynxnet.etudes.trac.functions;
 
 import info.lynxnet.etudes.trac.Context;
+import info.lynxnet.etudes.trac.NumericUtils;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class BooleanShift implements BuiltInFunction {
@@ -15,7 +16,7 @@ public class BooleanShift implements BuiltInFunction {
     public ExecutionResult execute(StackElement stackElement, Context context) {
         StringBuilder sb = new StringBuilder();
         if (stackElement.getArguments().size() > 1) {
-            String a = stackElement.getArguments().get(1).extractBoolean();
+            String a = NumericUtils.extractBoolean(stackElement.getArgumentValue(1));
             int bits = stackElement.getArgumentIntValue(2);
             sb.append(BooleanStringMath.shift(a, bits));
         }

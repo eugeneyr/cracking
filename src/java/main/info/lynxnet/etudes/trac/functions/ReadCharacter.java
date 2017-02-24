@@ -26,9 +26,12 @@ public class ReadCharacter implements BuiltInFunction {
             int character = reader.read();
             if (character >= -1) {
                 result.append(Character.toChars(character));
+            } else {
+                return new ExecutionResult(true, stackElement.getArgumentValue(1));
             }
         } catch (IOException e) {
             e.printStackTrace(System.err);
+            return new ExecutionResult(true, stackElement.getArgumentValue(1));
         }
         return new ExecutionResult(stackElement.isActive(), result.toString());
     }

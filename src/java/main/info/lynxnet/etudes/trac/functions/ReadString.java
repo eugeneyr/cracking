@@ -35,12 +35,12 @@ public class ReadString implements BuiltInFunction {
                 } else {
                     // end of input stream
                     context.setInput(System.in);
-                    break;
+                    return new ExecutionResult(true, stackElement.getArgumentValue(1));
                 }
             } catch (IOException e) {
                 e.printStackTrace(System.err);
                 context.setInput(System.in);
-                break;
+                return new ExecutionResult(true, stackElement.getArgumentValue(1));
             }
         } while (true);
 

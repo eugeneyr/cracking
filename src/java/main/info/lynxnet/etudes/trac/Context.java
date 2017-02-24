@@ -3,6 +3,7 @@ package info.lynxnet.etudes.trac;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Map;
 import java.util.Stack;
 import java.util.TreeMap;
@@ -14,7 +15,7 @@ public class Context {
     private StringBuilder neutralString = new StringBuilder();
     private StringBuilder activeString = new StringBuilder();
     private InputStream input = System.in;
-    private OutputStream output = System.out;
+    private PrintStream output = System.out;
 
     private char metacharacter = Constants.METACHARACTER;
     private String initialActiveString = Constants.INITIAL_ACTIVE_STRING;
@@ -101,11 +102,11 @@ public class Context {
         input = newInput;
     }
 
-    public void setOutput(OutputStream newOutput) {
+    public void setOutput(PrintStream newOutput) {
         if (output != null && output != System.out) {
             try {
                 output.close();
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace(System.err);
             }
         }
@@ -119,7 +120,7 @@ public class Context {
         return input;
     }
 
-    public OutputStream getOutput() {
+    public PrintStream getOutput() {
         return output;
     }
 }

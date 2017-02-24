@@ -1,8 +1,6 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Context;
-import info.lynxnet.etudes.trac.Lexem;
-import info.lynxnet.etudes.trac.StackElement;
+import info.lynxnet.etudes.trac.*;
 
 public class Greater implements BuiltInFunction {
     public static final String FUNCTION_NAME = "gr";
@@ -16,8 +14,8 @@ public class Greater implements BuiltInFunction {
     public ExecutionResult execute(StackElement stackElement, Context context) {
         StringBuilder sb = new StringBuilder();
         if (stackElement.getArguments().size() > 3) {
-            Lexem.PrefixedNumber a = stackElement.getArguments().get(1).getValueAsNumber();
-            Lexem.PrefixedNumber b = stackElement.getArguments().get(2).getValueAsNumber();
+            PrefixedNumber a = NumericUtils.getValueAsNumber(stackElement.getArgumentValue(1));
+            PrefixedNumber b = NumericUtils.getValueAsNumber(stackElement.getArgumentValue(2));
             String t = stackElement.getArgumentValue(3);
             String f = stackElement.getArgumentValue(4);
             sb.append(a.getNumber().compareTo(b.getNumber()) > 0? t : f);

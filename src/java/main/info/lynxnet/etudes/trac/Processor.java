@@ -6,7 +6,7 @@ import info.lynxnet.etudes.trac.states.InterpreterState;
 import info.lynxnet.etudes.trac.states.InterpreterStateBase;
 import org.reflections.*;
 
-public class Interpreter {
+public class Processor {
     private InterpreterState initialState;
     private List<InterpreterState> interpreterStates = new ArrayList<>();
     private Map<Class<? extends InterpreterState>, InterpreterState> stateCache = new HashMap<>();
@@ -17,7 +17,7 @@ public class Interpreter {
         return interpreterStates;
     }
 
-    public Interpreter(String[] commandLine) {
+    public Processor(String[] commandLine) {
         context = new Context(commandLine);
         loadStates();
     }
@@ -26,7 +26,6 @@ public class Interpreter {
         Reflections refs = new Reflections("info.lynxnet.etudes.trac.states");
         Set<Class<? extends InterpreterStateBase>> stateClasses = refs.getSubTypesOf(InterpreterStateBase.class);
         for (Class<? extends InterpreterStateBase> clz : stateClasses) {
-            //System.out.println(String.format("Found InterpreterState: %s", clz.getName()));
             try {
                 InterpreterState state = clz.newInstance();
                 this.interpreterStates.add(state);
@@ -35,9 +34,9 @@ public class Interpreter {
                     this.initialState = state;
                 }
             } catch (InstantiationException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                e.printStackTrace(System.out);
             }
         }
     }
@@ -78,7 +77,7 @@ public class Interpreter {
     }
 
     public static void main(String[] args) {
-        Interpreter sm = new Interpreter(args);
+        Processor sm = new Processor(args);
         int exitStatus = sm.run();
         System.exit(exitStatus);
     }
