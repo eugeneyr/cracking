@@ -4,7 +4,18 @@ import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class DecimalToCharacter implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "dc";
+    public static final String FUNCTION_MNEMONICS = "dc";
+    public static final String FUNCTION_NAME = "Decimal to Character";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.STRING;
+    }
 
     @Override
     public String getName() {

@@ -5,7 +5,18 @@ import info.lynxnet.etudes.trac.NumericUtils;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class BooleanComplement implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "bc";
+    public static final String FUNCTION_MNEMONICS = "bc";
+    public static final String FUNCTION_NAME = "Boolean Complement";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.BOOLEAN;
+    }
 
     @Override
     public String getName() {

@@ -6,7 +6,18 @@ import info.lynxnet.etudes.trac.StackElement;
 import java.io.*;
 
 public class AssignOutput implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "ao";
+    public static final String FUNCTION_MNEMONICS = "ao";
+    public static final String FUNCTION_NAME = "Assign Output";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.IO;
+    }
 
     @Override
     public String getName() {

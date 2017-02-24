@@ -9,7 +9,18 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
 public class AssignInput implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "ai";
+    public static final String FUNCTION_MNEMONICS = "ai";
+    public static final String FUNCTION_NAME = "Assign Input";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.IO;
+    }
 
     @Override
     public String getName() {

@@ -5,7 +5,18 @@ import info.lynxnet.etudes.trac.*;
 import java.util.List;
 
 public class PrintForm implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "pf";
+    public static final String FUNCTION_MNEMONICS = "pf";
+    public static final String FUNCTION_NAME = "Print Form";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.DEBUG;
+    }
 
     @Override
     public String getName() {

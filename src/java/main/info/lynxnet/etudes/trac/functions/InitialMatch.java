@@ -6,7 +6,18 @@ import java.util.List;
 import java.util.Optional;
 
 public class InitialMatch implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "in";
+    public static final String FUNCTION_MNEMONICS = "in";
+    public static final String FUNCTION_NAME = "Initial Match";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
 
     @Override
     public String getName() {

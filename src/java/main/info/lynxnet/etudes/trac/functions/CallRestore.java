@@ -6,7 +6,18 @@ import info.lynxnet.etudes.trac.Lexem;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class CallRestore implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "cr";
+    public static final String FUNCTION_MNEMONICS = "cr";
+    public static final String FUNCTION_NAME = "Call Restore";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
 
     @Override
     public String getName() {

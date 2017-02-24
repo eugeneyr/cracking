@@ -10,7 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StoreBlock implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "sb";
+    public static final String FUNCTION_MNEMONICS = "sb";
+    public static final String FUNCTION_NAME = "Store Block";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.STORAGE;
+    }
 
     @Override
     public String getName() {

@@ -9,7 +9,18 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
 public class FetchBlock implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "fb";
+    public static final String FUNCTION_MNEMONICS = "fb";
+    public static final String FUNCTION_NAME = "Fetch Block";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.STORAGE;
+    }
 
     @Override
     public String getName() {

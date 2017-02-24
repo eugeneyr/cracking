@@ -3,7 +3,18 @@ package info.lynxnet.etudes.trac.functions;
 import info.lynxnet.etudes.trac.*;
 
 public class Greater implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "gr";
+    public static final String FUNCTION_MNEMONICS = "gr";
+    public static final String FUNCTION_NAME = "Greater";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.BOOLEAN;
+    }
 
     @Override
     public String getName() {

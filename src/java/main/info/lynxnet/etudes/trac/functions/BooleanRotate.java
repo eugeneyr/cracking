@@ -5,7 +5,18 @@ import info.lynxnet.etudes.trac.NumericUtils;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class BooleanRotate implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "br";
+    public static final String FUNCTION_MNEMONICS = "br";
+    public static final String FUNCTION_NAME = "Boolean Rotate";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.BOOLEAN;
+    }
 
     @Override
     public String getName() {

@@ -3,7 +3,19 @@ package info.lynxnet.etudes.trac.functions;
 import info.lynxnet.etudes.trac.*;
 
 public class ChangeMetacharacter implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "cm";
+    public static final String FUNCTION_MNEMONICS = "cm";
+    public static final String FUNCTION_NAME = "Change Metacharacter";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.IO;
+    }
+
     @Override
     public String getName() {
         return FUNCTION_NAME;

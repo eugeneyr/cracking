@@ -3,7 +3,18 @@ package info.lynxnet.etudes.trac.functions;
 import info.lynxnet.etudes.trac.*;
 
 public class SegmentString implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "ss";
+    public static final String FUNCTION_MNEMONICS = "ss";
+    public static final String FUNCTION_NAME = "Segment String";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
 
     @Override
     public String getName() {

@@ -5,7 +5,18 @@ import info.lynxnet.etudes.trac.*;
 import java.util.List;
 
 public class CallString implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "cl";
+    public static final String FUNCTION_MNEMONICS = "cl";
+    public static final String FUNCTION_NAME = "Call String";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
 
     @Override
     public String getName() {

@@ -4,7 +4,18 @@ import info.lynxnet.etudes.trac.Context;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class Equality implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "eq";
+    public static final String FUNCTION_MNEMONICS = "eq";
+    public static final String FUNCTION_NAME = "Equiality";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.BOOLEAN;
+    }
 
     @Override
     public String getName() {

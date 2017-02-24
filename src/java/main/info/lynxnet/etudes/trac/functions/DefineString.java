@@ -6,7 +6,19 @@ import info.lynxnet.etudes.trac.Lexem;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class DefineString implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "ds";
+    public static final String FUNCTION_MNEMONICS = "ds";
+    public static final String FUNCTION_NAME = "Define String";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
+
     @Override
     public String getName() {
         return FUNCTION_NAME;

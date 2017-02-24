@@ -8,7 +8,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ReadCharacter implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "rc";
+    public static final String FUNCTION_MNEMONICS = "rc";
+    public static final String FUNCTION_NAME = "Read Character";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.IO;
+    }
 
     @Override
     public String getName() {

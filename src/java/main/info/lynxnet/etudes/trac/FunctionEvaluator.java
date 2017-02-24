@@ -17,7 +17,7 @@ public class FunctionEvaluator {
         for (Class<? extends BuiltInFunction> clz : funcClasses) {
             try {
                 BuiltInFunction func = clz.newInstance();
-                BUILTINS.put(func.getName(), func);
+                BUILTINS.put(func.getMnemonics(), func);
             } catch (InstantiationException e) {
                 e.printStackTrace(System.err);
             } catch (IllegalAccessException e) {

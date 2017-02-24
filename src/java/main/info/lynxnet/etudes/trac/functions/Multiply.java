@@ -8,7 +8,18 @@ import info.lynxnet.etudes.trac.StackElement;
 import java.math.BigInteger;
 
 public class Multiply implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "ml";
+    public static final String FUNCTION_MNEMONICS = "ml";
+    public static final String FUNCTION_NAME = "Multiply";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.ARYTHMETIC;
+    }
 
     @Override
     public String getName() {

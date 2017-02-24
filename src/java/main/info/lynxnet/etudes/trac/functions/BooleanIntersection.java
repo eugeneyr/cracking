@@ -5,7 +5,18 @@ import info.lynxnet.etudes.trac.NumericUtils;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class BooleanIntersection implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "bi";
+    public static final String FUNCTION_MNEMONICS = "bi";
+    public static final String FUNCTION_NAME = "Boolean Intersection";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.BOOLEAN;
+    }
 
     @Override
     public String getName() {

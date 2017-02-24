@@ -8,7 +8,18 @@ import info.lynxnet.etudes.trac.StackElement;
 import java.math.BigInteger;
 
 public class Subtract implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "su";
+    public static final String FUNCTION_MNEMONICS = "su";
+    public static final String FUNCTION_NAME = "Subtract";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.ARYTHMETIC;
+    }
 
     @Override
     public String getName() {

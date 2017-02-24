@@ -5,7 +5,18 @@ import info.lynxnet.etudes.trac.NumericUtils;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class BooleanUnion implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "bu";
+    public static final String FUNCTION_MNEMONICS = "bu";
+    public static final String FUNCTION_NAME = "Boolean Union";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.BOOLEAN;
+    }
 
     @Override
     public String getName() {

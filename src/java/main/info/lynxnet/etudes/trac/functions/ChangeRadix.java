@@ -5,9 +5,19 @@ import info.lynxnet.etudes.trac.NumericUtils;
 import info.lynxnet.etudes.trac.PrefixedNumber;
 import info.lynxnet.etudes.trac.StackElement;
 
-
 public class ChangeRadix implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "cx";
+    public static final String FUNCTION_MNEMONICS = "cx";
+    public static final String FUNCTION_NAME = "Chage Radix";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.STRING;
+    }
 
     @Override
     public String getName() {

@@ -6,7 +6,18 @@ import info.lynxnet.etudes.trac.Lexem;
 import info.lynxnet.etudes.trac.StackElement;
 
 public class CallNCharacters implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "cn";
+    public static final String FUNCTION_MNEMONICS = "cn";
+    public static final String FUNCTION_NAME = "Call N Characters";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
 
     @Override
     public String getName() {

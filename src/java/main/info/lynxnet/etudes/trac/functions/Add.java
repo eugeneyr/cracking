@@ -1,14 +1,22 @@
 package info.lynxnet.etudes.trac.functions;
 
-import info.lynxnet.etudes.trac.Context;
-import info.lynxnet.etudes.trac.NumericUtils;
-import info.lynxnet.etudes.trac.PrefixedNumber;
-import info.lynxnet.etudes.trac.StackElement;
+import info.lynxnet.etudes.trac.*;
 
 import java.math.BigInteger;
 
 public class Add implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "ad";
+    public static final String FUNCTION_MNEMONICS = "ad";
+    public static final String FUNCTION_NAME = "Add";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.ARYTHMETIC;
+    }
 
     @Override
     public String getName() {

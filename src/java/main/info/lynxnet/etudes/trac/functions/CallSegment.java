@@ -3,7 +3,18 @@ package info.lynxnet.etudes.trac.functions;
 import info.lynxnet.etudes.trac.*;
 
 public class CallSegment implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "cs";
+    public static final String FUNCTION_MNEMONICS = "cs";
+    public static final String FUNCTION_NAME = "Call Segment";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.FORMS;
+    }
 
     @Override
     public String getName() {

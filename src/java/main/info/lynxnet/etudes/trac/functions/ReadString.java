@@ -7,7 +7,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ReadString implements BuiltInFunction {
-    public static final String FUNCTION_NAME = "rs";
+    public static final String FUNCTION_MNEMONICS = "rs";
+    public static final String FUNCTION_NAME = "Read String";
+
+    @Override
+    public String getMnemonics() {
+        return FUNCTION_MNEMONICS;
+    }
+
+    @Override
+    public String getCategory() {
+        return FunctionCategory.IO;
+    }
 
     @Override
     public String getName() {
