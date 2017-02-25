@@ -16,6 +16,8 @@ public class Context {
     private StringBuilder activeString = new StringBuilder();
     private InputStream input = System.in;
     private PrintStream output = System.out;
+    private boolean exit;
+    private int exitCode;
 
     private char metacharacter = Constants.METACHARACTER;
     private String initialActiveString = Constants.INITIAL_ACTIVE_STRING;
@@ -122,5 +124,21 @@ public class Context {
 
     public PrintStream getOutput() {
         return output;
+    }
+
+    public int getExitCode() {
+        return exitCode;
+    }
+
+    public void setExitCode(int exitCode) {
+        this.exitCode = exitCode;
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+
+    public boolean shouldExit() {
+        return this.exit;
     }
 }

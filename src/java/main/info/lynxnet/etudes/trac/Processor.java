@@ -46,24 +46,31 @@ public class Processor {
             System.err.println("Invalid state machine configuration: missing initial state");
             return -1;
         }
-        System.out.println("Type\n\t#(help)'\nto get the overview of all available functions.\n" +
-                "Type\n" +
-                "\t#(help,fn)'\n" +
-                "to get the detailed info on a function \"fn\".");
+        if (context.getOutput() == System.out && context.getInput() == System.in) {
+            System.out.println("Type\n\t#(help)'\nto get the overview of all available functions.\n" +
+                    "Type\n" +
+                    "\t#(help,fn)'\n" +
+                    "to get the detailed info on a function \"fn\".");
+        }
         InterpreterState state = this.initialState;
-        while (true) {
+        while (!context.shouldExit()) {
             Class<? extends InterpreterState> nextStateClass = state.actionAndTransition(context);
             if (nextStateClass == null) {
-                System.err.println(String.format("State %s transitioned to a null", state.getClass().getName()));
-                return -1;
+                System.err.println(String.format("FATAL: State %s transitioned to null", state.getClass().getName()));
+                context.setExitCode(-1);
+                context.setExit(true);
             }
             InterpreterState nextState = this.stateCache.get(nextStateClass);
             if (nextState == null) {
-                System.err.println(String.format("State %s was not pre-instantiated", nextStateClass.getName()));
-                return -1;
+                System.err.println(String.format("FATAL: State %s was not pre-instantiated", nextStateClass.getName()));
+                context.setExitCode(-1);
+                context.setExit(true);
             }
             state = nextState;
         }
+        context.setInput(System.in);
+        context.setOutput(System.out);
+        return context.getExitCode();
     }
 
     public static void main(String[] args) {

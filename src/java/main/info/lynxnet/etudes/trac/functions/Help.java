@@ -43,7 +43,7 @@ public class Help implements BuiltInFunction {
                 return comp;
             }).forEach(x -> {
                 if (!cats.contains(x.getCategory())) {
-                    sb.append('\t').append(x.getCategory()).append('\n');
+                    sb.append("\n * ").append(x.getCategory()).append(" *\n\n");
                     cats.add(x.getCategory());
                 }
                 sb.append(String.format("#(%s)\t%s\n", x.getMnemonics(), x.getName()));
