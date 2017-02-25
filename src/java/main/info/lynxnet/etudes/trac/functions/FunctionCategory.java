@@ -1,7 +1,7 @@
 package info.lynxnet.etudes.trac.functions;
 
 public interface FunctionCategory {
-    String ARYTHMETIC = "Arythmetic Functions";
+    String ARITHMETIC = "Arithmetic Functions";
     String FORMS = "Form Manipulation";
     String STORAGE = "Storage Functions";
     String STRING = "String Manipulation";

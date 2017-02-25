@@ -46,22 +46,13 @@ public class Processor {
             System.err.println("Invalid state machine configuration: missing initial state");
             return -1;
         }
-        String oldNeutral = "";
-        String oldActive = "";
+        System.out.println("Type\n\t#(help)'\nto get the overview of all available functions.\n" +
+                "Type\n" +
+                "\t#(help,fn)'\n" +
+                "to get the detailed info on a function \"fn\".");
         InterpreterState state = this.initialState;
-        long cycle = 0L;
         while (true) {
             Class<? extends InterpreterState> nextStateClass = state.actionAndTransition(context);
-
-//            if (!oldNeutral.equals(neutralString.toString()) || !oldActive.equals(activeString.toString())) {
-//                System.out.println(String.format(
-//                        "[%d] %s: %s <---> %s", cycle,
-//                        state.getClass().getName(),
-//                        neutralString.toString(), activeString.toString()));
-//            }
-
-            oldNeutral = context.getNeutralString().toString();
-            oldActive = context.getActiveString().toString();
             if (nextStateClass == null) {
                 System.err.println(String.format("State %s transitioned to a null", state.getClass().getName()));
                 return -1;
@@ -72,7 +63,6 @@ public class Processor {
                 return -1;
             }
             state = nextState;
-            cycle++;
         }
     }
 

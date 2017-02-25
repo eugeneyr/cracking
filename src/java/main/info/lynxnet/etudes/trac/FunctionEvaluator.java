@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class FunctionEvaluator {
-    private static Map<String, BuiltInFunction> BUILTINS = new HashMap<>();
+    public static Map<String, BuiltInFunction> BUILTINS = new HashMap<>();
 
     static {
         Reflections refs = new Reflections("info.lynxnet.etudes.trac.functions");
@@ -17,6 +17,10 @@ public class FunctionEvaluator {
         for (Class<? extends BuiltInFunction> clz : funcClasses) {
             try {
                 BuiltInFunction func = clz.newInstance();
+                if (BUILTINS.containsKey(func.getMnemonics())) {
+                    System.err.println(
+                            String.format("Warning: mnemonics collision detected for #(%s)", func.getMnemonics()));
+                }
                 BUILTINS.put(func.getMnemonics(), func);
             } catch (InstantiationException e) {
                 e.printStackTrace(System.err);
@@ -26,8 +30,19 @@ public class FunctionEvaluator {
         }
     }
 
+    private FunctionEvaluator() {
+    }
 
-    public static ExecutionResult evaluate(StackElement stackElement, Context context) {
+    private static FunctionEvaluator instance;
+
+    public static synchronized FunctionEvaluator getInstance() {
+        if (instance == null) {
+            instance = new FunctionEvaluator();
+        }
+        return instance;
+    }
+
+    public ExecutionResult evaluate(StackElement stackElement, Context context) {
         BuiltInFunction function = BUILTINS.get(stackElement.getArguments().get(0).getValue());
         if (function != null) {
             return function.execute(stackElement, context);

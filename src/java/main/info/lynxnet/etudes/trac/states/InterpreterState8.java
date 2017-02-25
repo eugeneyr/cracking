@@ -37,7 +37,7 @@ public class InterpreterState8 extends InterpreterStateBase {
                     e.printStackTrace();
                 }
             }
-            ExecutionResult result = FunctionEvaluator.evaluate(current, context);
+            ExecutionResult result = FunctionEvaluator.getInstance().evaluate(current, context);
             if (result.isActive()) {
                 context.getActiveString().insert(0, result.getValue());
             } else {

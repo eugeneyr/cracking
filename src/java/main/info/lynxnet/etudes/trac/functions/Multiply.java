@@ -18,7 +18,7 @@ public class Multiply implements BuiltInFunction {
 
     @Override
     public String getCategory() {
-        return FunctionCategory.ARYTHMETIC;
+        return FunctionCategory.ARITHMETIC;
     }
 
     @Override
