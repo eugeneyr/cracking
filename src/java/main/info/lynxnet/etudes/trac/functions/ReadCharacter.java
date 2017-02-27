@@ -35,7 +35,7 @@ public class ReadCharacter implements BuiltInFunction {
         }
         try {
             int character = reader.read();
-            if (character >= -1) {
+            if (character > -1) {
                 result.append(Character.toChars(character));
             } else {
                 return new ExecutionResult(true, stackElement.getArgumentValue(1));

@@ -35,7 +35,7 @@ public class ReadString implements BuiltInFunction {
         do {
             try {
                 int codePoint = reader.read();
-                if (codePoint >= -1) {
+                if (codePoint > -1) {
                     char characters[] = Character.toChars(codePoint);
                     if (characters.length > 0) {
                         if (context.getMetacharacter() == characters[0]) {
