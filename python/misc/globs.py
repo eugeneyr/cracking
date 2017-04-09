@@ -1,16 +1,16 @@
 def glob_matcher(pattern, string):
-    if string is None or pattern is None:
+    if pattern is None or string is None:
         return False
-    if string == '' and pattern == '':
-        return True
-    if string == '' or pattern == '':
+    if not string:
+        return not pattern or all(x == '*' for x in pattern)
+    if not pattern:
         return False
     if pattern[0] == '?':
         return glob_matcher(pattern[1:], string[1:])
     elif pattern[0] == '*':
-        for i in range(0, len(string) + 1):
-            if glob_matcher(pattern[1:], string[i:]):
-                return True
+        return (glob_matcher(pattern[1:], string)
+                or glob_matcher(pattern, string[1:])
+                or glob_matcher(pattern[1:], string[1:]))
     elif pattern[0] == string[0]:
         return glob_matcher(pattern[1:], string[1:])
     return False
@@ -25,7 +25,11 @@ if __name__ == '__main__':
         ('ab*f', 'abcdef'),
         ('ab*f', 'abcde'),
         ('*', 'abcde'),
-        ('a?*f', 'abcdef')
+        ('a?*f', 'abcdef'),
+        ('*', ''),
+        ('**', ''),
+        ('**', 'abc'),
+        ('*?*', 'abc')
     ]
     for pattern, string in pairs:
         print(pattern, string, glob_matcher(pattern, string))
