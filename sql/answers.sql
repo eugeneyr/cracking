@@ -55,3 +55,12 @@ WHERE "Child".id IS NULL;
 
 -- The list of duplicate Column1 values
 SELECT "Table1"."Column1", COUNT("Table1"."Column1") FROM "Table1" GROUP BY "Column1" HAVING COUNT("Table1"."Column1") > 1;
+
+
+-- The list of parents who don't have children younger than 4 but have children 
+SELECT
+  "Parent".id,
+  "Parent".name
+FROM "Parent"
+  LEFT OUTER JOIN "Child" ON "Parent".id = "Child"."parentId" AND "Child".age < 4
+WHERE "Child".id IS NULL;

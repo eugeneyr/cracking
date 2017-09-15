@@ -1,35 +1,36 @@
-def glob_matcher(pattern, string):
-    if pattern is None or string is None:
+def glob_matcher(p, s):
+    if p is None or s is None:
         return False
-    if not string:
-        return not pattern or all(x == '*' for x in pattern)
-    if not pattern:
+    if not s:
+        return not p or (p[0] == '*' and glob_matcher(p[1:], s))
+    if not p:
         return False
-    if pattern[0] == '?':
-        return glob_matcher(pattern[1:], string[1:])
-    elif pattern[0] == '*':
-        return (glob_matcher(pattern[1:], string)
-                or glob_matcher(pattern, string[1:])
-                or glob_matcher(pattern[1:], string[1:]))
-    elif pattern[0] == string[0]:
-        return glob_matcher(pattern[1:], string[1:])
+    if p[0] == '?':
+        return glob_matcher(p[1:], s[1:])
+    elif p[0] == '*':
+        return (glob_matcher(p[1:], s) or glob_matcher(p, s[1:]) or glob_matcher(p[1:], s[1:]))
+    elif p[0] == s[0]:
+        return glob_matcher(p[1:], s[1:])
     return False
 
 
 if __name__ == '__main__':
     pairs = [
-        ('abc', 'abcd'),
-        ('ab?', 'abc'),
-        ('ab*def', 'abcdef'),
-        ('ab?def', 'abcdef'),
-        ('ab*f', 'abcdef'),
-        ('ab*f', 'abcde'),
-        ('*', 'abcde'),
-        ('a?*f', 'abcdef'),
-        ('*', ''),
-        ('**', ''),
-        ('**', 'abc'),
-        ('*?*', 'abc')
+        ('abc', 'abcd', False),
+        ('ab?', 'abc', True),
+        ('ab*def', 'abcdef', True),
+        ('ab?def', 'abcdef', True),
+        ('ab*f', 'abcdef', True),
+        ('ab*f', 'abcde', False),
+        ('*', 'abcde', True),
+        ('a?*f', 'abcdef', True),
+        ('*', '', True),
+        ('**', '', True),
+        ('*?*d', 'abc', False),
+        ('*f*', 'abfer', True),
+        ('**', 'abc', True),
+        ('*?*', 'abc', True)
     ]
-    for pattern, string in pairs:
+    for pattern, string, result in pairs:
         print(pattern, string, glob_matcher(pattern, string))
+        assert(result == glob_matcher(pattern, string))

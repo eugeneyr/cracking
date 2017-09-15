@@ -1,5 +1,0 @@
-#(ds,fac,(#(eq,X,1,1,(#(ml,X,#(cl,fac,#(su,X,1)))))))
-#(ss,fac,X)
-#(ps,#(cl,fac,5),(
-))
-#(hl)'
