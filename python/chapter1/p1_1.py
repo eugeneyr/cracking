@@ -1,7 +1,7 @@
 # Implement an algorithm to determine if a string has all unique characters.
 
 def areAllUnique(s):
-    if not isinstance(s, basestring):
+    if not isinstance(s, str):
         return False
     found = set()
     for c in s:
