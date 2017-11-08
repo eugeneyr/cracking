@@ -9,9 +9,8 @@ def glob_matcher(p, s):
         return glob_matcher(p[1:], s[1:])
     elif p[0] == '*':
         return (glob_matcher(p[1:], s) or glob_matcher(p, s[1:]) or glob_matcher(p[1:], s[1:]))
-    elif p[0] == s[0]:
-        return glob_matcher(p[1:], s[1:])
-    return False
+    else:
+        return p[0] == s[0] and glob_matcher(p[1:], s[1:])
 
 
 if __name__ == '__main__':
