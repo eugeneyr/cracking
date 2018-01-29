@@ -288,19 +288,19 @@ Initially, all the nextRight pointers point to garbage values.
 Your function should set these pointers to point next right for each node.
 You can use only constant extra space.
 
-[My interview with HC, 2015]
+[My interview with HouseCanary, 2015]
 Eliminate all consecutive pairs of characters in the string.
 Do it until there are no pairs to remove, so 'abba' turns into an empty string:
 'abcba' => 'abcba'
 'aabc' => 'bc'
 
-(My interview with Google, 2010)
+[My interview with Google, 2010]
 Write a function or a method that implements "glob" expression matching.
 Its input is a string S and a glob pattern P, the output is a boolean: True if S matches P, False otherwise.
 There are two classes of special characters, or wildcards, in glob patterns:
 "?" matches exactly one character, "*" matches any number of consecutive character, including the empty string (0 characters).
 
-(My interview with unknown company, Ukraine, 1995)
+[My interview with unknown company, Ukraine, 1995]
 Write a function that outputs a graph for a given mathematical function of single argument (e.g. sin(x) or cos(x)),
 the [X0, X1] range on the X-axis, and the [Y0, Y1] range on the Y-axis.
 The output is a sequence of lines containing ' ' and '*' characters only that is suitable for writing to a text file as "ASCII art"
