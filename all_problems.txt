@@ -3,6 +3,7 @@ CTCI, 6th edition
 
 Chapter 1
 ---------
+String Manipulation
 
 1.1. Implement an algorithm to determine if a string has all unique characters.
      What if you cannot use additional data structures?
@@ -47,6 +48,7 @@ Chapter 1
 
 Chapter 2
 ---------
+Lists
 
 2.1. Remove Dups:
      Write code to remove duplicates from an unsorted linked list.
@@ -112,6 +114,7 @@ Chapter 2
 
 Chapter 3
 ---------
+Stacks
 
 3.1. Three in One:
      Describe how you could use a single array to implement three stacks.
@@ -154,6 +157,7 @@ Chapter 3
 
 Chapter 4
 ---------
+Graphs and Trees
 
 4.1. Route Between Nodes:
      Given a directed graph, design an algorithm to find out whether there is a route between two nodes.
@@ -231,6 +235,7 @@ Chapter 4
 
 Chapter 5
 ---------
+Bit Manipulation
 
 5.1. Insertion:
      You are given two 32-bit numbers, N and M, and two bit positions, i and j. Write a method to insert M into N such that
@@ -289,5 +294,14 @@ Do it until there are no pairs to remove, so 'abba' turns into an empty string:
 'abcba' => 'abcba'
 'aabc' => 'bc'
 
+(My interview with Google, 2010)
+Write a function or a method that implements "glob" expression matching.
+Its input is a string S and a glob pattern P, the output is a boolean: True if S matches P, False otherwise.
+There are two classes of special characters, or wildcards, in glob patterns:
+"?" matches exactly one character, "*" matches any number of consecutive character, including the empty string (0 characters).
 
-
+(My interview with unknown company, Ukraine, 1995)
+Write a function that outputs a graph for a given mathematical function of single argument (e.g. sin(x) or cos(x)),
+the [X0, X1] range on the X-axis, and the [Y0, Y1] range on the Y-axis.
+The output is a sequence of lines containing ' ' and '*' characters only that is suitable for writing to a text file as "ASCII art"
+or printing the graph on a printer that does not support graphics (like a punch printer).
