@@ -15,6 +15,7 @@ def insertBitwise(n, m, i, j):
     mask = ctypes.c_ulong(0xffffffff).value ^ ((1 << (j - i + 1)) - 1) << i
     return (n & mask) | (m << i)
 
+
 if __name__ == '__main__':
     n = 0b100000000000
     m = 0b10011

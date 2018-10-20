@@ -34,16 +34,8 @@ public class SortedWordBucket implements WordBucket {
         words.add(word);
         for (int i = 0; i < wordLength; i++) {
             char c = word.charAt(i);
-            Map<Integer, Collection<String>> positionMap = charsToPositions.get(c);
-            if (positionMap == null) {
-                positionMap = new TreeMap<Integer, Collection<String>>();
-                charsToPositions.put(c, positionMap);
-            }
-            Collection<String> strings = positionMap.get(i);
-            if (strings == null) {
-                strings = new TreeSet<String>();
-                positionMap.put(i, strings);
-            }
+            Map<Integer, Collection<String>> positionMap = charsToPositions.computeIfAbsent(c, k -> new TreeMap<Integer, Collection<String>>());
+            Collection<String> strings = positionMap.computeIfAbsent(i, k -> new TreeSet<String>());
             strings.add(word);
         }
     }

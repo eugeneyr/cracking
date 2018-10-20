@@ -15,7 +15,7 @@ import java.util.*;
  */
 public class BucketizedWordRectangleFinder {
     public static final String WORDS_FILE = "data/words_long.txt";
-    public static final int MAX_WORD_LENGTH = 30;
+    public static final int MAX_WORD_LENGTH = 5;
     private long counter;
     private int largestFound;
     private Set<String> wordList;
@@ -199,7 +199,6 @@ public class BucketizedWordRectangleFinder {
         if (trie != null) {
             if (words.size() == 0) {
                 availableWords = wordsByLength.get(length);
-
             } else {
                 List<String> crossWords = new ArrayList<>();
                 getCrossWords(words, crossWords);
@@ -261,7 +260,7 @@ public class BucketizedWordRectangleFinder {
         loadWordList(WORDS_FILE, wordList, MAX_WORD_LENGTH);
         BucketList buckets = BucketFiller.loadBucket(WORDS_FILE);
         BucketizedWordRectangleFinder finder = new BucketizedWordRectangleFinder(wordList, buckets);
-        finder.findLargestRectangle(found, 7, 7,
+        finder.findLargestRectangle(found, 4, 4,
                 String.format("rect_result.txt", MAX_WORD_LENGTH, MAX_WORD_LENGTH), true);
         System.out.println(String.format("Total found: %d", found.size()));
     }
