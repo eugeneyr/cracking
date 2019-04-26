@@ -58,9 +58,12 @@ SELECT "Table1"."Column1", COUNT("Table1"."Column1") FROM "Table1" GROUP BY "Col
 
 
 -- The list of parents who don't have children younger than 4 but have children 
-SELECT
-  "Parent".id,
-  "Parent".name
-FROM "Parent"
-  LEFT OUTER JOIN "Child" ON "Parent".id = "Child"."parentId" AND "Child".age < 4
-WHERE "Child".id IS NULL;
+SELECT DISTINCT
+  p.id,
+  p.name
+FROM "Parent" p
+JOIN "Child" c1 ON p.id = c1."parentId"
+LEFT OUTER JOIN "Child" c2 ON p.id = c2."parentId" AND c2.age < 4
+WHERE c2.id IS NULL;
+
+

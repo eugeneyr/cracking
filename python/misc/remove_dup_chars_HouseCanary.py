@@ -1,7 +1,14 @@
-# Eliminates all consecutive pairs of characters in the string.
-# Does it until there are no pairs to remove, so 'abba' turns into an empty string
-# 'abcba' => 'abcba'
-# 'aabc' => 'bc'
+"""
+Eliminate all consecutive pairs of the same character in the string. Do it until there are no pairs to remove,
+so, for instance, 'abba' turns into an empty string: 'abba' => 'aa' => ''
+
+Other examples:
+
+'abcba' => 'abcba'
+'aabc' => 'bc'
+
+Author / Asked by: Viktor Lipchenko, HouseCanary, 2015
+"""
 
 def remove_dups_recursively(s):
     if s is None:
@@ -38,16 +45,16 @@ import collections
 
 class TestRemovals(unittest.TestCase):
     def setUp(self):
-        self.data = collections.OrderedDict((('',''),
-                                            ('abc','abc'),
-                                            ('abba', ''),
-                                            ('a', 'a'),
-                                            ('abcba', 'abcba'),
-                                            ('aabc', 'bc'),
-                                            ('abccba', ''),
-                                            ('aaaaaaa', 'a'),
-                                            ('abccbabaab', ''),
-                                            ('abccbadbaab', 'd')))
+        self.data = collections.OrderedDict((('', ''),
+                                             ('abc', 'abc'),
+                                             ('abba', ''),
+                                             ('a', 'a'),
+                                             ('abcba', 'abcba'),
+                                             ('aabc', 'bc'),
+                                             ('abccba', ''),
+                                             ('aaaaaaa', 'a'),
+                                             ('abccbabaab', ''),
+                                             ('abccbadbaab', 'd')))
         self.funcs = (remove_dups_recursively, remove_dups_with_stack)
 
     def test_all(self):
@@ -56,6 +63,7 @@ class TestRemovals(unittest.TestCase):
                 res = func(k)
                 print('{}(\'{}\') = \'{}\''.format(func.__name__, k, res))
                 self.assertEqual(res, v)
+
 
 if __name__ == '__main__':
     unittest.main()

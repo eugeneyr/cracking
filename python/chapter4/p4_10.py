@@ -21,7 +21,7 @@ A tree T2 is a subtree of T1 if there exists a node n in T1 such that the subtre
 #       Don't go to nodes with depth less than depth(T2).
 #          - for each node n:
 #                - compare subtree(n) with T2
-# The worst case complexity is stil O(M*N) and required additional storage is O(M+N),
+# The worst case complexity is still O(M*N) and required additional storage is O(M+N),
 # but on most "real-life" trees it would perform much better.
 
 # 3) A pretty inefficient one, suggested by someone on the Internetz:
