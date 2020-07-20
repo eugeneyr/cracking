@@ -56,7 +56,8 @@ VALUES (4, 'Open', 2, 'Weird smell');
 INSERT INTO "Requests" ("RequestID", "Status", "AptID", "Description")
 VALUES (5, 'Closed', 13, 'Damaged walls');
 
-INSERT INTO "Data" VALUES (1), (2), (3),
+INSERT INTO "Data" VALUES
+  (1), (2), (3),
   (4), (5), (6),
   (7), (8), (9),
   (10), (11), (12),
